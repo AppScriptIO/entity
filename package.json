@@ -1,6 +1,6 @@
 {
-    "name": "@dependency/",
-    "version": "0.0.0",
+    "name": "@dependency/entity",
+    "version": "1.0.0",
     "main": "./source/entrypoint/programmaticApi/transpilation.entrypoint.js",
     "files": [
         "./distribution"

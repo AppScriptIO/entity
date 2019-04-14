@@ -1,1 +1,1 @@
- 
+ import * from './Entity.class.js'
