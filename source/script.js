@@ -1,1 +1,1 @@
- import * from './Entity.class.js'
+ export * from './Entity.class.js'
