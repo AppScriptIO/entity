@@ -1,0 +1,21 @@
+{
+    "name": "@dependency/",
+    "version": "0.0.0",
+    "main": "./source/entrypoint/programmaticApi/transpilation.entrypoint.js",
+    "files": [
+        "./distribution"
+    ],
+    "scripts": {
+        "setup": "yarn install --production=false",
+        "test": "yarn run scriptManager test \"({ testPath: './test' })\"",
+        "generateTypes": "tsc --project ./configuration/typescript.config.json"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript",
+        "@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation",
+        "@dependency/scriptManager": "git+https://github.com/AppScriptIO/scriptManager.git",
+        "@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis",
+        "typescript": "^3.3.3333"
+    }
+}
