@@ -232,7 +232,12 @@ Prototype[Reference.instance.instantiate.list]
             instanceObject ||= Object.create(prototypeDelegation)
             break
         }
-        instanceObject.constructor = self[Reference.prototypeDelegation.getter.list](constructorPrototypeSymbol)
+        Object.defineProperty(instanceObject, 'constructor', {
+          value: self[Reference.prototypeDelegation.getter.list](constructorPrototypeSymbol),
+          writable: true,
+          enumerable: false,
+          configurable: false,
+        })
         return instanceObject
       },
       [Reference.instance.instantiate.key.prototypeInstance]({ instanceType = 'object' }: { instanceType: 'object' | 'function' }) {
@@ -269,7 +274,7 @@ Prototype[Reference.instance.instantiate.list]
 Prototype[Reference.instance.initialize.list]
   |> (_ =>
     Object.assign(_, {
-      [Reference.instance.initialize.key.data]({ data, instanceObject, self = this } = {}) {
+      [Reference.instance.initialize.key.data]({ data, instanceObject, self = this }: { data: Object } = {}) {
         Object.assign(instanceObject, data) // apply data to instance
         return instanceObject
       },
@@ -385,6 +390,30 @@ Prototype[Reference.configuredConstructable.list]
           })
         return entityInstance
       },
+      [Reference.configuredConstructable.key.prototypeInstanceConstructable]: function({
+        description = 'prototypeInstanceConfiguredConstructable',
+        instantiateFallback,
+        initializeFallback,
+        self = this,
+      } = {}) {
+        let implementationFunc = self[Reference.configuredConstructable.getter.list](Reference.configuredConstructable.key.constructable)
+        let configuredInstance =
+          this::implementationFunc({
+            description: description,
+            instantiateFallback: instantiateFallback || Entity.reference.instance.instantiate.key.prototypeInstance,
+            initializeFallback: initializeFallback || Entity.reference.instance.initialize.key.data,
+            instantiateSwitchSymbol: Reference.instance.instantiate.key.configuredConstructableInstance,
+            initializeSwitchSymbol: Reference.instance.initialize.key.configurableConstructor,
+            // instantiateSwitchSymbol: Entity.reference.instance.instantiate.key.entityInstance,
+            // initializeSwitchSymbol: Entity.reference.instance.initialize.key.entityInstance,
+          })
+          |> (iterateConstructable => {
+            let instantiateArg = iterateConstructable.next('intermittent').value
+            let initializeArg = iterateConstructable.next(Object.assign(instantiateArg, {})).value
+            return iterateConstructable.next(Object.assign(initializeArg, { description })).value
+          })
+        return configuredInstance
+      },
     }))
 
 Prototype[Reference.clientInterface.list]
@@ -395,15 +424,44 @@ Prototype[Reference.clientInterface.list]
         const proxiedTarget = new Proxy(
           function() {} || interfaceTarget,
           Object.assign({
-            apply(target, thisArg, argumentList) {
-              return self[Reference.clientInterface.switch](argumentList)
+            apply(target, thisArg, [{ description } = {}]) {
+              // TODO: Create constructable for configured constructables creation. wehre adding config will alter the behavior of instance creation.
+              let newConfiguredConstructable =
+                self[Entity.reference.configuredConstructable.switch]({ implementationKey: Entity.reference.configuredConstructable.key.prototypeInstanceConstructable })
+                |> (g => {
+                  g.next('intermittent')
+                  return g.next({
+                    description: description,
+                    initializeFallback: configuredConstructable[Reference.instance.initialize.fallback],
+                  }).value
+                })
+              let clientInterface =
+                self[Entity.reference.clientInterface.switch]({ implementationKey: Entity.reference.clientInterface.key.prototypeConstruct })
+                |> (g => {
+                  g.next('intermittent')
+                  return g.next({ configuredConstructable: newConfiguredConstructable }).value
+                })
+              return clientInterface
             },
             construct(target, argumentList, proxiedTarget) {
-              let instanceObject = configuredConstructable[Reference.instance.instantiate.switch]()
-              configuredConstructable[Reference.instance.initialize.switch](argumentList, {
-                instanceObject: instanceObject,
-              })
-              return instanceObject
+              return (
+                configuredConstructable[Reference.instance.instantiate.switch]()
+                |> (g => {
+                  g.next('intermittent')
+                  return g.next({
+                    instanceType: 'object',
+                  }).value
+                })
+                |> (instance =>
+                  configuredConstructable[Reference.instance.initialize.switch]()
+                  |> (g => {
+                    g.next('intermittent')
+                    return g.next({
+                      data: argumentList[0],
+                      instanceObject: instance,
+                    }).value
+                  }))
+              )
             },
           }),
         )
@@ -415,21 +473,21 @@ Prototype[Reference.clientInterface.list]
           function() {} || interfaceTarget,
           Object.assign({
             apply(target, thisArg, [{ description } = {}]) {
-              let instance =
-                self[Reference.instance.instantiate.switch]({ implementationKey: Reference.instance.instantiate.key.configuredConstructableInstance })
+              return
+              self[Reference.instance.instantiate.switch]({ implementationKey: Reference.instance.instantiate.key.configuredConstructableInstance })
                 |> (g => {
                   g.next('intermittent')
                   return g.next({ description }).value
                 })
-              self[Reference.instance.initialize.switch]({ implementationKey: Reference.instance.initialize.key.configurableConstructor })
-                |> (g => {
-                  g.next('intermittent')
-                  return g.next({ description, instanceObject: instance }).value
-                })
-              return instance
+                |> (instance =>
+                  self[Reference.instance.initialize.switch]({ implementationKey: Reference.instance.initialize.key.configurableConstructor })
+                  |> (g => {
+                    g.next('intermittent')
+                    return g.next({ description, instanceObject: instance }).value
+                  }))
             },
             construct(target, [{ description, instanceType, reference, prototypeDelegation }: { instanceType: 'object' | 'function' } = {}], proxiedTarget) {
-              let instance =
+              return (
                 configuredConstructable[Reference.instance.instantiate.switch]()
                 |> (g => {
                   g.next('intermittent')
@@ -438,18 +496,18 @@ Prototype[Reference.clientInterface.list]
                     description,
                   }).value
                 })
-              configuredConstructable[Reference.instance.initialize.switch]()
-                |> (g => {
-                  g.next('intermittent')
-                  return g.next({
-                    description,
-                    instanceObject: instance,
-                    reference,
-                    prototypeDelegation,
-                  }).value
-                })
-
-              return instance
+                |> (instance =>
+                  configuredConstructable[Reference.instance.initialize.switch]()
+                  |> (g => {
+                    g.next('intermittent')
+                    return g.next({
+                      description,
+                      instanceObject: instance,
+                      reference,
+                      prototypeDelegation,
+                    }).value
+                  }))
+              )
             },
           }),
         )
