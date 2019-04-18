@@ -5,7 +5,7 @@ export const Entity = new toplevelConfiguredConstructable.clientInterface({ desc
 
 // Create client interface
 const configuredConstructable =
-  Entity[Reference.configuredConstructable.switch]({ implementationKey: Reference.configuredConstructable.key.constructable })
+  Entity[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.constructable })
   |> (g => {
     g.next('intermittent')
     return g.next({

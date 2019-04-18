@@ -59,20 +59,21 @@ export const Reference = {
     },
   },
 
-  configuredConstructable: {
-    switch: Symbol('Entity:configuredConstructable.switch'),
+  // Constructor combines instantiation, prototypeDelegation, & initialization
+  constructor: {
+    switch: Symbol('Entity:constructor.switch'),
     setter: {
-      list: Symbol('Entity:configuredConstructable.setter.list'),
+      list: Symbol('Entity:constructor.setter.list'),
     },
     getter: {
-      list: Symbol('Entity:configuredConstructable.getter.list'),
+      list: Symbol('Entity:constructor.getter.list'),
     },
-    fallback: Symbol('Entity:configuredConstructable.fallback'),
-    list: Symbol('Entity:configuredConstructable.list'),
+    fallback: Symbol('Entity:constructor.fallback'),
+    list: Symbol('Entity:constructor.list'),
     key: {
-      constructable: Symbol('Entity:configuredConstructable.key.constructable'),
-      toplevelConstructable: Symbol('Entity:configuredConstructable.key.toplevelConstructable'),
-      prototypeInstanceConstructable: Symbol('Entity:configuredConstructable.key.prototypeInstanceConstructable'),
+      constructable: Symbol('Entity:constructor.key.constructable'),
+      toplevelConstructable: Symbol('Entity:constructor.key.toplevelConstructable'),
+      configuredConstructable: Symbol('Entity:constructor.key.configuredConstructable'),
     },
   },
 

@@ -167,24 +167,24 @@ Object.assign(Prototype, {
   [Reference.instance.initialize.list]: {},
 
   /**
-   * configuredConstructable
+   * constructor
    **/
-  [Reference.configuredConstructable.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.configuredConstructable.list, value: implementation })
+  [Reference.constructor.setter.list](implementation: Object) {
+    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.constructor.list, value: implementation })
   },
-  [Reference.configuredConstructable.getter.list](implementationKey: String) {
+  [Reference.constructor.getter.list](implementationKey: String) {
     return nestedPropertyDelegatedLookup({
       target: this,
-      directProperty: Reference.configuredConstructable.list,
+      directProperty: Reference.constructor.list,
       nestedProperty: implementationKey,
     })
   },
-  [Reference.configuredConstructable.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.configuredConstructable.fallback,
-    implementationListSymbol: Reference.configuredConstructable.getter.list,
+  [Reference.constructor.switch]: createSwitchGeneratorFunction({
+    fallbackSymbol: Reference.constructor.fallback,
+    implementationListSymbol: Reference.constructor.getter.list,
   }),
-  [Reference.configuredConstructable.fallback]: Reference.configuredConstructable.key.constructable,
-  [Reference.configuredConstructable.list]: {},
+  [Reference.constructor.fallback]: Reference.constructor.key.constructable,
+  [Reference.constructor.list]: {},
 
   /**
    * clientInterface
@@ -292,10 +292,10 @@ Prototype[Reference.instance.initialize.list]
           //   return GraphElement
           // },
           reference: reference || Object.create(prototypeOfReference),
-          prototypeDelegation: prototypeDelegation || Object.create(prototypeOfPrototypeDelegation), // Entities prototypes delegate to each other.
+          prototype: prototypeDelegation || Object.create(prototypeOfPrototypeDelegation), // Entities prototypes delegate to each other.
         })
         instanceObject[Reference.prototypeDelegation.setter.list]({
-          [Reference.prototypeDelegation.key.entityPrototype]: instanceObject.prototypeDelegation,
+          [Reference.prototypeDelegation.key.entityPrototype]: instanceObject.prototype,
           [Reference.prototypeDelegation.key.entityClass]: instanceObject,
         })
         return instanceObject
@@ -306,15 +306,15 @@ Prototype[Reference.instance.initialize.list]
           instanceObject,
           description,
           reference: Reference,
-          prototypeDelegation: Prototype,
+          prototype: Prototype,
         })
       },
     }))
 
-Prototype[Reference.configuredConstructable.list]
+Prototype[Reference.constructor.list]
   |> (_ =>
     Object.assign(_, {
-      [Reference.configuredConstructable.key.constructable]: function*({
+      [Reference.constructor.key.constructable]: function*({
         description,
         instantiateFallback,
         initializeFallback,
@@ -373,8 +373,8 @@ Prototype[Reference.configuredConstructable.list]
         entityInstance[Reference.instance.initialize.fallback] = initializeFallback
         return entityInstance
       },
-      [Reference.configuredConstructable.key.toplevelConstructable]: function({ description = 'ToplevelConstructable', prototypeDelegation = Prototype } = {}) {
-        let implementationFunc = Prototype[Reference.configuredConstructable.getter.list](Reference.configuredConstructable.key.constructable)
+      [Reference.constructor.key.toplevelConstructable]: function({ description = 'ToplevelConstructable', prototypeDelegation = Prototype } = {}) {
+        let implementationFunc = Prototype[Reference.constructor.getter.list](Reference.constructor.key.constructable)
         let entityInstance =
           this::implementationFunc({
             description: description,
@@ -390,13 +390,8 @@ Prototype[Reference.configuredConstructable.list]
           })
         return entityInstance
       },
-      [Reference.configuredConstructable.key.prototypeInstanceConstructable]: function({
-        description = 'prototypeInstanceConfiguredConstructable',
-        instantiateFallback,
-        initializeFallback,
-        self = this,
-      } = {}) {
-        let implementationFunc = self[Reference.configuredConstructable.getter.list](Reference.configuredConstructable.key.constructable)
+      [Reference.constructor.key.configuredConstructable]: function({ description = 'prototypeInstanceConfiguredConstructable', instantiateFallback, initializeFallback, self = this } = {}) {
+        let implementationFunc = self[Reference.constructor.getter.list](Reference.constructor.key.constructable)
         let configuredInstance =
           this::implementationFunc({
             description: description,
@@ -427,7 +422,7 @@ Prototype[Reference.clientInterface.list]
             apply(target, thisArg, [{ description } = {}]) {
               // TODO: Create constructable for configured constructables creation. wehre adding config will alter the behavior of instance creation.
               let newConfiguredConstructable =
-                self[Entity.reference.configuredConstructable.switch]({ implementationKey: Entity.reference.configuredConstructable.key.prototypeInstanceConstructable })
+                self[Entity.reference.constructor.switch]({ implementationKey: Entity.reference.constructor.key.configuredConstructable })
                 |> (g => {
                   g.next('intermittent')
                   return g.next({
@@ -519,7 +514,7 @@ Prototype[Reference.clientInterface.list]
 deepFreeze({ object: Prototype, getPropertyImplementation: Object.getOwnPropertySymbols })
 
 export const toplevelConfiguredConstructable =
-  Prototype[Reference.configuredConstructable.switch]({ implementationKey: Reference.configuredConstructable.key.toplevelConstructable })
+  Prototype[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.toplevelConstructable })
   |> (g => {
     g.next('intermittent')
     return g.next().value
