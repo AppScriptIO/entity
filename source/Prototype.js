@@ -1,6 +1,5 @@
 import { deepFreeze } from './utility/deepObjectFreeze.js'
 import { Reference } from './Reference.js'
-import { Entity } from './Entity.class.js'
 const GeneratorFunction = function*() {}.constructor,
   isGeneratorFunction = value => {
     if (typeof value !== 'function') {
@@ -395,12 +394,12 @@ Prototype[Reference.constructor.list]
         let configuredInstance =
           this::implementationFunc({
             description: description,
-            instantiateFallback: instantiateFallback || Entity.reference.instance.instantiate.key.prototypeInstance,
-            initializeFallback: initializeFallback || Entity.reference.instance.initialize.key.data,
+            instantiateFallback: instantiateFallback || Reference.instance.instantiate.key.prototypeInstance,
+            initializeFallback: initializeFallback || Reference.instance.initialize.key.data,
             instantiateSwitchSymbol: Reference.instance.instantiate.key.configuredConstructableInstance,
             initializeSwitchSymbol: Reference.instance.initialize.key.configurableConstructor,
-            // instantiateSwitchSymbol: Entity.reference.instance.instantiate.key.entityInstance,
-            // initializeSwitchSymbol: Entity.reference.instance.initialize.key.entityInstance,
+            // instantiateSwitchSymbol: Reference.instance.instantiate.key.entityInstance,
+            // initializeSwitchSymbol: Reference.instance.initialize.key.entityInstance,
           })
           |> (iterateConstructable => {
             let instantiateArg = iterateConstructable.next('intermittent').value
@@ -408,6 +407,64 @@ Prototype[Reference.constructor.list]
             return iterateConstructable.next(Object.assign(initializeArg, { description })).value
           })
         return configuredInstance
+      },
+      [Reference.constructor.key.configuredConstructableForToplevelEntity]: function({ description, self = this } = {}) {
+        return (
+          self::self[Reference.instance.instantiate.switch]({ implementationKey: Reference.instance.instantiate.key.configuredConstructableInstance })
+          |> (g => {
+            g.next('intermittent')
+            return g.next({ description }).value
+          })
+          |> (instance =>
+            self::self[Reference.instance.initialize.switch]({ implementationKey: Reference.instance.initialize.key.configurableConstructor })
+            |> (g => {
+              g.next('intermittent')
+              return g.next({ description, instanceObject: instance }).value
+            }))
+        )
+      },
+      [Reference.constructor.key.entityInstance]: function({ instanceType, description, reference, prototypeDelegation, self = this } = {}) {
+        return (
+          self::self[Reference.instance.instantiate.switch]()
+          |> (g => {
+            g.next('intermittent')
+            return g.next({
+              instanceType,
+              description,
+            }).value
+          })
+          |> (instance =>
+            self::self[Reference.instance.initialize.switch]()
+            |> (g => {
+              g.next('intermittent')
+              return g.next({
+                description,
+                instanceObject: instance,
+                reference,
+                prototypeDelegation,
+              }).value
+            }))
+        )
+      },
+      [Reference.constructor.key.prototypeInstance]: function({ data, self = this } = {}) {
+        return (
+          self::self[Reference.instance.instantiate.switch]()
+          |> (g => {
+            g.next('intermittent')
+            return g.next({
+              instanceType: 'object',
+            }).value
+          })
+          |> (instance =>
+            self::self[Reference.instance.initialize.switch]()
+            |> (g => {
+              g.next('intermittent')
+              return g.next({
+                data: data,
+                instanceObject: instance,
+              }).value
+            }))
+        )
       },
     }))
 
@@ -422,7 +479,7 @@ Prototype[Reference.clientInterface.list]
             apply(target, thisArg, [{ description } = {}]) {
               // TODO: Create constructable for configured constructables creation. wehre adding config will alter the behavior of instance creation.
               let newConfiguredConstructable =
-                self[Entity.reference.constructor.switch]({ implementationKey: Entity.reference.constructor.key.configuredConstructable })
+                self[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.configuredConstructable })
                 |> (g => {
                   g.next('intermittent')
                   return g.next({
@@ -431,7 +488,7 @@ Prototype[Reference.clientInterface.list]
                   }).value
                 })
               let clientInterface =
-                self[Entity.reference.clientInterface.switch]({ implementationKey: Entity.reference.clientInterface.key.prototypeConstruct })
+                self[Reference.clientInterface.switch]({ implementationKey: Reference.clientInterface.key.prototypeConstruct })
                 |> (g => {
                   g.next('intermittent')
                   return g.next({ configuredConstructable: newConfiguredConstructable }).value
@@ -440,22 +497,11 @@ Prototype[Reference.clientInterface.list]
             },
             construct(target, argumentList, proxiedTarget) {
               return (
-                configuredConstructable[Reference.instance.instantiate.switch]()
+                configuredConstructable::configuredConstructable[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.prototypeInstance })
                 |> (g => {
                   g.next('intermittent')
-                  return g.next({
-                    instanceType: 'object',
-                  }).value
+                  return g.next({ data: argumentList[0] })
                 })
-                |> (instance =>
-                  configuredConstructable[Reference.instance.initialize.switch]()
-                  |> (g => {
-                    g.next('intermittent')
-                    return g.next({
-                      data: argumentList[0],
-                      instanceObject: instance,
-                    }).value
-                  }))
               )
             },
           }),
@@ -468,40 +514,21 @@ Prototype[Reference.clientInterface.list]
           function() {} || interfaceTarget,
           Object.assign({
             apply(target, thisArg, [{ description } = {}]) {
-              return
-              self[Reference.instance.instantiate.switch]({ implementationKey: Reference.instance.instantiate.key.configuredConstructableInstance })
+              return (
+                self[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.configuredConstructableForToplevelEntity })
                 |> (g => {
                   g.next('intermittent')
                   return g.next({ description }).value
                 })
-                |> (instance =>
-                  self[Reference.instance.initialize.switch]({ implementationKey: Reference.instance.initialize.key.configurableConstructor })
-                  |> (g => {
-                    g.next('intermittent')
-                    return g.next({ description, instanceObject: instance }).value
-                  }))
+              )
             },
             construct(target, [{ description, instanceType, reference, prototypeDelegation }: { instanceType: 'object' | 'function' } = {}], proxiedTarget) {
               return (
-                configuredConstructable[Reference.instance.instantiate.switch]()
+                configuredConstructable[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.entityInstance })
                 |> (g => {
                   g.next('intermittent')
-                  return g.next({
-                    instanceType,
-                    description,
-                  }).value
+                  return g.next({ description, instanceType, reference, prototypeDelegation }).value
                 })
-                |> (instance =>
-                  configuredConstructable[Reference.instance.initialize.switch]()
-                  |> (g => {
-                    g.next('intermittent')
-                    return g.next({
-                      description,
-                      instanceObject: instance,
-                      reference,
-                      prototypeDelegation,
-                    }).value
-                  }))
               )
             },
           }),

@@ -74,6 +74,9 @@ export const Reference = {
       constructable: Symbol('Entity:constructor.key.constructable'),
       toplevelConstructable: Symbol('Entity:constructor.key.toplevelConstructable'),
       configuredConstructable: Symbol('Entity:constructor.key.configuredConstructable'),
+      configuredConstructableForToplevelEntity: Symbol('Entity:constructor.key.configuredConstructableForToplevelEntity'),
+      entityInstance: Symbol('Entity:constructor.key.entityInstance'),
+      prototypeInstance: Symbol('Entity:constructor.key.prototypeInstance'),
     },
   },
 
