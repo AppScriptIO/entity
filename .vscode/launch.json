@@ -1,0 +1,62 @@
+{
+  /**
+    Usage: 
+    - run node process `node --inspect-brk --nolazy <path to script>` 
+    - run vscode debugger, restart mode is on which will make vscode attach automatically when the tool watching files restarts the process.
+      While the option Auto Attach in VSCode settings.json doesn't support processes in the vscode integrated console.
+  */
+  "version": "0.2.0",
+  "configurations": [{
+      "name": "Attach to node process",
+      "type": "node",
+      "request": "attach",
+      "protocol": "inspector", // Nodejs debugger protocol.
+      "port": 9229,
+      "address": "localhost",
+      "timeout": 60000,
+      "restart": true, // restart debug session when terminated e.g. on failure.
+      "stopOnEntry": true, // break immediately.
+      "internalConsoleOptions": "neverOpen",
+      "autoAttachChildProcesses": true, // track all subprocesses of debuggee and automatically attach to those that are launched in debug mode
+      "trace": false, // enable diagnostic output - outputs protocol communication to txt file.
+
+      "localRoot": "${workspaceFolder}", // on Windows system
+      "remoteRoot": "${command:extension.vscode-wsl-workspaceFolder}", // path in WSL
+
+      "sourceMaps": false,
+      // "outFiles": [
+      //   "${workspaceFolder}/dist/**/*.js"
+      // ],
+      "showAsyncStacks": true,
+      "skipFiles": [
+        // "${workspaceFolder}/node_modules/**/*.js",
+        // "!${workspaceFolder}/**/*", // negate glob is ignored in `inspector` protocol - doesn't work in inspector protocol only on older debugger.
+        "<node_internals>/**/*.js" // Built-in core modules of Node.js can be referred to by the 'magic name' <node_internals> in a glob pattern
+      ],
+      // "smartStep": true, // try to automatically step over code that doesn't map to source files
+    },
+    // {
+    //   "type": "node",
+    //   "request": "launch",
+    //   "name": "Launch Program",
+    //   "program": "${workspaceFolder}",
+    //   "console": "internalConsole",
+    //   "useWSL": true,
+    //   "outputCapture": "std", // output from the process stdout/stderr will be shown in the Debug Console, instead of listening to output over the debug port
+    //   "env": {
+    //     "ENV1": "1",
+    //     "ENV2": "2"
+    //   }, // environment variables
+    //   "runtimeExecutable": "node",
+    //   "runtimeArgs": [
+    //     "--preserve-symlinks", // node's option.
+    //     "--preserve-symlinks-main", // If your main script is inside a symlinked path, then you will also need to add the "--preserve-symlinks-main" option
+    //     // "rarg1", "rarg2"
+    //   ],
+    //   "program": "${workspaceFolder}/",
+    //   "cwd": "${command:extension.vscode-wsl-workspaceFolder}",
+    //   "args": ["arg1", "arg2"],
+
+    // }
+  ]
+}
