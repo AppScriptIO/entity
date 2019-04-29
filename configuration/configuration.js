@@ -5,5 +5,8 @@ module.exports = {
   directory: {
     root: path.resolve(`${__dirname}/..`),
   },
+  transpilation: {
+    outputDirectory: './distribution',
+  },
   script,
 }
