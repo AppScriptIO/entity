@@ -16,27 +16,39 @@
       "port": 9229,
       "address": "localhost",
       "timeout": 60000,
-      "restart": true, // restart debug session when terminated e.g. on failure.
-      "useWSL": true,
-      "stopOnEntry": true, // break immediately.
-      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": false, // restart debug session when terminated e.g. on failure.
+      // "useWSL": false, //! Do not use this flag as it will mess the breakpoints locations and cause them to `jump` to different locations. 
+      "stopOnEntry": false, // break immediately.
       "autoAttachChildProcesses": false, // track all subprocesses of debuggee and automatically attach to those that are launched in debug mode
-      "trace": false, // enable diagnostic output - outputs protocol communication to txt file.
-
-      "localRoot": "${workspaceFolder}", // on Windows system
-      "remoteRoot": "${command:extension.vscode-wsl-workspaceFolder}", // path in WSL
+      "trace": false /* true || "verbose" */ , // enable diagnostic output - outputs protocol communication to txt file (path is printed in debug console).
+      "internalConsoleOptions": "openOnFirstSessionStart",
 
       "sourceMaps": true, // will read source maps even Babel runtime transformed.
+      "localRoot": "${workspaceFolder}", // on Windows system
+      "remoteRoot": "${command:extension.vscode-wsl-workspaceFolder}", // path in WSL
+      /**
+      fix mappings between Windows (location on disk) and WSL (source map paths). This will find the source file in disk location instead of transferring it through the debugger socker.
+      https: //github.com/Microsoft/vscode-chrome-debug#sourcemaps
+      https: //github.com/Microsoft/vscode-chrome-debug/issues/524
+      */
+      "sourceMapPathOverrides": {
+        // For some reason it is not mapped automatically, and sould be specifically declared. 
+        "${command:extension.vscode-wsl-workspaceFolder}/*": "${workspaceFolder}/*"
+      },
       "outFiles": [
-        "${command:extension.vscode-wsl-workspaceFolder}/distribution/**/*.js"
+        "${workspaceFolder}/distribution/**/*.js",
+        // "${workspaceFolder}/distribution/*",
+        // "${workspaceFolder}/distribution",
+        // "${command:extension.vscode-wsl-workspaceFolder}/distribution/**/*.js",
+        // "${command:extension.vscode-wsl-workspaceFolder}/distribution/*",
       ],
       "skipFiles": [
-        "${workspaceFolder}/node_modules/**/*.js",
+        // "${workspaceFolder}/node_modules/**/*.js",
         // "!${workspaceFolder}/**/*", // negate glob is ignored in `inspector` protocol - doesn't work in inspector protocol only on older debugger.
         "<node_internals>/**/*.js" // Built-in core modules of Node.js can be referred to by the 'magic name' <node_internals> in a glob pattern
       ],
-      "smartStep": true, // try to automatically step over code that doesn't map to source files
-      "showAsyncStacks": true,
+      "smartStep": false, // try to automatically step over code that doesn't map to source files
+      "showAsyncStacks": false,
     },
     {
       // launches WSL node through Windows's `bash -v "node <...>"` command.
@@ -59,19 +71,23 @@
       // ],
       "program": "${workspaceFolder}/node_modules/@dependency/scriptManager/source/entrypoint/cli/invokeCli.js",
       // "cwd": "${command:extension.vscode-wsl-workspaceFolder}",
-      "args": ["test"],
+      // "args": ["test"],
+      "sourceMaps": true, // will read source maps even Babel runtime transformed.
       "localRoot": "${workspaceFolder}", // on Windows system
       "remoteRoot": "${command:extension.vscode-wsl-workspaceFolder}", // path in WSL
-      "sourceMaps": true, // will read source maps even Babel runtime transformed.
-      // "outFiles": [
-      //   "${workspaceFolder}/**/*.js"
-      // ],
+      "sourceMapPathOverrides": {
+        // For some reason it is not made automatically.
+        "${command:extension.vscode-wsl-workspaceFolder}/*": "${workspaceFolder}/*"
+      }, // fix mappings between Windows (location on disk) and WSL (source map paths)
+      "outFiles": [
+        "${workspaceFolder}/distribution/**/*.js",
+      ],
       "skipFiles": [
-        // "${workspaceFolder}/node_modules/**/*.js",
+        "${workspaceFolder}/node_modules/**/*.js",
         // "!${workspaceFolder}/**/*", // negate glob is ignored in `inspector` protocol - doesn't work in inspector protocol only on older debugger.
         "<node_internals>/**/*.js" // Built-in core modules of Node.js can be referred to by the 'magic name' <node_internals> in a glob pattern
       ],
-      "smartStep": false, // try to automatically step over code that doesn't map to source files
+      "smartStep": true, // try to automatically step over code that doesn't map to source files
       "showAsyncStacks": true,
 
     }
