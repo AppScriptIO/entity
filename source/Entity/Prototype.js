@@ -1,18 +1,41 @@
-import { Reference } from './Reference.js'
-import { mergeOwnNestedProperty } from '../utility/mergeProperty.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookup } from '../utility/prototypeFunctionality.js'
+"use strict";
 
-export const Prototype = {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Prototype = void 0;
+
+var _Reference = require("./Reference.js");
+
+var _mergeProperty = require("../utility/mergeProperty.js");
+
+var _prototypeFunctionality = require("../utility/prototypeFunctionality.js");
+
+const Prototype = {
   /**
    * clientInterface
    **/
-  [Reference.clientInterface.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.clientInterface.list, value: implementation })
+  [_Reference.Reference.clientInterface.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({
+      target: this,
+      ownProperty: _Reference.Reference.clientInterface.list,
+      value: implementation
+    });
   },
-  [Reference.clientInterface.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({ target: this, directProperty: Reference.clientInterface.list, nestedProperty: implementationKey })
+
+  [_Reference.Reference.clientInterface.getter.list](implementationKey) {
+    return (0, _prototypeFunctionality.nestedPropertyDelegatedLookup)({
+      target: this,
+      directProperty: _Reference.Reference.clientInterface.list,
+      nestedProperty: implementationKey
+    });
   },
-  [Reference.clientInterface.switch]: createSwitchGeneratorFunction({ fallbackSymbol: Reference.clientInterface.fallback, implementationListSymbol: Reference.clientInterface.getter.list }),
-  [Reference.clientInterface.fallback]: Reference.clientInterface.key.prototypeConstruct,
-  [Reference.clientInterface.list]: {},
-}
+
+  [_Reference.Reference.clientInterface.switch]: (0, _prototypeFunctionality.createSwitchGeneratorFunction)({
+    fallbackSymbol: _Reference.Reference.clientInterface.fallback,
+    implementationListSymbol: _Reference.Reference.clientInterface.getter.list
+  }),
+  [_Reference.Reference.clientInterface.fallback]: _Reference.Reference.clientInterface.key.prototypeConstruct,
+  [_Reference.Reference.clientInterface.list]: {}
+};
+exports.Prototype = Prototype;

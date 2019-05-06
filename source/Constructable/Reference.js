@@ -1,4 +1,11 @@
-import { deepFreeze } from '../utility/deepObjectFreeze.js'
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Reference = void 0;
+
+var _deepObjectFreeze = require("../utility/deepObjectFreeze.js");
 
 /**
  * ProgrammaticAPIReference for the target extedning object to use. Entity api reference
@@ -7,63 +14,60 @@ import { deepFreeze } from '../utility/deepObjectFreeze.js'
  * key - built-in implementations keys.
  * getter/setter - functions for implementation lookup and addition.
  **/
-export const Reference = {
+const Reference = {
   prototypeDelegation: {
     setter: {
-      list: Symbol('Constructable:prototypeDelegation.setter.list'),
+      list: Symbol('Constructable:prototypeDelegation.setter.list')
     },
     getter: {
-      list: Symbol('Constructable:prototypeDelegation.getter.list'),
+      list: Symbol('Constructable:prototypeDelegation.getter.list')
     },
     list: Symbol('Constructable:prototypeDelegation.list'),
     key: {
       entityPrototype: Symbol('Constructable:prototypeDelegation.key.entityPrototype'),
-      entityClass: Symbol('Constructable:prototypeDelegation.key.entityClass'),
-    },
+      entityClass: Symbol('Constructable:prototypeDelegation.key.entityClass')
+    }
   },
-
   instantiate: {
     switch: Symbol('Constructable:instantiate.switch'),
     setter: {
-      list: Symbol('Constructable:instantiate.setter.list'),
+      list: Symbol('Constructable:instantiate.setter.list')
     },
     getter: {
-      list: Symbol('Constructable:instantiate.getter.list'),
+      list: Symbol('Constructable:instantiate.getter.list')
     },
     fallback: Symbol('Constructable:instantiate.fallback'),
     list: Symbol('Constructable:instantiate.list'),
     key: {
       prototype: Symbol('Constructable:instantiate.key.prototype'),
       prototypeInstance: Symbol('Constructable:instantiate.key.prototypeInstance'),
-      configuredConstructableInstance: Symbol('Constructable:instantiate.key.configuredConstructableInstance'),
-    },
+      configuredConstructableInstance: Symbol('Constructable:instantiate.key.configuredConstructableInstance')
+    }
   },
-
   initialize: {
     switch: Symbol('Constructable:initialize.switch'),
     setter: {
-      list: Symbol('Constructable:initialize.setter.list'),
+      list: Symbol('Constructable:initialize.setter.list')
     },
     getter: {
-      list: Symbol('Constructable:initialize.getter.list'),
+      list: Symbol('Constructable:initialize.getter.list')
     },
     fallback: Symbol('Constructable:initialize.fallback'),
     list: Symbol('Constructable:initialize.list'),
     key: {
       data: Symbol('Constructable:initialize.key.data'),
       constructableInstance: Symbol('Constructable:initialize.key.constructableInstance'),
-      configuredConstructor: Symbol('Constructable:initialize.key.configuredConstructor'),
-    },
+      configuredConstructor: Symbol('Constructable:initialize.key.configuredConstructor')
+    }
   },
-
   // Constructor combines instantiation, prototypeDelegation, & initialization
   constructor: {
     switch: Symbol('Constructable:constructor.switch'),
     setter: {
-      list: Symbol('Constructable:constructor.setter.list'),
+      list: Symbol('Constructable:constructor.setter.list')
     },
     getter: {
-      list: Symbol('Constructable:constructor.getter.list'),
+      list: Symbol('Constructable:constructor.getter.list')
     },
     fallback: Symbol('Constructable:constructor.fallback'),
     list: Symbol('Constructable:constructor.list'),
@@ -73,9 +77,12 @@ export const Reference = {
       configuredConstructable: Symbol('Constructable:constructor.key.configuredConstructable'),
       configuredConstructableForToplevelConstructable: Symbol('Constructable:constructor.key.configuredConstructableForToplevelEntity'),
       constructableInstance: Symbol('Constructable:constructor.key.constructableInstance'),
-      prototypeInstance: Symbol('Constructable:constructor.key.prototypeInstance'),
-    },
-  },
-}
-
-deepFreeze({ object: Reference, getPropertyImplementation: Object.getOwnPropertyNames })
+      prototypeInstance: Symbol('Constructable:constructor.key.prototypeInstance')
+    }
+  }
+};
+exports.Reference = Reference;
+(0, _deepObjectFreeze.deepFreeze)({
+  object: Reference,
+  getPropertyImplementation: Object.getOwnPropertyNames
+});

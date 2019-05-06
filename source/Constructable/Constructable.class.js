@@ -1,193 +1,368 @@
-import * as symbol from '../Symbol.constant.js'
-import { Reference } from './Reference.js'
-import { Prototype } from './Prototype.js'
-import { createConstructableWithoutContructor } from '../utility/createConstructableWithoutContructor.js'
-import { executionControl } from '../utility/prototypeFunctionality.js'
-import { mergeNonexistentProperties } from '../utility/mergeProperty.js'
-function createInstanceWithDelegation({ description, prototypeDelegation = null, instanceObject, objectType, construtorProperty = null }) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Constructable = void 0;
+
+var _skipFirstGeneratorNext2 = _interopRequireDefault(require("@babel/runtime/helpers/skipFirstGeneratorNext"));
+
+var symbol = _interopRequireWildcard(require("../Symbol.constant.js"));
+
+var _Reference = require("./Reference.js");
+
+var _Prototype = require("./Prototype.js");
+
+var _createConstructableWithoutContructor = require("../utility/createConstructableWithoutContructor.js");
+
+var _prototypeFunctionality = require("../utility/prototypeFunctionality.js");
+
+var _mergeProperty = require("../utility/mergeProperty.js");
+
+var _ref, _ref2;
+
+function createInstanceWithDelegation({
+  description,
+  prototypeDelegation = null,
+  instanceObject,
+  objectType,
+  construtorProperty = null
+}) {
   switch (objectType) {
     case 'function':
-      instanceObject ||= createConstructableWithoutContructor(description)
-      Object.setPrototypeOf(instanceObject, prototypeDelegation)
-      break
+      instanceObject || (instanceObject = (0, _createConstructableWithoutContructor.createConstructableWithoutContructor)(description));
+      Object.setPrototypeOf(instanceObject, prototypeDelegation);
+      break;
+
     case 'object':
     default:
-      instanceObject ||= Object.create(prototypeDelegation)
-      break
+      instanceObject || (instanceObject = Object.create(prototypeDelegation));
+      break;
   }
+
   Object.defineProperty(instanceObject, symbol.constructor, {
     value: construtorProperty,
     writable: true,
     enumerable: false,
-    configurable: false,
-  })
-  return instanceObject
+    configurable: false
+  });
+  return instanceObject;
 }
-function initializeConstructableInstance({ description, instanceObject, reference, prototype, rootLevelPrototype = false } = {}) {
-  reference ||= Object.create(null)
-  prototype ||= Object.create(instanceObject |> Object.getPrototypeOf) // Entities prototypes delegate to each other.
-  mergeNonexistentProperties(instanceObject, {
+
+function initializeConstructableInstance({
+  description,
+  instanceObject,
+  reference,
+  prototype,
+  rootLevelPrototype = false
+} = {}) {
+  var _instanceObject;
+
+  reference || (reference = Object.create(null));
+  prototype || (prototype = Object.create((_instanceObject = instanceObject, Object.getPrototypeOf(_instanceObject)))); // Entities prototypes delegate to each other.
+
+  (0, _mergeProperty.mergeNonexistentProperties)(instanceObject, {
     // set properties only if they do not exist on the target object.
     // self: Symbol(description),
     // get [Symbol.species]() {
     //   return GraphElement
     // },
     [symbol.reference]: reference,
-    [symbol.prototype]: prototype, // Entities prototypes delegate to each other.
-  })
-  Object.defineProperty(instanceObject, symbol.metadata, { writable: false, enumerable: false, value: { self: Symbol(description) } })
-  if (rootLevelPrototype) Object.setPrototypeOf(instanceObject, instanceObject[symbol.prototype])
-  // instanceObject[Reference.prototypeDelegation.setter.list]({
+    [symbol.prototype]: prototype // Entities prototypes delegate to each other.
+
+  });
+  Object.defineProperty(instanceObject, symbol.metadata, {
+    writable: false,
+    enumerable: false,
+    value: {
+      self: Symbol(description)
+    }
+  });
+  if (rootLevelPrototype) Object.setPrototypeOf(instanceObject, instanceObject[symbol.prototype]); // instanceObject[Reference.prototypeDelegation.setter.list]({
   //   [Reference.prototypeDelegation.key.entityPrototype]: instanceObject.prototype,
   //   [Reference.prototypeDelegation.key.entityClass]: instanceObject,
   // })
-  return instanceObject
-}
-function rootLevelConstructableInstance({ description, reference, prototype, prototypeDelegation }) {
-  let instance = createInstanceWithDelegation({ description, prototypeDelegation: prototypeDelegation })
-  return initializeConstructableInstance({ description, reference, prototype, instanceObject: instance, rootLevelPrototype: true })
+
+  return instanceObject;
 }
 
-export const Constructable = rootLevelConstructableInstance({ description: 'Constructable' })
-Constructable[symbol.prototype] |> (_ => Object.assign(_, Prototype))
-Constructable[symbol.reference] |> (_ => Object.assign(_, Reference))
+function rootLevelConstructableInstance({
+  description,
+  reference,
+  prototype,
+  prototypeDelegation
+}) {
+  let instance = createInstanceWithDelegation({
+    description,
+    prototypeDelegation: prototypeDelegation
+  });
+  return initializeConstructableInstance({
+    description,
+    reference,
+    prototype,
+    instanceObject: instance,
+    rootLevelPrototype: true
+  });
+}
 
+const Constructable = rootLevelConstructableInstance({
+  description: 'Constructable'
+});
+exports.Constructable = Constructable;
+_ref = Constructable[symbol.prototype], Object.assign(_ref, _Prototype.Prototype);
+_ref2 = Constructable[symbol.reference], Object.assign(_ref2, _Reference.Reference);
 /**
  *  Instantiate
  */
-Constructable[symbol.prototype][Reference.instantiate.setter.list]({
-  [Reference.instantiate.key.prototype]({ instanceObject, objectType, prototypeDelegation, construtorProperty, self = this, description }: { objectType: 'object' | 'function' }) {
-    return createInstanceWithDelegation({ instanceObject, objectType, prototypeDelegation, construtorProperty, description })
-  },
-  [Reference.instantiate.key.prototypeInstance]({ instanceType = 'object', self = this }: { instanceType: 'object' | 'function' }) {
-    let args = arguments[0]
-    let implementationFunc = Prototype[Reference.instantiate.getter.list](Reference.instantiate.key.prototype)
-    let instance = self::implementationFunc(
-      Object.assign(args, {
-        prototypeDelegation: self[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.entityPrototype),
-        construtorProperty: self[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.entityClass),
-        objectType: instanceType,
-      }),
-    )
-    return instance
-  },
-})
 
+Constructable[symbol.prototype][_Reference.Reference.instantiate.setter.list]({
+  [_Reference.Reference.instantiate.key.prototype]({
+    instanceObject,
+    objectType,
+    prototypeDelegation,
+    construtorProperty,
+    self = this,
+    description
+  }) {
+    return createInstanceWithDelegation({
+      instanceObject,
+      objectType,
+      prototypeDelegation,
+      construtorProperty,
+      description
+    });
+  },
+
+  [_Reference.Reference.instantiate.key.prototypeInstance]({
+    instanceType = 'object',
+    self = this
+  }) {
+    let args = arguments[0];
+
+    let implementationFunc = _Prototype.Prototype[_Reference.Reference.instantiate.getter.list](_Reference.Reference.instantiate.key.prototype);
+
+    let instance = implementationFunc.call(self, Object.assign(args, {
+      prototypeDelegation: self[_Reference.Reference.prototypeDelegation.getter.list](_Reference.Reference.prototypeDelegation.key.entityPrototype),
+      construtorProperty: self[_Reference.Reference.prototypeDelegation.getter.list](_Reference.Reference.prototypeDelegation.key.entityClass),
+      objectType: instanceType
+    }));
+    return instance;
+  }
+
+});
 /**
  *  Initialize
  */
-Constructable[symbol.prototype][Reference.initialize.setter.list]({
-  [Reference.initialize.key.configuredConstructor]({ description, instanceObject } = {}) {
-    mergeNonexistentProperties(instanceObject, { self: Symbol(description) })
-    return instanceObject
-  },
-  [Reference.initialize.key.constructableInstance]: initializeConstructableInstance,
-})
 
+
+Constructable[symbol.prototype][_Reference.Reference.initialize.setter.list]({
+  [_Reference.Reference.initialize.key.configuredConstructor]({
+    description,
+    instanceObject
+  } = {}) {
+    (0, _mergeProperty.mergeNonexistentProperties)(instanceObject, {
+      self: Symbol(description)
+    });
+    return instanceObject;
+  },
+
+  [_Reference.Reference.initialize.key.constructableInstance]: initializeConstructableInstance
+});
 /**
  *  Constructor
  */
-Constructable[symbol.prototype][Reference.constructor.setter.list]({
-  [Reference.constructor.key.constructable]: function*({
-    description,
+
+
+Constructable[symbol.prototype][_Reference.Reference.constructor.setter.list]({
+  [_Reference.Reference.constructor.key.constructable]: (function () {
+    let _ref3 = function* ({
+      description,
+      instantiateFallback,
+      initializeFallback,
+      self = this,
+      entityInstance,
+      instantiateSwitchSymbol = _Reference.Reference.instantiate.key.prototypeInstance,
+      initializeSwitchSymbol = _Reference.Reference.initialize.key.constructableInstance
+    } = {}) {
+      let _functionSent = yield;
+
+      const shouldHandOverControl = _prototypeFunctionality.executionControl.shouldHandOver(_functionSent);
+
+      const step = [{
+        passThroughArg: {
+          description
+        },
+        func: function (previousArg, arg) {
+          var _g, _context;
+
+          let instance = (_g = (_context = self, self[_Reference.Reference.instantiate.switch]).call(_context, {
+            implementationKey: instantiateSwitchSymbol
+          }), _g.next('intermittent') && _g.next(arg).value);
+          return {
+            instance
+          };
+        },
+        condition: !Boolean(entityInstance)
+      }, {
+        passThroughArg: {
+          description
+        },
+        func: function ({
+          instance
+        }, arg) {
+          var _g2, _context2;
+
+          _g2 = (_context2 = self, self[_Reference.Reference.initialize.switch]).call(_context2, {
+            implementationKey: initializeSwitchSymbol
+          }), _g2.next('intermittent') && _g2.next(Object.assign({
+            instanceObject: instance
+          }, arg)).value;
+          return instance;
+        },
+        condition: !Boolean(entityInstance)
+      }]; // Run chain of step functions
+
+      let i = 0,
+          result;
+
+      while (i < step.length) {
+        if (step[i].condition && !step[i].condition) {
+          i++;
+          continue;
+        }
+
+        if (shouldHandOverControl) {
+          _functionSent = yield step[i].passThroughArg;
+          result = step[i].func(result, _functionSent);
+        } else {
+          result = step[i].func(result, step[i].passThroughArg);
+        }
+
+        i++;
+      }
+
+      entityInstance || (entityInstance = result);
+      entityInstance[_Reference.Reference.instantiate.fallback] = instantiateFallback;
+      entityInstance[_Reference.Reference.initialize.fallback] = initializeFallback;
+      return entityInstance;
+    },
+        _ref4 = (0, _skipFirstGeneratorNext2.default)(_ref3);
+
+    return new Proxy(_ref3, {
+      apply(target, thisArgument, argumentsList) {
+        return Reflect.apply(_ref4, thisArgument, argumentsList);
+      }
+
+    });
+  })(),
+  [_Reference.Reference.constructor.key.configuredConstructable]: function ({
+    description = 'prototypeInstanceConfiguredConstructable',
     instantiateFallback,
     initializeFallback,
-    self = this,
-    entityInstance,
-    instantiateSwitchSymbol = Reference.instantiate.key.prototypeInstance,
-    initializeSwitchSymbol = Reference.initialize.key.constructableInstance,
+    self = this
   } = {}) {
-    const shouldHandOverControl = executionControl.shouldHandOver(function.sent)
-    const step = [
-      {
-        passThroughArg: { description },
-        func: function(previousArg, arg) {
-          let instance = self::self[Reference.instantiate.switch]({ implementationKey: instantiateSwitchSymbol }) |> (g => g.next('intermittent') && g.next(arg).value)
-          return { instance }
-        },
-        condition: !Boolean(entityInstance),
-      },
-      {
-        passThroughArg: { description },
-        func: function({ instance }, arg) {
-          self::self[Reference.initialize.switch]({ implementationKey: initializeSwitchSymbol }) |> (g => g.next('intermittent') && g.next(Object.assign({ instanceObject: instance }, arg)).value)
-          return instance
-        },
-        condition: !Boolean(entityInstance),
-      },
-    ]
+    var _ref6;
 
-    // Run chain of step functions
-    let i = 0,
-      result
-    while (i < step.length) {
-      if (step[i].condition && !step[i].condition) {
-        i++
-        continue
-      }
-      if (shouldHandOverControl) {
-        yield step[i].passThroughArg
-        result = step[i].func(result, function.sent)
-      } else {
-        result = step[i].func(result, step[i].passThroughArg)
-      }
-      i++
-    }
-    entityInstance ||= result
-    entityInstance[Reference.instantiate.fallback] = instantiateFallback
-    entityInstance[Reference.initialize.fallback] = initializeFallback
-    return entityInstance
+    let implementationFunc = self[_Reference.Reference.constructor.getter.list](_Reference.Reference.constructor.key.constructable);
+
+    let configuredInstance = (_ref6 = implementationFunc.call(self, {
+      description: description,
+      instantiateFallback: instantiateFallback || _Reference.Reference.instantiate.key.prototypeInstance,
+      initializeFallback: initializeFallback || _Reference.Reference.initialize.key.data,
+      instantiateSwitchSymbol: _Reference.Reference.instantiate.key.prototype,
+      initializeSwitchSymbol: _Reference.Reference.initialize.key.configuredConstructor // instantiateSwitchSymbol: Reference.instantiate.key.prototypeInstance,
+      // initializeSwitchSymbol: Reference.initialize.key.constructableInstance,
+
+    }), (iterateConstructable => {
+      let instantiateArg = iterateConstructable.next('intermittent').value;
+      let initializeArg = iterateConstructable.next(Object.assign(instantiateArg, {
+        prototypeDelegation: self,
+        construtorProperty: self
+      })).value;
+      return iterateConstructable.next(Object.assign(initializeArg, {
+        description
+      })).value;
+    })(_ref6));
+    return configuredInstance;
   },
-  [Reference.constructor.key.configuredConstructable]: function({ description = 'prototypeInstanceConfiguredConstructable', instantiateFallback, initializeFallback, self = this } = {}) {
-    let implementationFunc = self[Reference.constructor.getter.list](Reference.constructor.key.constructable)
-    let configuredInstance =
-      self::implementationFunc({
-        description: description,
-        instantiateFallback: instantiateFallback || Reference.instantiate.key.prototypeInstance,
-        initializeFallback: initializeFallback || Reference.initialize.key.data,
-        instantiateSwitchSymbol: Reference.instantiate.key.prototype,
-        initializeSwitchSymbol: Reference.initialize.key.configuredConstructor,
-        // instantiateSwitchSymbol: Reference.instantiate.key.prototypeInstance,
-        // initializeSwitchSymbol: Reference.initialize.key.constructableInstance,
-      })
-      |> (iterateConstructable => {
-        let instantiateArg = iterateConstructable.next('intermittent').value
-        let initializeArg = iterateConstructable.next(Object.assign(instantiateArg, { prototypeDelegation: self, construtorProperty: self })).value
-        return iterateConstructable.next(Object.assign(initializeArg, { description })).value
-      })
-    return configuredInstance
+  [_Reference.Reference.constructor.key.toplevelConstructable]: function ({
+    description = 'ToplevelConstructable',
+    prototypeDelegation = _Prototype.Prototype,
+    reference
+  } = {}) {
+    var _ref7;
+
+    let implementationFunc = _Prototype.Prototype[_Reference.Reference.constructor.getter.list](_Reference.Reference.constructor.key.constructable);
+
+    let entityInstance = (_ref7 = implementationFunc.call(this, {
+      description: description,
+      instantiateFallback: _Reference.Reference.instantiate.key.prototypeInstance,
+      initializeFallback: _Reference.Reference.initialize.key.constructableInstance,
+      instantiateSwitchSymbol: _Reference.Reference.instantiate.key.prototypeInstance,
+      initializeSwitchSymbol: _Reference.Reference.initialize.key.constructableInstance
+    }), (iterateConstructable => {
+      let instantiateArg = iterateConstructable.next('intermittent').value;
+      let initializeArg = iterateConstructable.next(Object.assign(instantiateArg, {
+        prototypeDelegation: _Prototype.Prototype
+      })).value;
+      return iterateConstructable.next(Object.assign(initializeArg, {
+        prototypeDelegation
+      })).value;
+    })(_ref7));
+    return entityInstance;
   },
-  [Reference.constructor.key.toplevelConstructable]: function({ description = 'ToplevelConstructable', prototypeDelegation = Prototype, reference } = {}) {
-    let implementationFunc = Prototype[Reference.constructor.getter.list](Reference.constructor.key.constructable)
-    let entityInstance =
-      this::implementationFunc({
-        description: description,
-        instantiateFallback: Reference.instantiate.key.prototypeInstance,
-        initializeFallback: Reference.initialize.key.constructableInstance,
-        instantiateSwitchSymbol: Reference.instantiate.key.prototypeInstance,
-        initializeSwitchSymbol: Reference.initialize.key.constructableInstance,
-      })
-      |> (iterateConstructable => {
-        let instantiateArg = iterateConstructable.next('intermittent').value
-        let initializeArg = iterateConstructable.next(Object.assign(instantiateArg, { prototypeDelegation: Prototype })).value
-        return iterateConstructable.next(Object.assign(initializeArg, { prototypeDelegation })).value
-      })
-    return entityInstance
+  [_Reference.Reference.constructor.key.configuredConstructableForToplevelEntity]: function ({
+    description,
+    self = this
+  } = {}) {
+    var _g3, _g4;
+
+    let instance = (_g3 = self[_Reference.Reference.instantiate.switch].call(self, {
+      implementationKey: _Reference.Reference.instantiate.key.prototype
+    }), _g3.next('intermittent') && _g3.next({
+      description,
+      prototypeDelegation: self,
+      construtorProperty: self
+    }).value);
+    _g4 = self[_Reference.Reference.initialize.switch].call(self, {
+      implementationKey: _Reference.Reference.initialize.key.configuredConstructor
+    }), _g4.next('intermittent') && _g4.next({
+      description,
+      instanceObject: instance
+    }).value;
+    return instance;
   },
-  [Reference.constructor.key.configuredConstructableForToplevelEntity]: function({ description, self = this } = {}) {
-    let instance =
-      self::self[Reference.instantiate.switch]({ implementationKey: Reference.instantiate.key.prototype })
-      |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: self, construtorProperty: self }).value)
-    self::self[Reference.initialize.switch]({ implementationKey: Reference.initialize.key.configuredConstructor })
-      |> (g => g.next('intermittent') && g.next({ description, instanceObject: instance }).value)
-    return instance
-  },
-  [Reference.constructor.key.constructableInstance]: function({ instanceType, description, reference, prototype, prototypeDelegation, self = this } = {}) {
-    let instance =
-      self::self[Reference.instantiate.switch]({ implementationKey: Reference.instantiate.key.prototype })
-      |> (g => g.next('intermittent') && g.next({ instanceType, description, prototypeDelegation: self[symbol.prototype], construtorProperty: self }).value)
-    self::self[Reference.initialize.switch]({ implementationKey: Reference.initialize.key.constructableInstance })
-      |> (g => g.next('intermittent') && g.next({ description, instanceObject: instance, reference, prototype, rootLevelPrototype: true }).value)
-    return instance
-  },
-})
+  [_Reference.Reference.constructor.key.constructableInstance]: function ({
+    instanceType,
+    description,
+    reference,
+    prototype,
+    prototypeDelegation,
+    self = this
+  } = {}) {
+    var _g5, _g6;
+
+    let instance = (_g5 = self[_Reference.Reference.instantiate.switch].call(self, {
+      implementationKey: _Reference.Reference.instantiate.key.prototype
+    }), _g5.next('intermittent') && _g5.next({
+      instanceType,
+      description,
+      prototypeDelegation: self[symbol.prototype],
+      construtorProperty: self
+    }).value);
+    _g6 = self[_Reference.Reference.initialize.switch].call(self, {
+      implementationKey: _Reference.Reference.initialize.key.constructableInstance
+    }), _g6.next('intermittent') && _g6.next({
+      description,
+      instanceObject: instance,
+      reference,
+      prototype,
+      rootLevelPrototype: true
+    }).value;
+    return instance;
+  }
+});
