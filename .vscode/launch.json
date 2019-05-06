@@ -43,7 +43,7 @@
         // "${command:extension.vscode-wsl-workspaceFolder}/distribution/*",
       ],
       "skipFiles": [
-        // "${workspaceFolder}/node_modules/**/*.js",
+        "${workspaceFolder}/node_modules/**/*.js",
         // "!${workspaceFolder}/**/*", // negate glob is ignored in `inspector` protocol - doesn't work in inspector protocol only on older debugger.
         "<node_internals>/**/*.js" // Built-in core modules of Node.js can be referred to by the 'magic name' <node_internals> in a glob pattern
       ],
