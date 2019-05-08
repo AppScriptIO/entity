@@ -1,91 +1,119 @@
-import { deepFreeze } from '../utility/deepObjectFreeze.js'
-import { mergeNonexistentProperties, mergeOwnNestedProperty } from '../utility/mergeProperty.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookup, executionControl } from '../utility/prototypeFunctionality.js'
-import { Reference } from './Reference.js'
+"use strict";
 
-export const Prototype = {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Prototype = void 0;
+
+var _mergeProperty = require("../utility/mergeProperty.js");
+
+var _prototypeFunctionality = require("../utility/prototypeFunctionality.js");
+
+var _Reference = require("./Reference.js");
+
+const Prototype = {
   /**
    * prototypeDelegation
    */
-  [Reference.prototypeDelegation.setter.list](implementation: Object) {
+  [_Reference.Reference.prototypeDelegation.setter.list](implementation) {
     // set constractor property on prototype
     // for (const key of Object.keys(implementation)) {
     //   //???? Not needed
     //   implementation[key].constructor = this
     // }
-    return mergeOwnNestedProperty({
+    return (0, _mergeProperty.mergeOwnNestedProperty)({
       target: this,
-      ownProperty: Reference.prototypeDelegation.list,
-      value: implementation,
-    })
+      ownProperty: _Reference.Reference.prototypeDelegation.list,
+      value: implementation
+    });
   },
-  [Reference.prototypeDelegation.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({
+
+  [_Reference.Reference.prototypeDelegation.getter.list](implementationKey) {
+    return (0, _prototypeFunctionality.nestedPropertyDelegatedLookup)({
       target: this,
-      directProperty: Reference.prototypeDelegation.list,
-      nestedProperty: implementationKey,
-    })
+      directProperty: _Reference.Reference.prototypeDelegation.list,
+      nestedProperty: implementationKey
+    });
   },
-  [Reference.prototypeDelegation.list]: {},
+
+  [_Reference.Reference.prototypeDelegation.list]: {},
 
   /**
    * instance - instantiate
    */
-  [Reference.instantiate.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.instantiate.list, value: implementation })
-  },
-  [Reference.instantiate.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({
+  [_Reference.Reference.instantiate.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({
       target: this,
-      directProperty: Reference.instantiate.list,
-      nestedProperty: implementationKey,
-    })
+      ownProperty: _Reference.Reference.instantiate.list,
+      value: implementation
+    });
   },
-  [Reference.instantiate.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.instantiate.fallback,
-    implementationListSymbol: Reference.instantiate.getter.list,
+
+  [_Reference.Reference.instantiate.getter.list](implementationKey) {
+    return (0, _prototypeFunctionality.nestedPropertyDelegatedLookup)({
+      target: this,
+      directProperty: _Reference.Reference.instantiate.list,
+      nestedProperty: implementationKey
+    });
+  },
+
+  [_Reference.Reference.instantiate.switch]: (0, _prototypeFunctionality.createSwitchGeneratorFunction)({
+    fallbackSymbol: _Reference.Reference.instantiate.fallback,
+    implementationListSymbol: _Reference.Reference.instantiate.getter.list
   }),
-  [Reference.instantiate.list]: {},
+  [_Reference.Reference.instantiate.list]: {},
 
   /**
    * instance - initialize
    */
-  [Reference.initialize.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.initialize.list, value: implementation })
-  },
-  [Reference.initialize.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({
+  [_Reference.Reference.initialize.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({
       target: this,
-      directProperty: Reference.initialize.list,
-      nestedProperty: implementationKey,
-    })
+      ownProperty: _Reference.Reference.initialize.list,
+      value: implementation
+    });
   },
-  [Reference.initialize.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.initialize.fallback,
-    implementationListSymbol: Reference.initialize.getter.list,
+
+  [_Reference.Reference.initialize.getter.list](implementationKey) {
+    return (0, _prototypeFunctionality.nestedPropertyDelegatedLookup)({
+      target: this,
+      directProperty: _Reference.Reference.initialize.list,
+      nestedProperty: implementationKey
+    });
+  },
+
+  [_Reference.Reference.initialize.switch]: (0, _prototypeFunctionality.createSwitchGeneratorFunction)({
+    fallbackSymbol: _Reference.Reference.initialize.fallback,
+    implementationListSymbol: _Reference.Reference.initialize.getter.list
   }),
-  [Reference.initialize.list]: {},
+  [_Reference.Reference.initialize.list]: {},
 
   /**
    * constructor
    **/
-  [Reference.constructor.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.constructor.list, value: implementation })
-  },
-  [Reference.constructor.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({
+  [_Reference.Reference.constructor.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({
       target: this,
-      directProperty: Reference.constructor.list,
-      nestedProperty: implementationKey,
-    })
+      ownProperty: _Reference.Reference.constructor.list,
+      value: implementation
+    });
   },
-  [Reference.constructor.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.constructor.fallback,
-    implementationListSymbol: Reference.constructor.getter.list,
-  }),
-  [Reference.constructor.fallback]: Reference.constructor.key.constructable,
-  [Reference.constructor.list]: {},
-}
 
-// prevent accidental manipulation of delegated prototype
-// deepFreeze({ object: Prototype, getPropertyImplementation: Object.getOwnPropertySymbols })
+  [_Reference.Reference.constructor.getter.list](implementationKey) {
+    return (0, _prototypeFunctionality.nestedPropertyDelegatedLookup)({
+      target: this,
+      directProperty: _Reference.Reference.constructor.list,
+      nestedProperty: implementationKey
+    });
+  },
+
+  [_Reference.Reference.constructor.switch]: (0, _prototypeFunctionality.createSwitchGeneratorFunction)({
+    fallbackSymbol: _Reference.Reference.constructor.fallback,
+    implementationListSymbol: _Reference.Reference.constructor.getter.list
+  }),
+  [_Reference.Reference.constructor.fallback]: _Reference.Reference.constructor.key.constructable,
+  [_Reference.Reference.constructor.list]: {} // prevent accidental manipulation of delegated prototype
+  // deepFreeze({ object: Prototype, getPropertyImplementation: Object.getOwnPropertySymbols })
+
+};
+exports.Prototype = Prototype;
