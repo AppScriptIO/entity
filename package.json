@@ -4,7 +4,7 @@
     "main": "./entrypoint/programmaticAPI",
     "scripts": {
         "setup": "yarn install --production=false",
-        "test": "yarn run scriptManager test \"({ testPath: './test' })\"",
+        "test": "yarn run scriptManager test \"({ testPath: './test', /* shouldDebugger: true */ })\"",
         "generateTypes": "tsc --project ./configuration/typescript.config.json"
     },
     "dependencies": {},
