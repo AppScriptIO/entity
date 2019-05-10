@@ -1,5 +1,3 @@
-// require('@dependency/javascriptTestRunner').subprocessInspector()
-
 import * as symbol from '../Symbol.constant.js'
 import { Reference } from './Reference.js'
 import { Prototype } from './Prototype.js'
