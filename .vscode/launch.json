@@ -22,7 +22,7 @@
     "stopOnEntry": true, // break immediately.
     "autoAttachChildProcesses": true, // track all subprocesses of debuggee and automatically attach to those that are launched in debug mode
     "trace": false /* true || "verbose" */ , // enable diagnostic output - outputs protocol communication to txt file (path is printed in debug console).
-    "internalConsoleOptions": "openOnFirstSessionStart",
+    "internalConsoleOptions": "neverOpen",
 
     "sourceMaps": true, // will read source maps even Babel runtime transformed.
     "localRoot": "${workspaceFolder}", // on Windows system

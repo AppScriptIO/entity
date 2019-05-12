@@ -12,7 +12,7 @@
   "tasks": [{
     "label": "build",
     "type": "shell",
-    "command": "./script/build.sh",
+    "command": "./node_modules/@dependency/deploymentScript/script/build.sh",
     "options": {
       "cwd": "${workspaceRoot}",
     },
