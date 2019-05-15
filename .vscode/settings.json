@@ -20,6 +20,7 @@
     "typescript.validate.enable": true, // enable/disable default VSCode Typescript validator.
     "javascript.validate.enable": false, // disable default VSCode Javascript validator.
     "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "eslint.enable": true,
     "eslint.options": {
         "configFile": "./configuration/eslint.config.js"
     },
@@ -50,7 +51,6 @@
         "enable": true
     },
     "typescript.check.npmIsInstalled": false,
-    "eslint.enable": true,
     "workbench.colorCustomizations": {
         "editor.background": "#000000",
         "sideBar.background": "#000000",
