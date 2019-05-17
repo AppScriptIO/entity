@@ -1,2 +1,1 @@
-export * from './Entity/Entity.class.js'
-export * from './Constructable/Constructable.class.js'
+export * from './constructable/Entity.class.js'

@@ -22,8 +22,23 @@ Constructable alternative to JS `class` or `function` with feature rich capabili
     - Techniques for achieving such design are: 
         - Symbols usage to implement a hidden api on the `entity`/object. Meta-level keys are used to prevent clashes and separate  normal keys from the meta-level ones implemented.
         - inheritance specially used to share `entitiy` pattern methods.
-    - 
 
+Reference = programmatic api reference keys.
+
+# Relationship between Constructable & Entity features: 
+- Constructable creates instances that use the prototype ->{ functionality for multiple constructors }
+- Entity creates instances that use the prototype -> { functionality for client interface definition }
+
+Should separate functionality from the constructors used to create instances using these functionalities.
+
+# Explanation of Native JS Prototypes concepts: 
+- Function & Object use protype functionality: 
+    - Function provides { functionality for creation of function instances }
+    - Object provides { functionality for creation of object instances }
+- Function and Object globals are constructors for particular functionality/prototype.
+- Some prototype may have multiple constructors that create instances which utilize them. Therefore, the Function & Object constructors aren't nested in the prototype but a separate entity.
+- Function & Object constructors use functionality from the same prototype they serve/utilizt in the creation of instances.
+- A differentiation should be pointed between constuctor's own properties/features and the functionality they use through delegation.
 ___
 [Development TODO list](/documentation/TODO.md)
 
