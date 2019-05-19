@@ -1,0 +1,25 @@
+import { createConstructableWithoutContructor } from './createConstructableWithoutContructor.js'
+import * as symbol from '../constructable/Symbol.reference.js'
+
+/**
+ * Create an instance (either a function or an object) with a delegation to another prototype.
+ */
+export function createObjectWithDelegation({ description, prototypeDelegation = null, targetInstance, instanceType, construtorProperty = null }: { instanceType: 'object' | 'function' }) {
+  switch (instanceType) {
+    case 'function':
+      targetInstance ||= createConstructableWithoutContructor(description)
+      Object.setPrototypeOf(targetInstance, prototypeDelegation)
+      break
+    case 'object':
+    default:
+      targetInstance ||= Object.create(prototypeDelegation)
+      break
+  }
+  Object.defineProperty(targetInstance, symbol.constructor, {
+    value: construtorProperty,
+    writable: true,
+    enumerable: false,
+    configurable: false,
+  })
+  return targetInstance
+}

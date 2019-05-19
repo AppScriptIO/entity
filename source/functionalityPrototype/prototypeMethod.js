@@ -1,5 +1,7 @@
 import { isGeneratorFunction } from '../utility/isGeneratorFunction.js'
+import { executionControl } from '../utility/generatorExecutionControl.js'
 
+// Lookup algorithm used by 'functionality prototype'.
 export const nestedPropertyDelegatedLookup = ({ target, directProperty, nestedProperty }) => {
   const hasOwnProperty = Object.prototype.hasOwnProperty // allows supporting objects delefating null.
   let value
@@ -10,6 +12,7 @@ export const nestedPropertyDelegatedLookup = ({ target, directProperty, nestedPr
   return value
 }
 
+// The generator function uses a pattern that allows to handover control (yield values) and propagate to the request function (switch target function)
 export const createSwitchGeneratorFunction = function({ fallbackSymbol, implementationListSymbol }) {
   return function*({ implementationKey, self = this }: { implementationKey: String } = {}) {
     const controlArg = function.sent

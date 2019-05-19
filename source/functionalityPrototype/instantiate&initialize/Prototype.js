@@ -1,20 +1,24 @@
-import { Reference } from './Symbol.reference.js'
+import { Reference } from './Reference.js'
 import { deepFreeze } from '../../utility/deepObjectFreeze.js'
 import { mergeNonexistentProperties, mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
 import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookup } from '../prototypeMethod.js'
-import { executionControl } from '../../utility/generatorExecutionControl.js'
+import * as symbol from '../../constructable/Symbol.reference.js'
 
 export const Prototype = {
   [symbol.metadata]: {
     type: Symbol('Instantiate & Initialize functionality'),
   },
-  /**
-   * prototypeDelegation
-   */
+  /*
+                     _        _                    ____       _                  _   _             
+     _ __  _ __ ___ | |_ ___ | |_ _   _ _ __   ___|  _ \  ___| | ___  __ _  __ _| |_(_) ___  _ __  
+    | '_ \| '__/ _ \| __/ _ \| __| | | | '_ \ / _ \ | | |/ _ \ |/ _ \/ _` |/ _` | __| |/ _ \| '_ \ 
+    | |_) | | | (_) | || (_) | |_| |_| | |_) |  __/ |_| |  __/ |  __/ (_| | (_| | |_| | (_) | | | |
+    | .__/|_|  \___/ \__\___/ \__|\__, | .__/ \___|____/ \___|_|\___|\__, |\__,_|\__|_|\___/|_| |_|
+    |_|                           |___/|_|                           |___/                         
+*/
   [Reference.prototypeDelegation.setter.list](implementation: Object) {
-    // set constractor property on prototype
+    // set constractor property on prototype //???? Not needed
     // for (const key of Object.keys(implementation)) {
-    //   //???? Not needed
     //   implementation[key].constructor = this
     // }
     return mergeOwnNestedProperty({
@@ -32,9 +36,13 @@ export const Prototype = {
   },
   [Reference.prototypeDelegation.list]: {},
 
-  /**
-   * instance - instantiate
-   */
+  /*
+     _           _              _   _       _       
+    (_)_ __  ___| |_ __ _ _ __ | |_(_) __ _| |_ ___ 
+    | | '_ \/ __| __/ _` | '_ \| __| |/ _` | __/ _ \
+    | | | | \__ \ || (_| | | | | |_| | (_| | ||  __/
+    |_|_| |_|___/\__\__,_|_| |_|\__|_|\__,_|\__\___|
+*/
   [Reference.instantiate.setter.list](implementation: Object) {
     return mergeOwnNestedProperty({ target: this, ownProperty: Reference.instantiate.list, value: implementation })
   },
@@ -51,9 +59,13 @@ export const Prototype = {
   }),
   [Reference.instantiate.list]: {},
 
-  /**
-   * instance - initialize
-   */
+  /*
+     _       _ _   _       _ _         
+    (_)_ __ (_) |_(_) __ _| (_)_______ 
+    | | '_ \| | __| |/ _` | | |_  / _ \
+    | | | | | | |_| | (_| | | |/ /  __/
+    |_|_| |_|_|\__|_|\__,_|_|_/___\___|
+*/
   [Reference.initialize.setter.list](implementation: Object) {
     return mergeOwnNestedProperty({ target: this, ownProperty: Reference.initialize.list, value: implementation })
   },
@@ -70,45 +82,3 @@ export const Prototype = {
   }),
   [Reference.initialize.list]: {},
 }
-
-/**
- *  prototypeDelegation
- */
-Prototype[Reference.prototypeDelegation.setter.list]({})
-
-/**
- *  Instantiate
- */
-Prototype[Reference.instantiate.setter.list]({
-  [Reference.instantiate.key.prototype]({ instanceObject, objectType, prototypeDelegation, construtorProperty, self = this, description }: { objectType: 'object' | 'function' }) {
-    return createInstanceWithDelegation({ instanceObject, objectType, prototypeDelegation, construtorProperty, description })
-  },
-  [Reference.instantiate.key.prototypeInstance]({ instanceType = 'object', self = this }: { instanceType: 'object' | 'function' }) {
-    let args = arguments[0]
-    let implementationFunc = Prototype[Reference.instantiate.getter.list](Reference.instantiate.key.prototype)
-    let instance = self::implementationFunc(
-      Object.assign(args, {
-        prototypeDelegation: self[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.entityPrototype),
-        construtorProperty: self[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.entityClass),
-        objectType: instanceType,
-      }),
-    )
-    return instance
-  },
-})
-
-/**
- *  Initialize
- */
-Prototype[Reference.initialize.setter.list]({
-  [Reference.initialize.key.configuredConstructor]({ description, instanceObject } = {}) {
-    mergeNonexistentProperties(instanceObject, { self: Symbol(description) })
-    return instanceObject
-  },
-  [Reference.initialize.key.constructableInstance]: initializeConstructableInstance,
-
-  [Reference.initialize.key.data]({ data, instanceObject, self = this }: { data: Object } = {}) {
-    Object.assign(instanceObject, data) // apply data to instance
-    return instanceObject
-  },
-})
