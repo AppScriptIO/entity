@@ -18,3 +18,12 @@ export const mergeNonexistentProperties = (targetObject, defaultValue: Object) =
     if (!Object.prototype.hasOwnProperty.call(targetObject, key)) Object.defineProperty(targetObject, key, { value, writable: true, enumerable: true })
   })
 }
+
+// merge arguments array that may have object items
+export const mergeArrayWithObjectItem = ({ listTarget, listDefault }) => {
+  // merge arguments with default parameters
+  for (let index in listTarget) {
+    if (typeof listTarget[index] == 'object' && typeof listDefault[index] == 'object') listTarget[index] = Object.assign(listDefault[index], listTarget[index])
+    listTarget[index] ||= listDefault[index]
+  }
+}

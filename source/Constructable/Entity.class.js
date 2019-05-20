@@ -2,7 +2,8 @@ debugger
 import { Constructable } from './Constructable.class.js'
 const { symbol } = Constructable
 
-export const Entity = new Constructable.clientInterface({ description: 'Entity' })
+let configuredConstructable = Constructable.clientInterface({ parameter: [] })
+export const Entity = new configuredConstructable({ description: 'Entity' })
 
 const Reference = Entity[symbol.reference]
 const Prototype = Entity[symbol.prototype]
@@ -69,33 +70,12 @@ Prototype[Constructable[symbol.reference].constructor.setter.list]({})
    \____|_|_|\___|_| |_|\__|___|_| |_|\__\___|_|  |_|  \__,_|\___\___|
 */
 Reference.clientInterface = {
-  key: {
-    // entityConstruct: Symbol('Funtionality:clientInterface.key.entityConstruct'),
-  },
+  key: {},
 }
 Prototype[Constructable[symbol.reference].clientInterface.setter.list]({
   // [Reference.clientInterface.key.prototypeConstruct]({ configuredConstructable, self = this, interfaceTarget } = {}) {
   //   interfaceTarget ||= self
   //   const proxiedTarget = new Proxy(function() {} || interfaceTarget, {
-  //     apply(target, thisArg, [{ description } = {}]) {
-  //       // TODO: Create constructable for configured constructables creation. wehre adding config will alter the behavior of instance creation.
-  //       let newConfiguredConstructable =
-  //         self[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.configuredConstructable })
-  //         |> (g => {
-  //           g.next('intermittent')
-  //           return g.next({
-  //             description: description,
-  //             initializeFallback: configuredConstructable[Reference.initialize.fallback],
-  //           }).value
-  //         })
-  //       let clientInterface =
-  //         self[Reference.clientInterface.switch]({ implementationKey: Reference.clientInterface.key.prototypeConstruct })
-  //         |> (g => {
-  //           g.next('intermittent')
-  //           return g.next({ configuredConstructable: newConfiguredConstructable }).value
-  //         })
-  //       return clientInterface
-  //     },
   //     construct(target, argumentList, proxiedTarget) {
   //       return (
   //         configuredConstructable::configuredConstructable[Reference.constructor.switch]({
