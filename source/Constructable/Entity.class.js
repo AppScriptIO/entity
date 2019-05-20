@@ -2,9 +2,7 @@ debugger
 import { Constructable } from './Constructable.class.js'
 const { symbol } = Constructable
 
-export const Entity =
-  Constructable[Constructable[symbol.reference].constructor.switch]({ implementationKey: Constructable[symbol.reference].constructor.key.constructable })
-  |> (g => g.next('intermittent') && g.next({ description: 'Entity' }).value)
+export const Entity = new Constructable.clientInterface({ description: 'Entity' })
 
 const Reference = Entity[symbol.reference]
 const Prototype = Entity[symbol.prototype]

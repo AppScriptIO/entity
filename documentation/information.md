@@ -28,8 +28,7 @@ Reference = programmatic api reference keys.
 # Relationship between Constructable & Entity features: 
 - Constructable creates instances that use the prototype ->{ functionality for multiple constructors }
 - Entity creates instances that use the prototype -> { functionality for client interface definition }
-
-Should separate functionality from the constructors used to create instances using these functionalities.
+- Should separate functionality from the constructors used to create instances using these functionalities. Entity & Constructable function as holders for the reference and functionality, these are themselves constructors that produce instances with their own functionality. In addition they can use their own functionality to add implementations that will be used through them, e.g. client interfaces for easing their usage.
 
 # Explanation of Native JS Prototypes concepts: 
 - Function & Object use protype functionality: 
