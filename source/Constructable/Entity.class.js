@@ -1,4 +1,3 @@
-debugger
 import { Constructable } from './Constructable.class.js'
 const { symbol } = Constructable
 
@@ -72,39 +71,8 @@ Prototype[Constructable[symbol.reference].constructor.setter.list]({})
 Reference.clientInterface = {
   key: {},
 }
-Prototype[Constructable[symbol.reference].clientInterface.setter.list]({
-  // [Reference.clientInterface.key.prototypeConstruct]({ configuredConstructable, self = this, interfaceTarget } = {}) {
-  //   interfaceTarget ||= self
-  //   const proxiedTarget = new Proxy(function() {} || interfaceTarget, {
-  //     construct(target, argumentList, proxiedTarget) {
-  //       return (
-  //         configuredConstructable::configuredConstructable[Reference.constructor.switch]({
-  //           implementationKey: Reference.constructor.key.prototypeInstance,
-  //         })
-  //         |> (g => {
-  //           g.next('intermittent')
-  //           return g.next({ data: argumentList[0] })
-  //         })
-  //       )
-  //     },
-  //   })
-  //   return proxiedTarget
-  // },
-})
+Prototype[Constructable[symbol.reference].clientInterface.setter.list]({})
 
-// // Create client interface
-// const configuredConstructable =
-//   Entity[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.constructable })
-//   |> (g =>
-//     g.next('intermittent') &&
-//     g.next({
-//       description: 'EntityConstructableForClientInterface',
-//       instantiateFallback: Reference.instantiate.key.prototypeInstance,
-//       initializeFallback: Reference.initialize.key.constructableInstance,
-//       instantiateSwitchSymbol: Reference.instantiate.key.prototypeInstance,
-//       initializeSwitchSymbol: Reference.initialize.key.constructableInstance,
-//     }).value)
-
-// Entity.clientInterface =
-//   Entity[Entity[symbol.reference].clientInterface.switch]({ implementationKey: Entity[symbol.reference].clientInterface.key.entityConstruct })
-//   |> (g => g.next('intermittent') && g.next({ configuredConstructable: configuredConstructable }).value)
+Entity.clientInterface =
+  Entity[Constructable[symbol.reference].clientInterface.switch]({ implementationKey: Constructable[symbol.reference].clientInterface.key.constructable })
+  |> (g => g.next('intermittent') && g.next().value)

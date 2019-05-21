@@ -1,4 +1,3 @@
-debugger
 import * as symbol from './Symbol.reference.js'
 import * as mergedFunctionality from '../functionalityPrototype/mergedFunctionality.js'
 import { createObjectWithDelegation } from '../utility/createObjectWithDelegation.js'
@@ -97,15 +96,47 @@ Reference.constructor.key = {
   configuredConstructable: Symbol('Funtionality:constructor.key.configuredConstructable'),
 }
 Prototype[Reference.constructor.setter.list]({
-  [Reference.constructor.key.constructable]({ description, reference, prototype, prototypeDelegation, self = this } = {}) {
+  // generator function that uses a pattern allowing for handing over control to caller - i.e. running the function in steps.
+  [Reference.constructor.key.constructable]: function*({ description, reference, prototype, prototypeDelegation, self = this } = {}) {
+    const shouldHandOverControl = executionControl.shouldHandOver(function.sent)
     prototypeDelegation ||= self[symbol.prototype]
-    let instance =
-      self[Reference.instantiate.switch]({ implementationKey: Reference.instantiate.key.createObjectWithDelegation })
-      |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: prototypeDelegation }).value)
-    self[Reference.initialize.switch]({ implementationKey: Reference.initialize.key.constructable })
-      |> (g => g.next('intermittent') && g.next({ description, reference, prototype, targetInstance: instance, construtorProperty: self }).value)
-    // Object.setPrototypeOf(instance, instance[symbol.prototype]) // root level specific
-    return instance
+    const step = [
+      {
+        passThroughArg: { description, prototypeDelegation: prototypeDelegation },
+        func: function(previousArg, arg) {
+          let instance = self::self[Reference.instantiate.switch]({ implementationKey: Reference.instantiate.key.createObjectWithDelegation }) |> (g => g.next('intermittent') && g.next(arg).value)
+          return { instance }
+        },
+        condition: true,
+      },
+      {
+        passThroughArg: { description, reference, prototype, construtorProperty: self },
+        func: function({ instance }, arg) {
+          self::self[Reference.initialize.switch]({ implementationKey: Reference.initialize.key.constructable })
+            |> (g => g.next('intermittent') && g.next(Object.assign({ targetInstance: instance }, arg)).value)
+          return instance
+        },
+        condition: true,
+      },
+    ]
+
+    // Run chain of step functions
+    let i = 0,
+      result
+    while (i < step.length) {
+      if (step[i].condition == false) {
+        i++
+        continue
+      }
+      if (shouldHandOverControl) {
+        yield step[i].passThroughArg
+        result = step[i].func(result, function.sent)
+      } else {
+        result = step[i].func(result, step[i].passThroughArg)
+      }
+      i++
+    }
+    return result
   },
   [Reference.constructor.key.configuredConstructable]({ description = 'Configured constructable instance.', self = this, parameter } = {}) {
     let instance =
@@ -115,58 +146,6 @@ Prototype[Reference.constructor.setter.list]({
       |> (g => g.next('intermittent') && g.next({ description, targetInstance: instance, parameter }).value)
     return instance
   },
-
-  // //! check where needed.
-  // oldConstructable: function*({
-  //   description,
-  //   instantiateFallback,
-  //   initializeFallback,
-  //   self = this,
-  //   entityInstance,
-  //   instantiateSwitchSymbol = Reference.instantiate.key.prototypeInstance,
-  //   initializeSwitchSymbol = Reference.initialize.key.constructableInstance,
-  // } = {}) {
-  //   const shouldHandOverControl = executionControl.shouldHandOver(function.sent)
-  //   const step = [
-  //     {
-  //       passThroughArg: { description },
-  //       func: function(previousArg, arg) {
-  //         let instance = self::self[Reference.instantiate.switch]({ implementationKey: instantiateSwitchSymbol }) |> (g => g.next('intermittent') && g.next(arg).value)
-  //         return { instance }
-  //       },
-  //       condition: !Boolean(entityInstance),
-  //     },
-  //     {
-  //       passThroughArg: { description },
-  //       func: function({ instance }, arg) {
-  //         self::self[Reference.initialize.switch]({ implementationKey: initializeSwitchSymbol }) |> (g => g.next('intermittent') && g.next(Object.assign({ instanceObject: instance }, arg)).value)
-  //         return instance
-  //       },
-  //       condition: !Boolean(entityInstance),
-  //     },
-  //   ]
-
-  //   // Run chain of step functions
-  //   let i = 0,
-  //     result
-  //   while (i < step.length) {
-  //     if (step[i].condition && !step[i].condition) {
-  //       i++
-  //       continue
-  //     }
-  //     if (shouldHandOverControl) {
-  //       yield step[i].passThroughArg
-  //       result = step[i].func(result, function.sent)
-  //     } else {
-  //       result = step[i].func(result, step[i].passThroughArg)
-  //     }
-  //     i++
-  //   }
-  //   entityInstance ||= result
-  //   entityInstance[Reference.instantiate.fallback] = instantiateFallback
-  //   entityInstance[Reference.initialize.fallback] = initializeFallback
-  //   return entityInstance
-  // },
 })
 
 /*
