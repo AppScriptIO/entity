@@ -14,7 +14,7 @@ export const nestedPropertyDelegatedLookup = ({ target, directProperty, nestedPr
 
 // The generator function uses a pattern that allows to handover control (yield values) and propagate to the request function (switch target function)
 export const createSwitchGeneratorFunction = function({ fallbackSymbol, implementationListSymbol }) {
-  return function*({ implementationKey, self = this }: { implementationKey: String } = {}) {
+  let generatorFunction = function*({ implementationKey, self = this }: { implementationKey: String } = {}) {
     const controlArg = function.sent
     implementationKey ||= self[fallbackSymbol]
     const implementation = {
@@ -36,4 +36,5 @@ export const createSwitchGeneratorFunction = function({ fallbackSymbol, implemen
       return self::implementation.func(implementation.passThroughArg)
     }
   }
+  return generatorFunction
 }

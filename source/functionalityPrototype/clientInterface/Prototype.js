@@ -1,7 +1,7 @@
 import { Reference } from './Reference.js'
 import { mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
 import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookup } from '../prototypeMethod.js'
-import * as symbol from '../../constructable/Symbol.reference.js'
+import * as symbol from '../Symbol.reference.js'
 
 export const Prototype = {
   [symbol.metadata]: {

@@ -1,5 +1,4 @@
 import { createConstructableWithoutContructor } from './createConstructableWithoutContructor.js'
-import * as symbol from '../constructable/Symbol.reference.js'
 
 /**
  * Create an instance (either a function or an object) with a delegation to another prototype.

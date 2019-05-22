@@ -1,11 +1,9 @@
 import { Constructable } from './Constructable.class.js'
-const { symbol } = Constructable
 
-let configuredConstructable = Constructable.clientInterface({ parameter: [] })
-export const Entity = new configuredConstructable({ description: 'Entity' })
+export const Entity = new Constructable.clientInterface({ description: 'Entity' })
 
-const Reference = Entity[symbol.reference]
-const Prototype = Entity[symbol.prototype]
+const Reference = Entity[Constructable['reference'].reference]
+const Prototype = Entity[Constructable['reference'].prototype]
 
 /*
                    _        _                    ____       _                  _   _             
@@ -21,7 +19,7 @@ Reference.prototypeDelegation = {
     // entityClass: Symbol('Funtionality:prototypeDelegation.key.entityClass'),
   },
 }
-Prototype[Constructable[symbol.reference].prototypeDelegation.setter.list]({})
+Prototype[Constructable['reference'].prototypeDelegation.setter.list]({})
 
 /*
    ___           _              _   _       _       
@@ -30,7 +28,7 @@ Prototype[Constructable[symbol.reference].prototypeDelegation.setter.list]({})
    | || | | \__ \ || (_| | | | | |_| | (_| | ||  __/
   |___|_| |_|___/\__\__,_|_| |_|\__|_|\__,_|\__\___|
 */
-Prototype[Constructable[symbol.reference].instantiate.setter.list]({})
+Prototype[Constructable['reference'].instantiate.setter.list]({})
 
 /*
     ___       _ _   _       _ _         
@@ -45,7 +43,7 @@ Reference.initialize = {
     data: Symbol('Funtionality:initialize.key.data'),
   },
 }
-Prototype[Constructable[symbol.reference].initialize.setter.list]({
+Prototype[Constructable['reference'].initialize.setter.list]({
   [Reference.initialize.key.data]({ data, instanceObject, self = this }: { data: Object } = {}) {
     Object.assign(instanceObject, data) // apply data to instance
     return instanceObject
@@ -59,7 +57,7 @@ Prototype[Constructable[symbol.reference].initialize.setter.list]({
   | |__| (_) | | | \__ \ |_| |  | |_| | (__| || (_) | |   
    \____\___/|_| |_|___/\__|_|   \__,_|\___|\__\___/|_|   
 */
-Prototype[Constructable[symbol.reference].constructor.setter.list]({})
+Prototype[Constructable['reference'].constructor.setter.list]({})
 
 /*
     ____ _ _            _   ___       _             __                
@@ -71,8 +69,7 @@ Prototype[Constructable[symbol.reference].constructor.setter.list]({})
 Reference.clientInterface = {
   key: {},
 }
-Prototype[Constructable[symbol.reference].clientInterface.setter.list]({})
+Prototype[Constructable['reference'].clientInterface.setter.list]({})
 
 Entity.clientInterface =
-  Entity[Constructable[symbol.reference].clientInterface.switch]({ implementationKey: Constructable[symbol.reference].clientInterface.key.constructable })
-  |> (g => g.next('intermittent') && g.next().value)
+  Entity[Constructable['reference'].clientInterface.switch]({ implementationKey: Constructable['reference'].clientInterface.key.constructable }) |> (g => g.next('intermittent') && g.next().value)
