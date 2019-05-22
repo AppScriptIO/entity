@@ -10,7 +10,7 @@ const Reference = Object.assign(
   {
     reference: 'reference',
     prototype: Symbol('prototype'),
-    constructor: Symbol('constructor'),
+    class: Symbol('class'), // the constructable used to create the instance (to which class does it belong).
     metadata: metadataSymbol,
   },
   instantiateInitialize.Reference,
@@ -28,11 +28,11 @@ function initializeConstuctable({ targetInstance, reference, prototype, descript
   mergeNonexistentProperties(targetInstance, {
     // in usage through `instanceof` JS api.
     // get [Symbol.species]() {
-    //   return targetInstance[Reference.constructor] //! Doesn't work as it must return a constructor.
+    //   return targetInstance[Reference.class] //! Doesn't work as it must return a constructor.
     // },
     [Reference.reference]: reference,
     [Reference.prototype]: prototype, // Entities prototypes delegate to each other.
-    [Reference.constructor]: construtorProperty,
+    [Reference.class]: construtorProperty,
   })
   Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(description) } }) // set metadata information for debugging.
   Object.setPrototypeOf(targetInstance, targetInstance[Reference.prototype]) // inherit own and delegated functionalities.
