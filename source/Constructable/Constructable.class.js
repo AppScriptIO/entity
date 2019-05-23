@@ -124,7 +124,7 @@ Prototype[Reference.constructor.setter.list]({
       {
         passThroughArg: { description, reference, prototype, construtorProperty: self },
         func: function({ instance }, arg) {
-          self::self[Reference.initialize.switch]({ implementationKey: Reference.initialize.key.constructable })
+          self::self[Reference.initialize.switch]({ implementationKey: Reference.initialize.key.constructable, recursiveDelegationChainExecution: true })
             |> (g => g.next('intermittent') && g.next(Object.assign({ targetInstance: instance }, arg)).value)
           return instance
         },

@@ -1,6 +1,6 @@
 import { Reference } from './Reference.js'
 import { mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookup } from '../prototypeMethod.js'
+import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupAdapter } from '../prototypeMethod.js'
 import * as symbol from '../Symbol.reference.js'
 
 export const Prototype = {
@@ -10,10 +10,8 @@ export const Prototype = {
   [Reference.clientInterface.setter.list](implementation: Object) {
     return mergeOwnNestedProperty({ target: this, ownProperty: Reference.clientInterface.list, value: implementation })
   },
-  [Reference.clientInterface.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({ target: this, directProperty: Reference.clientInterface.list, nestedProperty: implementationKey })
-  },
-  [Reference.clientInterface.switch]: createSwitchGeneratorFunction({ fallbackSymbol: Reference.clientInterface.fallback, implementationListSymbol: Reference.clientInterface.getter.list }),
+  [Reference.clientInterface.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.clientInterface.list }),
+  [Reference.clientInterface.switch]: createSwitchGeneratorFunction({ fallbackSymbol: Reference.clientInterface.fallback, implementationGetterSymbol: Reference.clientInterface.getter.list }),
   [Reference.clientInterface.fallback]: undefined,
   [Reference.clientInterface.list]: {},
 }

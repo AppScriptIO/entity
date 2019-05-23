@@ -1,7 +1,7 @@
 import { Reference } from './Reference.js'
 import { deepFreeze } from '../../utility/deepObjectFreeze.js'
 import { mergeNonexistentProperties, mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookup } from '../prototypeMethod.js'
+import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupAdapter } from '../prototypeMethod.js'
 import * as symbol from '../Symbol.reference.js'
 
 export const Prototype = {
@@ -27,13 +27,7 @@ export const Prototype = {
       value: implementation,
     })
   },
-  [Reference.prototypeDelegation.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({
-      target: this,
-      directProperty: Reference.prototypeDelegation.list,
-      nestedProperty: implementationKey,
-    })
-  },
+  [Reference.prototypeDelegation.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.prototypeDelegation.list }),
   [Reference.prototypeDelegation.list]: {},
 
   /*
@@ -46,16 +40,10 @@ export const Prototype = {
   [Reference.instantiate.setter.list](implementation: Object) {
     return mergeOwnNestedProperty({ target: this, ownProperty: Reference.instantiate.list, value: implementation })
   },
-  [Reference.instantiate.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({
-      target: this,
-      directProperty: Reference.instantiate.list,
-      nestedProperty: implementationKey,
-    })
-  },
+  [Reference.instantiate.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.instantiate.list }),
   [Reference.instantiate.switch]: createSwitchGeneratorFunction({
     fallbackSymbol: Reference.instantiate.fallback,
-    implementationListSymbol: Reference.instantiate.getter.list,
+    implementationGetterSymbol: Reference.instantiate.getter.list,
   }),
   [Reference.instantiate.list]: {},
 
@@ -69,16 +57,10 @@ export const Prototype = {
   [Reference.initialize.setter.list](implementation: Object) {
     return mergeOwnNestedProperty({ target: this, ownProperty: Reference.initialize.list, value: implementation })
   },
-  [Reference.initialize.getter.list](implementationKey: String) {
-    return nestedPropertyDelegatedLookup({
-      target: this,
-      directProperty: Reference.initialize.list,
-      nestedProperty: implementationKey,
-    })
-  },
+  [Reference.initialize.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.initialize.list }),
   [Reference.initialize.switch]: createSwitchGeneratorFunction({
     fallbackSymbol: Reference.initialize.fallback,
-    implementationListSymbol: Reference.initialize.getter.list,
+    implementationGetterSymbol: Reference.initialize.getter.list,
   }),
   [Reference.initialize.list]: {},
 }
