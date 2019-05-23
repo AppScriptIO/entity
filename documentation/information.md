@@ -26,9 +26,13 @@ Constructable alternative to JS `class` or `function` with feature rich capabili
 Reference = programmatic api reference keys.
 
 # Relationship between Constructable & Entity features: 
+- class is any data type that is constructable. Instance is any data type that was instantiated by a constructable. all classes are instances. Class can produce another constructable class or a data type that is not instantiatable/constructable.
+- instance is a composite data type like object.
 - Constructable creates instances that use the prototype ->{ functionality for multiple constructors }
-- Entity creates instances that use the prototype -> { functionality for client interface definition }
+- Entity creates instances that use the prototype -> { functionality for client interface definition } e.g. Entity belongs to the Constructable class, i.e. Entity is an instance of the constructable class.
 - Should separate functionality from the constructors used to create instances using these functionalities. Entity & Constructable function as holders for the reference and functionality, these are themselves constructors that produce instances with their own functionality. In addition they can use their own functionality to add implementations that will be used through them, e.g. client interfaces for easing their usage.
+
+The behavior of native JS constructor is that it instantiates a new object and sets its prototype, then initializes the instance with all `constructor` functions in the class chain. This mechanism could also be applied for Entity constructor implementations.
 
 # Explanation of Native JS Prototypes concepts: 
 - Function & Object use protype functionality: 
