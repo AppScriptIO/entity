@@ -17,10 +17,6 @@ export const Prototype = {
     |_|                           |___/|_|                           |___/                         
 */
   [Reference.prototypeDelegation.setter.list](implementation: Object) {
-    // set constractor property on prototype //???? Not needed
-    // for (const key of Object.keys(implementation)) {
-    //   implementation[key].constructor = this
-    // }
     return mergeOwnNestedProperty({
       target: this,
       ownProperty: Reference.prototypeDelegation.list,

@@ -17,34 +17,8 @@ const Reference = Object.assign(
   constructor.Reference,
   clientInterface.Reference,
 )
+// constructable functionality
 const Prototype = Object.assign(Object.create(Object.prototype), instantiateInitialize.Prototype, constructor.Prototype, clientInterface.Prototype)
-
-// set the properties necessary for Constructable pattern usage.
-function initializeConstuctable({ targetInstance, reference, prototype, description, construtorProperty = null } = {}) {
-  reference ||= Object.create(construtorProperty[Reference.reference] || null)
-  prototype ||= Object.create(construtorProperty[Reference.prototype] || null) // Entities prototypes delegate to each other.
-  if (!prototype.hasOwnProperty(Reference.metadata))
-    Object.defineProperty(prototype, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(`${description} functionality`) } })
-  mergeNonexistentProperties(targetInstance, {
-    // in usage through `instanceof` JS api.
-    // get [Symbol.species]() {
-    //   return targetInstance[Reference.class] //! Doesn't work as it must return a constructor.
-    // },
-    [Reference.reference]: reference,
-    [Reference.prototype]: prototype, // Entities prototypes delegate to each other.
-    [Reference.class]: construtorProperty,
-  })
-  Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(description) } }) // set metadata information for debugging.
-  Object.setPrototypeOf(targetInstance, targetInstance[Reference.prototype]) // inherit own and delegated functionalities.
-  return targetInstance
-}
-
-export const Constructable =
-  createObjectWithDelegation({ instanceType: 'object' })
-  |> (instance => {
-    initializeConstuctable({ description: 'Constructable', targetInstance: instance, reference: Reference, prototype: Prototype })
-    return instance
-  })
 
 /*
                    _        _                    ____       _                  _   _             
@@ -54,8 +28,16 @@ export const Constructable =
   | .__/|_|  \___/ \__\___/ \__|\__, | .__/ \___|____/ \___|_|\___|\__, |\__,_|\__|_|\___/|_| |_|
   |_|                           |___/|_|                           |___/                         
 */
-Reference.prototypeDelegation.key = {}
-Prototype[Reference.prototypeDelegation.setter.list]({})
+Reference.prototypeDelegation.key = {
+  // hold properties required in prototype delegation
+  constructable: Symbol('constructable functionality prototypeDelegation'), // defined on top to be used in initialization function.
+}
+Prototype[Reference.prototypeDelegation.setter.list]({
+  [Reference.prototypeDelegation.key.constructable]: {
+    prototype: Prototype,
+    reference: Reference,
+  },
+})
 
 /*
  
@@ -86,7 +68,44 @@ Reference.initialize.key = {
   configuredConstructor: Symbol('Funtionality:initialize.key.configuredConstructor'),
 }
 Prototype[Reference.initialize.setter.list]({
-  [Reference.initialize.key.constructable]: initializeConstuctable,
+  // set the properties necessary for Constructable pattern usage.
+  [Reference.initialize.key.constructable]: function initializeConstuctable({ targetInstance, reference, prototype, description, construtorProperty = null } = {}) {
+    if (!reference) {
+      let prototypeDelegationSetting = construtorProperty[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.constructable)
+      reference = Object.create(prototypeDelegationSetting.reference || null)
+    }
+    if (!prototype) {
+      let prototypeDelegationSetting = construtorProperty[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.constructable)
+      prototype = Object.create(prototypeDelegationSetting.prototype || null) // Entities prototypes delegate to each other.
+    }
+    Object.setPrototypeOf(targetInstance, prototype) // inherit own and delegated functionalities.
+    // set constructable prototypeDelegation properties - values which will be used in instance creation
+    targetInstance::targetInstance[Reference.prototypeDelegation.setter.list]({
+      [Reference.prototypeDelegation.key.constructable]: {
+        prototype: prototype,
+        reference: reference,
+      },
+    })
+    mergeNonexistentProperties(targetInstance, {
+      // in usage through `instanceof` JS api.
+      // get [Symbol.species]() {
+      //   return targetInstance[Reference.class] //! Doesn't work as it must return a constructor.
+      // },
+      // Note: expose `prototype` & `reference` on the instance directly for easier access. (this shouldn't be relied upon when constructing a sub instance / constructable instance)
+      get [Reference.reference]() {
+        return targetInstance[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.constructable).reference
+      },
+      get [Reference.prototype]() {
+        return targetInstance[Reference.prototypeDelegation.getter.list](Reference.prototypeDelegation.key.constructable).prototype
+      },
+      [Reference.class]: construtorProperty, // the class used to construct the instance.
+    })
+    // add debugging information.
+    Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(description) } }) // set metadata information for debugging.
+    if (!prototype.hasOwnProperty(Reference.metadata))
+      Object.defineProperty(prototype, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(`${description} functionality`) } })
+    return targetInstance
+  },
   [Reference.initialize.key.configuredConstructor]({ description, targetInstance, parameter = [] } = {}) {
     Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(description) } }) // set metadata information for debugging.
     targetInstance.parameter = parameter
@@ -109,6 +128,7 @@ Reference.constructor.key = {
 }
 Prototype[Reference.constructor.setter.list]({
   // generator function that uses a pattern allowing for handing over control to caller - i.e. running the function in steps.
+  // TODO: Document pattern used for handing over control to client and pipping results through the chain
   [Reference.constructor.key.constructable]: function*({ description, reference, prototype, prototypeDelegation, self = this } = {}) {
     const shouldHandOverControl = executionControl.shouldHandOver(function.sent)
     prototypeDelegation ||= self[Reference.prototype]
@@ -169,6 +189,22 @@ Prototype[Reference.constructor.setter.list]({
     return instance
   },
 })
+
+/*
+ *   ____                _                   _        _     _         ____ _                
+ *  / ___|___  _ __  ___| |_ _ __ _   _  ___| |_ __ _| |__ | | ___   / ___| | __ _ ___ ___  
+ * | |   / _ \| '_ \/ __| __| '__| | | |/ __| __/ _` | '_ \| |/ _ \ | |   | |/ _` / __/ __| 
+ * | |__| (_) | | | \__ \ |_| |  | |_| | (__| || (_| | |_) | |  __/ | |___| | (_| \__ \__ \ 
+ * \____\___/|_| |_|___/\__|_|   \__,_|\___|\__\__,_|_.__/|_|\___|  \____|_|\__,_|___/___/ 
+  
+   Creation of Constructable class relies on functionality from it's own prototype. Therefore defining functionality implementations comes before the class creation. 
+   Another way could be - using the imported functionalities as their own separate prototype, but this will create Constructable in another level in the delegation chain, which is not needed.
+*/
+export const Constructable =
+  Prototype[Reference.constructor.switch]({ implementationKey: Reference.constructor.key.constructable })
+  |> (g =>
+    g.next('intermittent') &&
+    g.next({ description: 'Constructable', reference: Reference, prototype: Prototype /* Passing prototype & reference will prevent creation of another prototype chain level. */ }).value)
 
 /*
     ____ _ _            _   ___       _             __                

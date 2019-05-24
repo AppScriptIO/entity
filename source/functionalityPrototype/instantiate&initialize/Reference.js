@@ -1,6 +1,7 @@
 import { deepFreeze } from '../../utility/deepObjectFreeze.js'
 
 export const Reference = {
+  // Hold all related objects needed to create a delegation to a specific prototype (e.g. a key may hold `reference` symbols & a functionality `prototype` object)
   prototypeDelegation: {
     list: Symbol('Funtionality:prototypeDelegation.list'),
     setter: {

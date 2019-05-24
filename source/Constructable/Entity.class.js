@@ -14,6 +14,7 @@ const Prototype = Entity[Constructable['reference'].prototype]
   |_|                           |___/|_|                           |___/                         
 */
 Reference.prototypeDelegation = {
+  // TODO: Add implementation for creating prototype chains related to Graph instances and shared prototype tree functionality.
   key: {
     // entityPrototype: Symbol('Funtionality:prototypeDelegation.key.entityPrototype'),
     // entityClass: Symbol('Funtionality:prototypeDelegation.key.entityClass'),
