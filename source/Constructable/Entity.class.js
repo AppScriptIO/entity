@@ -48,6 +48,10 @@ Prototype[Constructable['reference'].initialize.setter.list]({
     Object.assign(instanceObject, data) // apply data to instance
     return instanceObject
   },
+  // Example: Trying to override a symbol of a parent class in the child class properties, when called with recursive option (e.g. in Constructable['reference'].construct) will execute all functions with the same key throughout the prototype chain.
+  // [Constructable['reference'].initialize.key.constructable]() {
+  //   console.log(`Executed together with other Constructable['reference'].initialize.key.constructable in the prototype chain`)
+  // },
 })
 
 /*

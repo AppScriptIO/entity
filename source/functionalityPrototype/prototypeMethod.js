@@ -1,3 +1,4 @@
+import assert from 'assert'
 import { isGeneratorFunction } from '../utility/isGeneratorFunction.js'
 import { executionControl } from '../utility/generatorExecutionControl.js'
 import { nestedPropertyDelegatedLookup } from '../utility/nestedPropertyDelefatedLookup.js'
@@ -23,32 +24,49 @@ export const createSwitchGeneratorFunction = function({
     recursiveDelegationChainExecution = false, // Execute all functions in the delegation chain that match the `implementationKey` value. e.g. use initialization function from each class in the prototype chain.
     callerClass = this, // the constructable class that initiated the function call.
   }: { implementationKey: String } = {}) {
-    const controlArg = function.sent
+    const controlArg = function.sent,
+      shouldHandOver = executionControl.shouldHandOver(controlArg),
+      shouldPropagate = executionControl.shouldPropagate(controlArg)
+
     implementationKey ||= callerClass[fallbackSymbol]
 
+    let implementation: Object | Array<Object>, lookupResult // implementation functions to execute
     if (recursiveDelegationChainExecution) {
-      let result = callerClass::callerClass[implementationGetterSymbol](implementationKey, true)
-      console.log(result)
-    }
-
-    const implementation = {
-      func: callerClass::callerClass[implementationGetterSymbol](implementationKey) || throw new Error(`• No implementation constructor found for key ${implementationKey}`),
-      passThroughArg: {},
-    }
-    if (executionControl.shouldHandOver(controlArg)) {
-      implementation.passThroughArg = yield implementation.passThroughArg
-    }
-
-    // redirect construct to particular implementation using specific execution depending of function type.
-    if (isGeneratorFunction(implementation.func)) {
-      if (executionControl.shouldPropagate(controlArg)) {
-        return callerClass::implementation.func(implementation.passThroughArg)
-      } else {
-        return callerClass::implementation.func(implementation.passThroughArg) |> (g => g.next('complete').value)
-      }
+      lookupResult = callerClass::callerClass[implementationGetterSymbol](implementationKey, true /*recursive execution of multiple implementations*/)
+      assert(lookupResult && lookupResult.length > 0, `• No implementation constructor found for key ${implementationKey.toString()}`)
     } else {
-      return callerClass::implementation.func(implementation.passThroughArg)
+      // single implementation
+      lookupResult = callerClass::callerClass[implementationGetterSymbol](implementationKey)
+      assert(lookupResult, `• No implementation constructor found for key ${implementationKey.toString()}`)
     }
+    if (!Array.isArray(lookupResult)) lookupResult = [lookupResult] // for preventing separate code for execution.
+    implementation = lookupResult.map((func, index) => {
+      return { func: func, passThroughArg: {} /** Note: supporting array args is possible but adds additional complexity */ }
+    })
+
+    let result = null // acts as previous result (similar to reduce function but allows usage of `yield*` keyword)
+    for (let index in implementation) {
+      // NOte: execution starts from the first matching function in the prototype chain to the last i.e. from class caller to delegated object. This behavior is similar to the native JS `constructor` execution behavior in class inheritance.
+      if (shouldHandOver) implementation[index].passThroughArg = yield implementation[index].passThroughArg // client should manipulate `implementation.passThroughArg` for each function in the chain.
+      let currentResult = callerClass::implementation[index].func(implementation[index].passThroughArg, result /*pipe previous result as second paramter*/)
+
+      // Deal with different function types - redirect construct to particular implementation using specific execution depending of function type.
+      if (isGeneratorFunction(implementation[index].func)) {
+        if (shouldPropagate) {
+          // using `yield*` requires the client to make an additional empty call and adds, and makes differentiating yields more difficult.
+          //TODO: Test for proper client ability to interact with this usecase (`yield*`)
+          result = yield* currentResult
+        } else {
+          result = currentResult |> (g => g.next('complete').value)
+        }
+      } else {
+        // regular function (non-generator)
+        result = currentResult
+      }
+    }
+
+    return result
   }
+
   return generatorFunction
 }

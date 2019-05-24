@@ -1,3 +1,4 @@
+
 process.env['SZN_DEBUG'] = true
 import assert from 'assert'
 import { assert as chaiAssertion } from 'chai'

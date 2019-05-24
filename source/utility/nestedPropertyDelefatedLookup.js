@@ -1,5 +1,7 @@
 import { metadata } from '../functionalityPrototype/Symbol.reference.js'
-// Lookup algorithm used by 'functionality prototype'.
+/** Lookup algorithm used by 'functionality prototype'.
+ * In case multiple matching properties the array produces is ordered from the target object property to the delegated (parent) objects` properties.
+ */
 export const nestedPropertyDelegatedLookup = ({
   target, // the object to lookup property on.
   baseProperty, // direct property / base property to check in.

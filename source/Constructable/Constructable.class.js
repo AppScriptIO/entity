@@ -113,6 +113,7 @@ Prototype[Reference.constructor.setter.list]({
     const shouldHandOverControl = executionControl.shouldHandOver(function.sent)
     prototypeDelegation ||= self[Reference.prototype]
     const step = [
+      // execution of steps allows for passing argument for each step and pipping the result of the previous step.
       {
         passThroughArg: { description, prototypeDelegation: prototypeDelegation },
         func: function(previousArg, arg) {
@@ -125,7 +126,16 @@ Prototype[Reference.constructor.setter.list]({
         passThroughArg: { description, reference, prototype, construtorProperty: self },
         func: function({ instance }, arg) {
           self::self[Reference.initialize.switch]({ implementationKey: Reference.initialize.key.constructable, recursiveDelegationChainExecution: true })
-            |> (g => g.next('intermittent') && g.next(Object.assign({ targetInstance: instance }, arg)).value)
+            |> (g => {
+              g.next('intermittent')
+              // pass to all implemenatations the same argument
+              let argumentList = Object.assign({ targetInstance: instance }, arg)
+              let result
+              do {
+                result = g.next(argumentList)
+              } while (!result.done)
+              // return result.value
+            })
           return instance
         },
         condition: true,
