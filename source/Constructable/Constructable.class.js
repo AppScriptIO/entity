@@ -150,11 +150,11 @@ Prototype[Reference.constructor.setter.list]({
               g.next('intermittent')
               // pass to all implemenatations the same argument
               let argumentList = Object.assign({ targetInstance: instance }, arg)
-              let result
+              let generator
               do {
-                result = g.next(argumentList)
-              } while (!result.done)
-              // return result.value
+                generator = g.next(argumentList)
+              } while (!generator.done)
+              // return generator.value
             })
           return instance
         },
@@ -225,16 +225,20 @@ Prototype[Reference.clientInterface.setter.list]({
   [Reference.clientInterface.key.constructable]({ self = this } = {}) {
     let constructorSwitch = Constructable[Reference.constructor.switch],
       clientInterfaceSwitch = Constructable[Reference.clientInterface.switch]
+    let constructorImplementation = Reference.constructor.key.constructable,
+      configuredConstructableImplementation = Reference.constructor.key.configuredConstructable,
+      clientInterfaceImplementation = Reference.clientInterface.key.constructable
+
     const proxiedTarget = new Proxy(function() {}, {
       construct(target, argumentList, proxiedTarget) {
         if (self.parameter) mergeArrayWithObjectItem({ listTarget: argumentList, listDefault: self.parameter }) // in case configured constructable which holds default parameter values.
-        let instance = self::constructorSwitch({ implementationKey: Reference.constructor.key.constructable }) |> (g => g.next('intermittent') && g.next(...argumentList).value)
+        let instance = self::constructorSwitch({ implementationKey: constructorImplementation }) |> (g => g.next('intermittent') && g.next(...argumentList).value)
         return instance
       },
       apply(target, thisArg, [{ description, parameter = [] } = {}]) {
         let newConfiguredConstructable =
-          self::constructorSwitch({ implementationKey: Reference.constructor.key.configuredConstructable }) |> (g => g.next('intermittent') && g.next({ description: description, parameter }).value)
-        let clientInterface = newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: Reference.clientInterface.key.constructable }) |> (g => g.next('intermittent') && g.next().value)
+          self::constructorSwitch({ implementationKey: configuredConstructableImplementation }) |> (g => g.next('intermittent') && g.next({ description: description, parameter }).value)
+        let clientInterface = newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: clientInterfaceImplementation }) |> (g => g.next('intermittent') && g.next().value)
         return clientInterface
       },
     })
