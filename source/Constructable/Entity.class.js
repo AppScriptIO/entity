@@ -55,12 +55,14 @@ Reference.initialize = {
   },
 }
 Prototype[Constructable['reference'].initialize.setter.list]({
-  [Reference.initialize.key.entity]({ targetInstance, prototype, construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
+  [Reference.initialize.key.entity]({ targetInstance, prototype, delegationList = [], construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
     if (!prototype) {
       let prototypeDelegationGetter = construtorProperty[Constructable['reference'].prototypeDelegation.getter.list]
       let prototypeDelegationSetting = construtorProperty::prototypeDelegationGetter(Reference.prototypeDelegation.key.entity)
       prototype = prototypeDelegationSetting.prototype // Entities prototypes delegate to each other.
     }
+    delegationList.unshift(prototype) // add the class prototype to the additional prototypes to delegate to.
+    //! TODO: Use delegationList to delegate to multiple prototypes. Consider using proxy because in multiple prototype delegation the prototypes own prototype shouldn't be changed.
     Object.setPrototypeOf(targetInstance, prototype) // inherit own and delegated functionalities.
   },
   [Reference.initialize.key.data]({ data = {}, targetInstance }: { data: Object } = {}) {
@@ -94,6 +96,7 @@ Reference.constructor = {
 }
 Prototype[Constructable['reference'].constructor.setter.list]({
   [Reference.constructor.key.data]({ data, delegationList, self = this } = {}) {
+    //TODO: Deal with multiple prototype delegations. `delegationList`
     let instantiateSwitch = self[Constructable['reference'].instantiate.switch],
       initializeSwitch = self[Constructable['reference'].initialize.switch]
     let instance =
@@ -104,7 +107,7 @@ Prototype[Constructable['reference'].constructor.setter.list]({
         // pass to all implemenatations the same argument
         let generator
         do {
-          generator = g.next({ targetInstance: instance, construtorProperty: self })
+          generator = g.next({ targetInstance: instance, construtorProperty: self, delegationList })
         } while (!generator.done)
         // return generator.value
       })
