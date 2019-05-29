@@ -1,7 +1,7 @@
 import { Constructable } from './Constructable.class.js'
 import { mergeArrayWithObjectItem } from '../utility/mergeProperty.js'
 import * as symbol from '../functionalityPrototype/Symbol.reference.js'
-
+import { delegateToMultipleObject as multipleDelegationProxy } from '@dependency/multiplePrototypeDelegation'
 export const Entity = new Constructable.clientInterface({ description: 'Entity' })
 
 const Reference = Entity[Constructable['reference'].reference]
@@ -52,18 +52,21 @@ Reference.initialize = {
     // merge data into instance properties
     data: Symbol('Funtionality:initialize.key.data'),
     configuredClass: Symbol('Funtionality:initialize.key.configuredClass'),
+    multipleDelegation: Symbol('Funtionality:initialize.key.multipleDelegation'),
   },
 }
 Prototype[Constructable['reference'].initialize.setter.list]({
-  [Reference.initialize.key.entity]({ targetInstance, prototype, delegationList = [], construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
+  [Reference.initialize.key.entity]({ targetInstance, prototype, construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
     if (!prototype) {
       let prototypeDelegationGetter = construtorProperty[Constructable['reference'].prototypeDelegation.getter.list]
       let prototypeDelegationSetting = construtorProperty::prototypeDelegationGetter(Reference.prototypeDelegation.key.entity)
       prototype = prototypeDelegationSetting.prototype // Entities prototypes delegate to each other.
     }
-    delegationList.unshift(prototype) // add the class prototype to the additional prototypes to delegate to.
-    //! TODO: Use delegationList to delegate to multiple prototypes. Consider using proxy because in multiple prototype delegation the prototypes own prototype shouldn't be changed.
     Object.setPrototypeOf(targetInstance, prototype) // inherit own and delegated functionalities.
+  },
+  [Reference.initialize.key.multipleDelegation]({ targetInstance, delegationList = [] }, previousResult /* in case multiple constructor function found and executed. */) {
+    delegationList.unshift(targetInstance |> Object.getPrototypeOf) // add the class prototype to the additional prototypes to delegate to.
+    return multipleDelegationProxy({ targetObject: targetInstance, delegationList })
   },
   [Reference.initialize.key.data]({ data = {}, targetInstance }: { data: Object } = {}) {
     Object.assign(targetInstance, data) // apply data to instance
@@ -96,11 +99,14 @@ Reference.constructor = {
 }
 Prototype[Constructable['reference'].constructor.setter.list]({
   [Reference.constructor.key.data]({ data, delegationList, self = this } = {}) {
-    //TODO: Deal with multiple prototype delegations. `delegationList`
     let instantiateSwitch = self[Constructable['reference'].instantiate.switch],
       initializeSwitch = self[Constructable['reference'].initialize.switch]
+
+    // create instance
     let instance =
       self::instantiateSwitch({ implementationKey: Constructable['reference'].instantiate.key.createObjectWithDelegation }) |> (g => g.next('intermittent') && g.next({ instanceType: 'object' }).value)
+
+    // delegate to the Entity constructable class
     self::initializeSwitch({ implementationKey: Reference.initialize.key.entity, recursiveDelegationChainExecution: true })
       |> (g => {
         g.next('intermittent')
@@ -111,6 +117,11 @@ Prototype[Constructable['reference'].constructor.setter.list]({
         } while (!generator.done)
         // return generator.value
       })
+
+    // add additional delegation prototypes
+    self::initializeSwitch({ implementationKey: Reference.initialize.key.multipleDelegation }) |> (g => g.next('intermittent') && g.next({ targetInstance: instance, delegationList }).value)
+
+    // initialize instance data.
     self::initializeSwitch({ implementationKey: Reference.initialize.key.data, recursiveDelegationChainExecution: true })
       |> (g => {
         g.next('intermittent')
@@ -147,13 +158,14 @@ Reference.clientInterface = {
 }
 Prototype[Constructable['reference'].clientInterface.setter.list]({
   [Reference.clientInterface.key.entity]({
-    callerClass = this,
     constructorImplementation = throw new Error('• Parameter `constructorImplementation` must be passed.'),
     configuredConstructableImplementation = Reference.constructor.key.configuredClass,
     clientInterfaceImplementation = Reference.clientInterface.key.entity,
     // apply changes to arguments data structure.
     argumentListAdapter,
   } = {}) {
+    const callerClass = this,
+      clientInterfaceArguments = arguments
     let constructorSwitch = Constructable[Constructable['reference'].constructor.switch],
       clientInterfaceSwitch = Constructable[Constructable['reference'].clientInterface.switch]
     const proxiedTarget = new Proxy(function() {}, {
@@ -168,10 +180,7 @@ Prototype[Constructable['reference'].clientInterface.setter.list]({
           callerClass::constructorSwitch({ implementationKey: configuredConstructableImplementation }) |> (g => g.next('intermittent') && g.next({ description: description, parameter }).value)
         let clientInterface =
           newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: clientInterfaceImplementation })
-          |> (g =>
-            g.next('intermittent') &&
-            //Pass same arguments from previous client itnerface
-            g.next({ constructorImplementation, configuredConstructableImplementation, clientInterfaceImplementation, argumentListAdapter }).value)
+          |> (g => g.next('intermittent') && /* Pass same arguments from previous client itnerface */ g.next(...clientInterfaceArguments).value)
         return clientInterface
       },
     })
