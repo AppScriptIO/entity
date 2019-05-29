@@ -1,25 +1,21 @@
-import { deepFreeze } from '../../utility/deepObjectFreeze.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.Reference = void 0;
 
-/**
- * ProgrammaticAPIReference for the target extedning object to use. Entity api reference
- * switch - function that redirects to an implementation.
- * list - object holding the implementations.
- * key - built-in implementations keys.
- * getter/setter - functions for implementation lookup and addition.
- **/
-export const Reference = {
-  // Constructor combines instantiation, prototypeDelegation, & initialization
+
+
+
+
+
+
+
+const Reference = {
+
   constructor: {
     switch: Symbol('Funtionality:constructor.switch'),
     fallback: Symbol('Funtionality:constructor.fallback'),
     list: Symbol('Funtionality:constructor.list'),
     setter: {
-      list: Symbol('Funtionality:constructor.setter.list'),
-    },
-    getter: {
-      list: Symbol('Funtionality:constructor.getter.list'),
-    },
-  },
-}
+      list: Symbol('Funtionality:constructor.setter.list') },
 
-// deepFreeze({ object: Reference, getPropertyImplementation: Object.getOwnPropertyNames })
+    getter: {
+      list: Symbol('Funtionality:constructor.getter.list') } } };exports.Reference = Reference;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9mdW5jdGlvbmFsaXR5UHJvdG90eXBlL2NvbnN0cnVjdG9yL1JlZmVyZW5jZS5qcyJdLCJuYW1lcyI6WyJSZWZlcmVuY2UiLCJjb25zdHJ1Y3RvciIsInN3aXRjaCIsIlN5bWJvbCIsImZhbGxiYWNrIiwibGlzdCIsInNldHRlciIsImdldHRlciJdLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7O0FBU08sTUFBTUEsU0FBUyxHQUFHOztBQUV2QkMsRUFBQUEsV0FBVyxFQUFFO0FBQ1hDLElBQUFBLE1BQU0sRUFBRUMsTUFBTSxDQUFDLGlDQUFELENBREg7QUFFWEMsSUFBQUEsUUFBUSxFQUFFRCxNQUFNLENBQUMsbUNBQUQsQ0FGTDtBQUdYRSxJQUFBQSxJQUFJLEVBQUVGLE1BQU0sQ0FBQywrQkFBRCxDQUhEO0FBSVhHLElBQUFBLE1BQU0sRUFBRTtBQUNORCxNQUFBQSxJQUFJLEVBQUVGLE1BQU0sQ0FBQyxzQ0FBRCxDQUROLEVBSkc7O0FBT1hJLElBQUFBLE1BQU0sRUFBRTtBQUNORixNQUFBQSxJQUFJLEVBQUVGLE1BQU0sQ0FBQyxzQ0FBRCxDQUROLEVBUEcsRUFGVSxFQUFsQixDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgZGVlcEZyZWV6ZSB9IGZyb20gJy4uLy4uL3V0aWxpdHkvZGVlcE9iamVjdEZyZWV6ZS5qcydcclxuXHJcbi8qKlxyXG4gKiBQcm9ncmFtbWF0aWNBUElSZWZlcmVuY2UgZm9yIHRoZSB0YXJnZXQgZXh0ZWRuaW5nIG9iamVjdCB0byB1c2UuIEVudGl0eSBhcGkgcmVmZXJlbmNlXHJcbiAqIHN3aXRjaCAtIGZ1bmN0aW9uIHRoYXQgcmVkaXJlY3RzIHRvIGFuIGltcGxlbWVudGF0aW9uLlxyXG4gKiBsaXN0IC0gb2JqZWN0IGhvbGRpbmcgdGhlIGltcGxlbWVudGF0aW9ucy5cclxuICoga2V5IC0gYnVpbHQtaW4gaW1wbGVtZW50YXRpb25zIGtleXMuXHJcbiAqIGdldHRlci9zZXR0ZXIgLSBmdW5jdGlvbnMgZm9yIGltcGxlbWVudGF0aW9uIGxvb2t1cCBhbmQgYWRkaXRpb24uXHJcbiAqKi9cclxuZXhwb3J0IGNvbnN0IFJlZmVyZW5jZSA9IHtcclxuICAvLyBDb25zdHJ1Y3RvciBjb21iaW5lcyBpbnN0YW50aWF0aW9uLCBwcm90b3R5cGVEZWxlZ2F0aW9uLCAmIGluaXRpYWxpemF0aW9uXHJcbiAgY29uc3RydWN0b3I6IHtcclxuICAgIHN3aXRjaDogU3ltYm9sKCdGdW50aW9uYWxpdHk6Y29uc3RydWN0b3Iuc3dpdGNoJyksXHJcbiAgICBmYWxsYmFjazogU3ltYm9sKCdGdW50aW9uYWxpdHk6Y29uc3RydWN0b3IuZmFsbGJhY2snKSxcclxuICAgIGxpc3Q6IFN5bWJvbCgnRnVudGlvbmFsaXR5OmNvbnN0cnVjdG9yLmxpc3QnKSxcclxuICAgIHNldHRlcjoge1xyXG4gICAgICBsaXN0OiBTeW1ib2woJ0Z1bnRpb25hbGl0eTpjb25zdHJ1Y3Rvci5zZXR0ZXIubGlzdCcpLFxyXG4gICAgfSxcclxuICAgIGdldHRlcjoge1xyXG4gICAgICBsaXN0OiBTeW1ib2woJ0Z1bnRpb25hbGl0eTpjb25zdHJ1Y3Rvci5nZXR0ZXIubGlzdCcpLFxyXG4gICAgfSxcclxuICB9LFxyXG59XHJcblxyXG4vLyBkZWVwRnJlZXplKHsgb2JqZWN0OiBSZWZlcmVuY2UsIGdldFByb3BlcnR5SW1wbGVtZW50YXRpb246IE9iamVjdC5nZXRPd25Qcm9wZXJ0eU5hbWVzIH0pXHJcbiJdfQ==

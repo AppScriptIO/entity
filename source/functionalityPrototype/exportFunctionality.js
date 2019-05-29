@@ -1,4 +1,2 @@
-// merge functionality prototypes
-export * as instantiateInitialize from './instantiate&initialize'
-export * as constructor from './constructor'
-export * as clientInterface from './clientInterface'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.clientInterface = exports.constructor = exports.instantiateInitialize = void 0;var _instantiateInitialize = _interopRequireWildcard(require("./instantiate&initialize"));exports.instantiateInitialize = _instantiateInitialize;var _constructor = _interopRequireWildcard(require("./constructor"));exports.constructor = _constructor;var _clientInterface = _interopRequireWildcard(require("./clientInterface"));exports.clientInterface = _clientInterface;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsInNvdXJjZXNDb250ZW50IjpbXX0=

@@ -1,202 +1,203 @@
-import { Constructable } from './Constructable.class.js'
-import { mergeArrayWithObjectItem } from '../utility/mergeProperty.js'
-import * as symbol from '../functionalityPrototype/Symbol.reference.js'
-import { delegateToMultipleObject as multipleDelegationProxy } from '@dependency/multiplePrototypeDelegation'
-export const Entity = new Constructable.clientInterface({ description: 'Entity' })
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.Entity = void 0;var _ConstructableClass = require("./Constructable.class.js");
+var _mergeProperty = require("../utility/mergeProperty.js");
+var symbol = _interopRequireWildcard(require("../functionalityPrototype/Symbol.reference.js"));
+var _multiplePrototypeDelegation = require("@dependency/multiplePrototypeDelegation");var _g8, _g9;
+const Entity = new _ConstructableClass.Constructable.clientInterface({ description: 'Entity' });exports.Entity = Entity;
 
-const Reference = Entity[Constructable['reference'].reference]
-const Prototype = Entity[Constructable['reference'].prototype]
+const Reference = Entity[_ConstructableClass.Constructable['reference'].reference];
+const Prototype = Entity[_ConstructableClass.Constructable['reference'].prototype];
 
-/*
-                   _        _                    ____       _                  _   _             
-   _ __  _ __ ___ | |_ ___ | |_ _   _ _ __   ___|  _ \  ___| | ___  __ _  __ _| |_(_) ___  _ __  
-  | '_ \| '__/ _ \| __/ _ \| __| | | | '_ \ / _ \ | | |/ _ \ |/ _ \/ _` |/ _` | __| |/ _ \| '_ \ 
-  | |_) | | | (_) | || (_) | |_| |_| | |_) |  __/ |_| |  __/ |  __/ (_| | (_| | |_| | (_) | | | |
-  | .__/|_|  \___/ \__\___/ \__|\__, | .__/ \___|____/ \___|_|\___|\__, |\__,_|\__|_|\___/|_| |_|
-  |_|                           |___/|_|                           |___/                         
-*/
+
+
+
+
+
+
+
+
 Reference.prototypeDelegation = {
-  // TODO: Add implementation for creating prototype chains related to Graph instances and shared prototype tree functionality.
+
   key: {
-    entity: Symbol('Funtionality:prototypeDelegation.key.entity'), // type Object, usually contains `prototype` protperty
-  },
-}
-Prototype[Constructable['reference'].prototypeDelegation.setter.list]({
+    entity: Symbol('Funtionality:prototypeDelegation.key.entity') } };
+
+
+Prototype[_ConstructableClass.Constructable['reference'].prototypeDelegation.setter.list]({
   [Reference.prototypeDelegation.key.entity]: {
     prototype: {
-      [symbol.metadata]: { type: 'Entity class prototype for `entity` prototypeDelegation chain.' },
-    },
-  },
-})
+      [symbol.metadata]: { type: 'Entity class prototype for `entity` prototypeDelegation chain.' } } } });
 
-/*
-   ___           _              _   _       _       
-  |_ _|_ __  ___| |_ __ _ _ __ | |_(_) __ _| |_ ___ 
-   | || '_ \/ __| __/ _` | '_ \| __| |/ _` | __/ _ \
-   | || | | \__ \ || (_| | | | | |_| | (_| | ||  __/
-  |___|_| |_|___/\__\__,_|_| |_|\__|_|\__,_|\__\___|
-*/
-Prototype[Constructable['reference'].instantiate.setter.list]({})
 
-/*
-    ___       _ _   _       _ _         
-  |_ _|_ __ (_) |_(_) __ _| (_)_______ 
-    | || '_ \| | __| |/ _` | | |_  / _ \
-    | || | | | | |_| | (_| | | |/ /  __/
-  |___|_| |_|_|\__|_|\__,_|_|_/___\___|
-*/
+
+
+
+
+
+
+
+
+
+Prototype[_ConstructableClass.Constructable['reference'].instantiate.setter.list]({});
+
+
+
+
+
+
+
+
 Reference.initialize = {
   key: {
-    // initialize instance with entity delegation values.
+
     entity: Symbol('Funtionality:initialize.key.entity'),
-    // merge data into instance properties
+
     data: Symbol('Funtionality:initialize.key.data'),
     configuredClass: Symbol('Funtionality:initialize.key.configuredClass'),
-    multipleDelegation: Symbol('Funtionality:initialize.key.multipleDelegation'),
-  },
-}
-Prototype[Constructable['reference'].initialize.setter.list]({
-  [Reference.initialize.key.entity]({ targetInstance, prototype, construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
-    if (!prototype) {
-      let prototypeDelegationGetter = construtorProperty[Constructable['reference'].prototypeDelegation.getter.list]
-      let prototypeDelegationSetting = construtorProperty::prototypeDelegationGetter(Reference.prototypeDelegation.key.entity)
-      prototype = prototypeDelegationSetting.prototype // Entities prototypes delegate to each other.
-    }
-    Object.setPrototypeOf(targetInstance, prototype) // inherit own and delegated functionalities.
-  },
-  [Reference.initialize.key.multipleDelegation]({ targetInstance, delegationList = [] }, previousResult /* in case multiple constructor function found and executed. */) {
-    delegationList.unshift(targetInstance |> Object.getPrototypeOf) // add the class prototype to the additional prototypes to delegate to.
-    return multipleDelegationProxy({ targetObject: targetInstance, delegationList })
-  },
-  [Reference.initialize.key.data]({ data = {}, targetInstance }: { data: Object } = {}) {
-    Object.assign(targetInstance, data) // apply data to instance
-    return targetInstance
-  },
-  // Example: Trying to override a symbol of a parent class in the child class properties, when called with recursive option (e.g. in Constructable['reference'].construct) will execute all functions with the same key throughout the prototype chain.
-  // [Constructable['reference'].initialize.key.constructable]() {
-  //   console.log(`Executed together with other Constructable['reference'].initialize.key.constructable in the prototype chain`)
-  // },
-  [Reference.initialize.key.configuredClass]({ description = 'configuredClass', targetInstance, parameter = [] } = {}) {
-    Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(description) } }) // set metadata information for debugging.
-    targetInstance.parameter = parameter
-    return targetInstance
-  },
-})
+    multipleDelegation: Symbol('Funtionality:initialize.key.multipleDelegation') } };
 
-/*
-    ____                _                   _             
-   / ___|___  _ __  ___| |_ _ __ _   _  ___| |_ ___  _ __ 
-  | |   / _ \| '_ \/ __| __| '__| | | |/ __| __/ _ \| '__|
-  | |__| (_) | | | \__ \ |_| |  | |_| | (__| || (_) | |   
-   \____\___/|_| |_|___/\__|_|   \__,_|\___|\__\___/|_|   
-*/
+
+Prototype[_ConstructableClass.Constructable['reference'].initialize.setter.list]({
+  [Reference.initialize.key.entity]({ targetInstance, prototype, construtorProperty }, previousResult) {
+    if (!prototype) {
+      let prototypeDelegationGetter = construtorProperty[_ConstructableClass.Constructable['reference'].prototypeDelegation.getter.list];
+      let prototypeDelegationSetting = prototypeDelegationGetter.call(construtorProperty, Reference.prototypeDelegation.key.entity);
+      prototype = prototypeDelegationSetting.prototype;
+    }
+    Object.setPrototypeOf(targetInstance, prototype);
+  },
+  [Reference.initialize.key.multipleDelegation]({ targetInstance, delegationList = [] }, previousResult) {var _targetInstance;
+    delegationList.unshift((_targetInstance = targetInstance, Object.getPrototypeOf(_targetInstance)));
+    return (0, _multiplePrototypeDelegation.delegateToMultipleObject)({ targetObject: targetInstance, delegationList });
+  },
+  [Reference.initialize.key.data]({ data = {}, targetInstance } = {}) {
+    Object.assign(targetInstance, data);
+    return targetInstance;
+  },
+
+
+
+
+  [Reference.initialize.key.configuredClass]({ description = 'configuredClass', targetInstance, parameter = [] } = {}) {
+    Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(description) } });
+    targetInstance.parameter = parameter;
+    return targetInstance;
+  } });
+
+
+
+
+
+
+
+
+
 Reference.constructor = {
   key: {
-    // merge data into instance properties
+
     data: Symbol('Funtionality:constructor.key.data'),
-    configuredClass: Symbol('Funtionality:constructor.key.configuredClass'),
+    configuredClass: Symbol('Funtionality:constructor.key.configuredClass') } };
+
+
+Prototype[_ConstructableClass.Constructable['reference'].constructor.setter.list]({
+  [Reference.constructor.key.data]({ data, delegationList, self = this } = {}) {var _g, _ref, _g2, _ref2;
+    let instantiateSwitch = self[_ConstructableClass.Constructable['reference'].instantiate.switch],
+    initializeSwitch = self[_ConstructableClass.Constructable['reference'].initialize.switch];
+
+
+    let instance = (_g =
+    instantiateSwitch.call(self, { implementationKey: _ConstructableClass.Constructable['reference'].instantiate.key.createObjectWithDelegation }), _g.next('intermittent') && _g.next({ instanceType: 'object' }).value);
+
+
+    _ref = initializeSwitch.call(self, { implementationKey: Reference.initialize.key.entity, recursiveDelegationChainExecution: true }), (
+    g => {
+      g.next('intermittent');
+
+      let generator;
+      do {
+        generator = g.next({ targetInstance: instance, construtorProperty: self, delegationList });
+      } while (!generator.done);
+
+    })(_ref);
+
+
+    _g2 = initializeSwitch.call(self, { implementationKey: Reference.initialize.key.multipleDelegation }), _g2.next('intermittent') && _g2.next({ targetInstance: instance, delegationList }).value;
+
+
+    _ref2 = initializeSwitch.call(self, { implementationKey: Reference.initialize.key.data, recursiveDelegationChainExecution: true }), (
+    g => {
+      g.next('intermittent');
+
+      let generator;
+      do {
+        generator = g.next({ targetInstance: instance, data: data });
+      } while (!generator.done);
+
+    })(_ref2);
+    return instance;
   },
-}
-Prototype[Constructable['reference'].constructor.setter.list]({
-  [Reference.constructor.key.data]({ data, delegationList, self = this } = {}) {
-    let instantiateSwitch = self[Constructable['reference'].instantiate.switch],
-      initializeSwitch = self[Constructable['reference'].initialize.switch]
+  [Reference.constructor.key.configuredClass]({ description, self = this, parameter } = {}) {var _g3, _g4;
+    let instance = (_g3 =
+    self[_ConstructableClass.Constructable['reference'].instantiate.switch]({ implementationKey: Reference.instantiate.key.createObjectWithDelegation }),
+    _g3.next('intermittent') && _g3.next({ description, prototypeDelegation: self }).value);
+    _g4 = self[_ConstructableClass.Constructable['reference'].initialize.switch]({ implementationKey: Reference.initialize.key.configuredClass }),
+    _g4.next('intermittent') && _g4.next({ description, targetInstance: instance, parameter }).value;
+    return instance;
+  } });
 
-    // create instance
-    let instance =
-      self::instantiateSwitch({ implementationKey: Constructable['reference'].instantiate.key.createObjectWithDelegation }) |> (g => g.next('intermittent') && g.next({ instanceType: 'object' }).value)
 
-    // delegate to the Entity constructable class
-    self::initializeSwitch({ implementationKey: Reference.initialize.key.entity, recursiveDelegationChainExecution: true })
-      |> (g => {
-        g.next('intermittent')
-        // pass to all implemenatations the same argument
-        let generator
-        do {
-          generator = g.next({ targetInstance: instance, construtorProperty: self, delegationList })
-        } while (!generator.done)
-        // return generator.value
-      })
 
-    // add additional delegation prototypes
-    self::initializeSwitch({ implementationKey: Reference.initialize.key.multipleDelegation }) |> (g => g.next('intermittent') && g.next({ targetInstance: instance, delegationList }).value)
 
-    // initialize instance data.
-    self::initializeSwitch({ implementationKey: Reference.initialize.key.data, recursiveDelegationChainExecution: true })
-      |> (g => {
-        g.next('intermittent')
-        // pass to all implemenatations the same argument
-        let generator
-        do {
-          generator = g.next({ targetInstance: instance, data: data })
-        } while (!generator.done)
-        // return generator.value
-      })
-    return instance
-  },
-  [Reference.constructor.key.configuredClass]({ description, self = this, parameter } = {}) {
-    let instance =
-      self[Constructable['reference'].instantiate.switch]({ implementationKey: Reference.instantiate.key.createObjectWithDelegation })
-      |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: self }).value)
-    self[Constructable['reference'].initialize.switch]({ implementationKey: Reference.initialize.key.configuredClass })
-      |> (g => g.next('intermittent') && g.next({ description, targetInstance: instance, parameter }).value)
-    return instance
-  },
-})
 
-/*
-    ____ _ _            _   ___       _             __                
-   / ___| (_) ___ _ __ | |_|_ _|_ __ | |_ ___ _ __ / _| __ _  ___ ___ 
-  | |   | | |/ _ \ '_ \| __|| || '_ \| __/ _ \ '__| |_ / _` |/ __/ _ \
-  | |___| | |  __/ | | | |_ | || | | | ||  __/ |  |  _| (_| | (_|  __/
-   \____|_|_|\___|_| |_|\__|___|_| |_|\__\___|_|  |_|  \__,_|\___\___|
-*/
+
+
+
+
 Reference.clientInterface = {
   key: {
-    entity: Symbol('Funtionality:clientInterface.key.entity'),
-  },
-}
-Prototype[Constructable['reference'].clientInterface.setter.list]({
+    entity: Symbol('Funtionality:clientInterface.key.entity') } };
+
+
+Prototype[_ConstructableClass.Constructable['reference'].clientInterface.setter.list]({
   [Reference.clientInterface.key.entity]({
-    constructorImplementation = throw new Error('• Parameter `constructorImplementation` must be passed.'),
+    constructorImplementation = function (e) {throw e;}(new Error('• Parameter `constructorImplementation` must be passed.')),
     configuredConstructableImplementation = Reference.constructor.key.configuredClass,
     clientInterfaceImplementation = Reference.clientInterface.key.entity,
-    // apply changes to arguments data structure.
-    argumentListAdapter,
-  } = {}) {
+
+    argumentListAdapter } =
+  {}) {
     const callerClass = this,
-      clientInterfaceArguments = arguments
-    let constructorSwitch = Constructable[Constructable['reference'].constructor.switch],
-      clientInterfaceSwitch = Constructable[Constructable['reference'].clientInterface.switch]
-    const proxiedTarget = new Proxy(function() {}, {
-      construct(target, argumentList, proxiedTarget) {
-        if (argumentListAdapter) argumentListAdapter(argumentList) // restructure arguments
-        if (callerClass.parameter) mergeArrayWithObjectItem({ listTarget: argumentList, listDefault: callerClass.parameter }) // in case configured constructable which holds default parameter values.
-        let instance = callerClass::constructorSwitch({ implementationKey: constructorImplementation }) |> (g => g.next('intermittent') && g.next(...argumentList).value)
-        return instance
+    clientInterfaceArguments = arguments;
+    let constructorSwitch = _ConstructableClass.Constructable[_ConstructableClass.Constructable['reference'].constructor.switch],
+    clientInterfaceSwitch = _ConstructableClass.Constructable[_ConstructableClass.Constructable['reference'].clientInterface.switch];
+    const proxiedTarget = new Proxy(function () {}, {
+      construct(target, argumentList, proxiedTarget) {var _g5;
+        if (argumentListAdapter) argumentListAdapter(argumentList);
+        if (callerClass.parameter) (0, _mergeProperty.mergeArrayWithObjectItem)({ listTarget: argumentList, listDefault: callerClass.parameter });
+        let instance = (_g5 = constructorSwitch.call(callerClass, { implementationKey: constructorImplementation }), _g5.next('intermittent') && _g5.next(...argumentList).value);
+        return instance;
       },
-      apply(target, thisArg, [{ description, parameter = [] } = {}]) {
-        let newConfiguredConstructable =
-          callerClass::constructorSwitch({ implementationKey: configuredConstructableImplementation }) |> (g => g.next('intermittent') && g.next({ description: description, parameter }).value)
-        let clientInterface =
-          newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: clientInterfaceImplementation })
-          |> (g => g.next('intermittent') && /* Pass same arguments from previous client itnerface */ g.next(...clientInterfaceArguments).value)
-        return clientInterface
-      },
-    })
-    return proxiedTarget
-  },
-})
+      apply(target, thisArg, [{ description, parameter = [] } = {}]) {var _g6, _g7;
+        let newConfiguredConstructable = (_g6 =
+        constructorSwitch.call(callerClass, { implementationKey: configuredConstructableImplementation }), _g6.next('intermittent') && _g6.next({ description: description, parameter }).value);
+        let clientInterface = (_g7 =
+        clientInterfaceSwitch.call(newConfiguredConstructable, { implementationKey: clientInterfaceImplementation }),
+        _g7.next('intermittent') && _g7.next(...clientInterfaceArguments).value);
+        return clientInterface;
+      } });
 
-// client interface for creating sub class instance delegating to the `Constructable` functionality chain.
-Entity.clientInterfaceConstructable =
-  Entity[Constructable['reference'].clientInterface.switch]({ implementationKey: Constructable['reference'].clientInterface.key.constructable }) |> (g => g.next('intermittent') && g.next().value)
+    return proxiedTarget;
+  } });
 
-// Entity instance relating to prototype chain with functionality specific to the implementer class (sub class, e.g. Graph Element)
-Entity.clientInterface =
-  Entity[Constructable['reference'].clientInterface.switch]({ implementationKey: Reference.clientInterface.key.entity })
-  |> (g =>
-    g.next('intermittent') &&
-    g.next({
-      constructorImplementation: Reference.constructor.key.data,
-    }).value)
+
+
+Entity.clientInterfaceConstructable = (_g8 =
+Entity[_ConstructableClass.Constructable['reference'].clientInterface.switch]({ implementationKey: _ConstructableClass.Constructable['reference'].clientInterface.key.constructable }), _g8.next('intermittent') && _g8.next().value);
+
+
+Entity.clientInterface = (_g9 =
+Entity[_ConstructableClass.Constructable['reference'].clientInterface.switch]({ implementationKey: Reference.clientInterface.key.entity }),
+
+_g9.next('intermittent') &&
+_g9.next({
+  constructorImplementation: Reference.constructor.key.data }).
+value);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlL0VudGl0eS5jbGFzcy5qcyJdLCJuYW1lcyI6WyJFbnRpdHkiLCJDb25zdHJ1Y3RhYmxlIiwiY2xpZW50SW50ZXJmYWNlIiwiZGVzY3JpcHRpb24iLCJSZWZlcmVuY2UiLCJyZWZlcmVuY2UiLCJQcm90b3R5cGUiLCJwcm90b3R5cGUiLCJwcm90b3R5cGVEZWxlZ2F0aW9uIiwia2V5IiwiZW50aXR5IiwiU3ltYm9sIiwic2V0dGVyIiwibGlzdCIsInN5bWJvbCIsIm1ldGFkYXRhIiwidHlwZSIsImluc3RhbnRpYXRlIiwiaW5pdGlhbGl6ZSIsImRhdGEiLCJjb25maWd1cmVkQ2xhc3MiLCJtdWx0aXBsZURlbGVnYXRpb24iLCJ0YXJnZXRJbnN0YW5jZSIsImNvbnN0cnV0b3JQcm9wZXJ0eSIsInByZXZpb3VzUmVzdWx0IiwicHJvdG90eXBlRGVsZWdhdGlvbkdldHRlciIsImdldHRlciIsInByb3RvdHlwZURlbGVnYXRpb25TZXR0aW5nIiwiT2JqZWN0Iiwic2V0UHJvdG90eXBlT2YiLCJkZWxlZ2F0aW9uTGlzdCIsInVuc2hpZnQiLCJnZXRQcm90b3R5cGVPZiIsInRhcmdldE9iamVjdCIsImFzc2lnbiIsInBhcmFtZXRlciIsImRlZmluZVByb3BlcnR5Iiwid3JpdGFibGUiLCJlbnVtZXJhYmxlIiwidmFsdWUiLCJjb25zdHJ1Y3RvciIsInNlbGYiLCJpbnN0YW50aWF0ZVN3aXRjaCIsInN3aXRjaCIsImluaXRpYWxpemVTd2l0Y2giLCJpbnN0YW5jZSIsImltcGxlbWVudGF0aW9uS2V5IiwiY3JlYXRlT2JqZWN0V2l0aERlbGVnYXRpb24iLCJnIiwibmV4dCIsImluc3RhbmNlVHlwZSIsInJlY3Vyc2l2ZURlbGVnYXRpb25DaGFpbkV4ZWN1dGlvbiIsImdlbmVyYXRvciIsImRvbmUiLCJjb25zdHJ1Y3RvckltcGxlbWVudGF0aW9uIiwiRXJyb3IiLCJjb25maWd1cmVkQ29uc3RydWN0YWJsZUltcGxlbWVudGF0aW9uIiwiY2xpZW50SW50ZXJmYWNlSW1wbGVtZW50YXRpb24iLCJhcmd1bWVudExpc3RBZGFwdGVyIiwiY2FsbGVyQ2xhc3MiLCJjbGllbnRJbnRlcmZhY2VBcmd1bWVudHMiLCJhcmd1bWVudHMiLCJjb25zdHJ1Y3RvclN3aXRjaCIsImNsaWVudEludGVyZmFjZVN3aXRjaCIsInByb3hpZWRUYXJnZXQiLCJQcm94eSIsImNvbnN0cnVjdCIsInRhcmdldCIsImFyZ3VtZW50TGlzdCIsImxpc3RUYXJnZXQiLCJsaXN0RGVmYXVsdCIsImFwcGx5IiwidGhpc0FyZyIsIm5ld0NvbmZpZ3VyZWRDb25zdHJ1Y3RhYmxlIiwiY2xpZW50SW50ZXJmYWNlQ29uc3RydWN0YWJsZSIsImNvbnN0cnVjdGFibGUiXSwibWFwcGluZ3MiOiIwTEFBQTtBQUNBO0FBQ0E7QUFDQSxzRjtBQUNPLE1BQU1BLE1BQU0sR0FBRyxJQUFJQyxrQ0FBY0MsZUFBbEIsQ0FBa0MsRUFBRUMsV0FBVyxFQUFFLFFBQWYsRUFBbEMsQ0FBZixDOztBQUVQLE1BQU1DLFNBQVMsR0FBR0osTUFBTSxDQUFDQyxrQ0FBYyxXQUFkLEVBQTJCSSxTQUE1QixDQUF4QjtBQUNBLE1BQU1DLFNBQVMsR0FBR04sTUFBTSxDQUFDQyxrQ0FBYyxXQUFkLEVBQTJCTSxTQUE1QixDQUF4Qjs7Ozs7Ozs7OztBQVVBSCxTQUFTLENBQUNJLG1CQUFWLEdBQWdDOztBQUU5QkMsRUFBQUEsR0FBRyxFQUFFO0FBQ0hDLElBQUFBLE1BQU0sRUFBRUMsTUFBTSxDQUFDLDZDQUFELENBRFgsRUFGeUIsRUFBaEM7OztBQU1BTCxTQUFTLENBQUNMLGtDQUFjLFdBQWQsRUFBMkJPLG1CQUEzQixDQUErQ0ksTUFBL0MsQ0FBc0RDLElBQXZELENBQVQsQ0FBc0U7QUFDcEUsR0FBQ1QsU0FBUyxDQUFDSSxtQkFBVixDQUE4QkMsR0FBOUIsQ0FBa0NDLE1BQW5DLEdBQTRDO0FBQzFDSCxJQUFBQSxTQUFTLEVBQUU7QUFDVCxPQUFDTyxNQUFNLENBQUNDLFFBQVIsR0FB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QURGLEVBQzBKM0IsR0FBQyxDQUFDQyxJQUFGLENBQU8sY0FBUCxLQUEwQkQsR0FBQyxDQUFDQyxJQUFGLEdBQVNWLEtBRDdMOzs7QUFJQXZDLE1BQU0sQ0FBQ0UsZUFBUDtBQUNFRixNQUFNLENBQUNDLGtDQUFjLFdBQWQsRUFBMkJDLGVBQTNCLENBQTJDeUMsTUFBNUMsQ0FBTixDQUEwRCxFQUFFRyxpQkFBaUIsRUFBRTFDLFNBQVMsQ0FBQ0YsZUFBVixDQUEwQk8sR0FBMUIsQ0FBOEJDLE1BQW5ELEVBQTFELENBREY7O0FBR0lzQyxHQUFDLENBQUNDLElBQUYsQ0FBTyxjQUFQO0FBQ0FELEdBQUMsQ0FBQ0MsSUFBRixDQUFPO0FBQ0xLLEVBQUFBLHlCQUF5QixFQUFFbEQsU0FBUyxDQUFDb0MsV0FBVixDQUFzQi9CLEdBQXRCLENBQTBCVSxJQURoRCxFQUFQO0FBRUdvQixLQU5QIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQ29uc3RydWN0YWJsZSB9IGZyb20gJy4vQ29uc3RydWN0YWJsZS5jbGFzcy5qcydcclxuaW1wb3J0IHsgbWVyZ2VBcnJheVdpdGhPYmplY3RJdGVtIH0gZnJvbSAnLi4vdXRpbGl0eS9tZXJnZVByb3BlcnR5LmpzJ1xyXG5pbXBvcnQgKiBhcyBzeW1ib2wgZnJvbSAnLi4vZnVuY3Rpb25hbGl0eVByb3RvdHlwZS9TeW1ib2wucmVmZXJlbmNlLmpzJ1xyXG5pbXBvcnQgeyBkZWxlZ2F0ZVRvTXVsdGlwbGVPYmplY3QgYXMgbXVsdGlwbGVEZWxlZ2F0aW9uUHJveHkgfSBmcm9tICdAZGVwZW5kZW5jeS9tdWx0aXBsZVByb3RvdHlwZURlbGVnYXRpb24nXHJcbmV4cG9ydCBjb25zdCBFbnRpdHkgPSBuZXcgQ29uc3RydWN0YWJsZS5jbGllbnRJbnRlcmZhY2UoeyBkZXNjcmlwdGlvbjogJ0VudGl0eScgfSlcclxuXHJcbmNvbnN0IFJlZmVyZW5jZSA9IEVudGl0eVtDb25zdHJ1Y3RhYmxlWydyZWZlcmVuY2UnXS5yZWZlcmVuY2VdXHJcbmNvbnN0IFByb3RvdHlwZSA9IEVudGl0eVtDb25zdHJ1Y3RhYmxlWydyZWZlcmVuY2UnXS5wcm90b3R5cGVdXHJcblxyXG4vKlxyXG4gICAgICAgICAgICAgICAgICAgXyAgICAgICAgXyAgICAgICAgICAgICAgICAgICAgX19fXyAgICAgICBfICAgICAgICAgICAgICAgICAgXyAgIF8gICAgICAgICAgICAgXHJcbiAgIF8gX18gIF8gX18gX19fIHwgfF8gX19fIHwgfF8gXyAgIF8gXyBfXyAgIF9fX3wgIF8gXFwgIF9fX3wgfCBfX18gIF9fIF8gIF9fIF98IHxfKF8pIF9fXyAgXyBfXyAgXHJcbiAgfCAnXyBcXHwgJ19fLyBfIFxcfCBfXy8gXyBcXHwgX198IHwgfCB8ICdfIFxcIC8gXyBcXCB8IHwgfC8gXyBcXCB8LyBfIFxcLyBfYCB8LyBfYCB8IF9ffCB8LyBfIFxcfCAnXyBcXCBcclxuICB8IHxfKSB8IHwgfCAoXykgfCB8fCAoXykgfCB8X3wgfF98IHwgfF8pIHwgIF9fLyB8X3wgfCAgX18vIHwgIF9fLyAoX3wgfCAoX3wgfCB8X3wgfCAoXykgfCB8IHwgfFxyXG4gIHwgLl9fL3xffCAgXFxfX18vIFxcX19cXF9fXy8gXFxfX3xcXF9fLCB8IC5fXy8gXFxfX198X19fXy8gXFxfX198X3xcXF9fX3xcXF9fLCB8XFxfXyxffFxcX198X3xcXF9fXy98X3wgfF98XHJcbiAgfF98ICAgICAgICAgICAgICAgICAgICAgICAgICAgfF9fXy98X3wgICAgICAgICAgICAgICAgICAgICAgICAgICB8X19fLyAgICAgICAgICAgICAgICAgICAgICAgICBcclxuKi9cclxuUmVmZXJlbmNlLnByb3RvdHlwZURlbGVnYXRpb24gPSB7XHJcbiAgLy8gVE9ETzogQWRkIGltcGxlbWVudGF0aW9uIGZvciBjcmVhdGluZyBwcm90b3R5cGUgY2hhaW5zIHJlbGF0ZWQgdG8gR3JhcGggaW5zdGFuY2VzIGFuZCBzaGFyZWQgcHJvdG90eXBlIHRyZWUgZnVuY3Rpb25hbGl0eS5cclxuICBrZXk6IHtcclxuICAgIGVudGl0eTogU3ltYm9sKCdGdW50aW9uYWxpdHk6cHJvdG90eXBlRGVsZWdhdGlvbi5rZXkuZW50aXR5JyksIC8vIHR5cGUgT2JqZWN0LCB1c3VhbGx5IGNvbnRhaW5zIGBwcm90b3R5cGVgIHByb3RwZXJ0eVxyXG4gIH0sXHJcbn1cclxuUHJvdG90eXBlW0NvbnN0cnVjdGFibGVbJ3JlZmVyZW5jZSddLnByb3RvdHlwZURlbGVnYXRpb24uc2V0dGVyLmxpc3RdKHtcclxuICBbUmVmZXJlbmNlLnByb3RvdHlwZURlbGVnYXRpb24ua2V5LmVudGl0eV06IHtcclxuICAgIHByb3RvdHlwZToge1xyXG4gICAgICBbc3ltYm9sLm1ldGFkYXRhXTogeyB0eXBlOiAnRW50aXR5IGNsYXNzIHByb3RvdHlwZSBmb3IgYGVudGl0eWAgcHJvdG90eXBlRGVsZWdhdGlvbiBjaGFpbi4nIH0sXHJcbiAgICB9LFxyXG4gIH0sXHJcbn0pXHJcblxyXG4vKlxyXG4gICBfX18gICAgICAgICAgIF8gICAgICAgICAgICAgIF8gICBfICAgICAgIF8gICAgICAgXHJcbiAgfF8gX3xfIF9fICBfX198IHxfIF9fIF8gXyBfXyB8IHxfKF8pIF9fIF98IHxfIF9fXyBcclxuICAgfCB8fCAnXyBcXC8gX198IF9fLyBfYCB8ICdfIFxcfCBfX3wgfC8gX2AgfCBfXy8gXyBcXFxyXG4gICB8IHx8IHwgfCBcXF9fIFxcIHx8IChffCB8IHwgfCB8IHxffCB8IChffCB8IHx8ICBfXy9cclxuICB8X19ffF98IHxffF9fXy9cXF9fXFxfXyxffF98IHxffFxcX198X3xcXF9fLF98XFxfX1xcX19ffFxyXG4qL1xyXG5Qcm90b3R5cGVbQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uaW5zdGFudGlhdGUuc2V0dGVyLmxpc3RdKHt9KVxyXG5cclxuLypcclxuICAgIF9fXyAgICAgICBfIF8gICBfICAgICAgIF8gXyAgICAgICAgIFxyXG4gIHxfIF98XyBfXyAoXykgfF8oXykgX18gX3wgKF8pX19fX19fXyBcclxuICAgIHwgfHwgJ18gXFx8IHwgX198IHwvIF9gIHwgfCB8XyAgLyBfIFxcXHJcbiAgICB8IHx8IHwgfCB8IHwgfF98IHwgKF98IHwgfCB8LyAvICBfXy9cclxuICB8X19ffF98IHxffF98XFxfX3xffFxcX18sX3xffF8vX19fXFxfX198XHJcbiovXHJcblJlZmVyZW5jZS5pbml0aWFsaXplID0ge1xyXG4gIGtleToge1xyXG4gICAgLy8gaW5pdGlhbGl6ZSBpbnN0YW5jZSB3aXRoIGVudGl0eSBkZWxlZ2F0aW9uIHZhbHVlcy5cclxuICAgIGVudGl0eTogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5pdGlhbGl6ZS5rZXkuZW50aXR5JyksXHJcbiAgICAvLyBtZXJnZSBkYXRhIGludG8gaW5zdGFuY2UgcHJvcGVydGllc1xyXG4gICAgZGF0YTogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5pdGlhbGl6ZS5rZXkuZGF0YScpLFxyXG4gICAgY29uZmlndXJlZENsYXNzOiBTeW1ib2woJ0Z1bnRpb25hbGl0eTppbml0aWFsaXplLmtleS5jb25maWd1cmVkQ2xhc3MnKSxcclxuICAgIG11bHRpcGxlRGVsZWdhdGlvbjogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5pdGlhbGl6ZS5rZXkubXVsdGlwbGVEZWxlZ2F0aW9uJyksXHJcbiAgfSxcclxufVxyXG5Qcm90b3R5cGVbQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uaW5pdGlhbGl6ZS5zZXR0ZXIubGlzdF0oe1xyXG4gIFtSZWZlcmVuY2UuaW5pdGlhbGl6ZS5rZXkuZW50aXR5XSh7IHRhcmdldEluc3RhbmNlLCBwcm90b3R5cGUsIGNvbnN0cnV0b3JQcm9wZXJ0eSB9LCBwcmV2aW91c1Jlc3VsdCAvKiBpbiBjYXNlIG11bHRpcGxlIGNvbnN0cnVjdG9yIGZ1bmN0aW9uIGZvdW5kIGFuZCBleGVjdXRlZC4gKi8pIHtcclxuICAgIGlmICghcHJvdG90eXBlKSB7XHJcbiAgICAgIGxldCBwcm90b3R5cGVEZWxlZ2F0aW9uR2V0dGVyID0gY29uc3RydXRvclByb3BlcnR5W0NvbnN0cnVjdGFibGVbJ3JlZmVyZW5jZSddLnByb3RvdHlwZURlbGVnYXRpb24uZ2V0dGVyLmxpc3RdXHJcbiAgICAgIGxldCBwcm90b3R5cGVEZWxlZ2F0aW9uU2V0dGluZyA9IGNvbnN0cnV0b3JQcm9wZXJ0eTo6cHJvdG90eXBlRGVsZWdhdGlvbkdldHRlcihSZWZlcmVuY2UucHJvdG90eXBlRGVsZWdhdGlvbi5rZXkuZW50aXR5KVxyXG4gICAgICBwcm90b3R5cGUgPSBwcm90b3R5cGVEZWxlZ2F0aW9uU2V0dGluZy5wcm90b3R5cGUgLy8gRW50aXRpZXMgcHJvdG90eXBlcyBkZWxlZ2F0ZSB0byBlYWNoIG90aGVyLlxyXG4gICAgfVxyXG4gICAgT2JqZWN0LnNldFByb3RvdHlwZU9mKHRhcmdldEluc3RhbmNlLCBwcm90b3R5cGUpIC8vIGluaGVyaXQgb3duIGFuZCBkZWxlZ2F0ZWQgZnVuY3Rpb25hbGl0aWVzLlxyXG4gIH0sXHJcbiAgW1JlZmVyZW5jZS5pbml0aWFsaXplLmtleS5tdWx0aXBsZURlbGVnYXRpb25dKHsgdGFyZ2V0SW5zdGFuY2UsIGRlbGVnYXRpb25MaXN0ID0gW10gfSwgcHJldmlvdXNSZXN1bHQgLyogaW4gY2FzZSBtdWx0aXBsZSBjb25zdHJ1Y3RvciBmdW5jdGlvbiBmb3VuZCBhbmQgZXhlY3V0ZWQuICovKSB7XHJcbiAgICBkZWxlZ2F0aW9uTGlzdC51bnNoaWZ0KHRhcmdldEluc3RhbmNlIHw+IE9iamVjdC5nZXRQcm90b3R5cGVPZikgLy8gYWRkIHRoZSBjbGFzcyBwcm90b3R5cGUgdG8gdGhlIGFkZGl0aW9uYWwgcHJvdG90eXBlcyB0byBkZWxlZ2F0ZSB0by5cclxuICAgIHJldHVybiBtdWx0aXBsZURlbGVnYXRpb25Qcm94eSh7IHRhcmdldE9iamVjdDogdGFyZ2V0SW5zdGFuY2UsIGRlbGVnYXRpb25MaXN0IH0pXHJcbiAgfSxcclxuICBbUmVmZXJlbmNlLmluaXRpYWxpemUua2V5LmRhdGFdKHsgZGF0YSA9IHt9LCB0YXJnZXRJbnN0YW5jZSB9OiB7IGRhdGE6IE9iamVjdCB9ID0ge30pIHtcclxuICAgIE9iamVjdC5hc3NpZ24odGFyZ2V0SW5zdGFuY2UsIGRhdGEpIC8vIGFwcGx5IGRhdGEgdG8gaW5zdGFuY2VcclxuICAgIHJldHVybiB0YXJnZXRJbnN0YW5jZVxyXG4gIH0sXHJcbiAgLy8gRXhhbXBsZTogVHJ5aW5nIHRvIG92ZXJyaWRlIGEgc3ltYm9sIG9mIGEgcGFyZW50IGNsYXNzIGluIHRoZSBjaGlsZCBjbGFzcyBwcm9wZXJ0aWVzLCB3aGVuIGNhbGxlZCB3aXRoIHJlY3Vyc2l2ZSBvcHRpb24gKGUuZy4gaW4gQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uY29uc3RydWN0KSB3aWxsIGV4ZWN1dGUgYWxsIGZ1bmN0aW9ucyB3aXRoIHRoZSBzYW1lIGtleSB0aHJvdWdob3V0IHRoZSBwcm90b3R5cGUgY2hhaW4uXHJcbiAgLy8gW0NvbnN0cnVjdGFibGVbJ3JlZmVyZW5jZSddLmluaXRpYWxpemUua2V5LmNvbnN0cnVjdGFibGVdKCkge1xyXG4gIC8vICAgY29uc29sZS5sb2coYEV4ZWN1dGVkIHRvZ2V0aGVyIHdpdGggb3RoZXIgQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uaW5pdGlhbGl6ZS5rZXkuY29uc3RydWN0YWJsZSBpbiB0aGUgcHJvdG90eXBlIGNoYWluYClcclxuICAvLyB9LFxyXG4gIFtSZWZlcmVuY2UuaW5pdGlhbGl6ZS5rZXkuY29uZmlndXJlZENsYXNzXSh7IGRlc2NyaXB0aW9uID0gJ2NvbmZpZ3VyZWRDbGFzcycsIHRhcmdldEluc3RhbmNlLCBwYXJhbWV0ZXIgPSBbXSB9ID0ge30pIHtcclxuICAgIE9iamVjdC5kZWZpbmVQcm9wZXJ0eSh0YXJnZXRJbnN0YW5jZSwgUmVmZXJlbmNlLm1ldGFkYXRhLCB7IHdyaXRhYmxlOiBmYWxzZSwgZW51bWVyYWJsZTogZmFsc2UsIHZhbHVlOiB7IHR5cGU6IFN5bWJvbChkZXNjcmlwdGlvbikgfSB9KSAvLyBzZXQgbWV0YWRhdGEgaW5mb3JtYXRpb24gZm9yIGRlYnVnZ2luZy5cclxuICAgIHRhcmdldEluc3RhbmNlLnBhcmFtZXRlciA9IHBhcmFtZXRlclxyXG4gICAgcmV0dXJuIHRhcmdldEluc3RhbmNlXHJcbiAgfSxcclxufSlcclxuXHJcbi8qXHJcbiAgICBfX19fICAgICAgICAgICAgICAgIF8gICAgICAgICAgICAgICAgICAgXyAgICAgICAgICAgICBcclxuICAgLyBfX198X19fICBfIF9fICBfX198IHxfIF8gX18gXyAgIF8gIF9fX3wgfF8gX19fICBfIF9fIFxyXG4gIHwgfCAgIC8gXyBcXHwgJ18gXFwvIF9ffCBfX3wgJ19ffCB8IHwgfC8gX198IF9fLyBfIFxcfCAnX198XHJcbiAgfCB8X198IChfKSB8IHwgfCBcXF9fIFxcIHxffCB8ICB8IHxffCB8IChfX3wgfHwgKF8pIHwgfCAgIFxyXG4gICBcXF9fX19cXF9fXy98X3wgfF98X19fL1xcX198X3wgICBcXF9fLF98XFxfX198XFxfX1xcX19fL3xffCAgIFxyXG4qL1xyXG5SZWZlcmVuY2UuY29uc3RydWN0b3IgPSB7XHJcbiAga2V5OiB7XHJcbiAgICAvLyBtZXJnZSBkYXRhIGludG8gaW5zdGFuY2UgcHJvcGVydGllc1xyXG4gICAgZGF0YTogU3ltYm9sKCdGdW50aW9uYWxpdHk6Y29uc3RydWN0b3Iua2V5LmRhdGEnKSxcclxuICAgIGNvbmZpZ3VyZWRDbGFzczogU3ltYm9sKCdGdW50aW9uYWxpdHk6Y29uc3RydWN0b3Iua2V5LmNvbmZpZ3VyZWRDbGFzcycpLFxyXG4gIH0sXHJcbn1cclxuUHJvdG90eXBlW0NvbnN0cnVjdGFibGVbJ3JlZmVyZW5jZSddLmNvbnN0cnVjdG9yLnNldHRlci5saXN0XSh7XHJcbiAgW1JlZmVyZW5jZS5jb25zdHJ1Y3Rvci5rZXkuZGF0YV0oeyBkYXRhLCBkZWxlZ2F0aW9uTGlzdCwgc2VsZiA9IHRoaXMgfSA9IHt9KSB7XHJcbiAgICBsZXQgaW5zdGFudGlhdGVTd2l0Y2ggPSBzZWxmW0NvbnN0cnVjdGFibGVbJ3JlZmVyZW5jZSddLmluc3RhbnRpYXRlLnN3aXRjaF0sXHJcbiAgICAgIGluaXRpYWxpemVTd2l0Y2ggPSBzZWxmW0NvbnN0cnVjdGFibGVbJ3JlZmVyZW5jZSddLmluaXRpYWxpemUuc3dpdGNoXVxyXG5cclxuICAgIC8vIGNyZWF0ZSBpbnN0YW5jZVxyXG4gICAgbGV0IGluc3RhbmNlID1cclxuICAgICAgc2VsZjo6aW5zdGFudGlhdGVTd2l0Y2goeyBpbXBsZW1lbnRhdGlvbktleTogQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uaW5zdGFudGlhdGUua2V5LmNyZWF0ZU9iamVjdFdpdGhEZWxlZ2F0aW9uIH0pIHw+IChnID0+IGcubmV4dCgnaW50ZXJtaXR0ZW50JykgJiYgZy5uZXh0KHsgaW5zdGFuY2VUeXBlOiAnb2JqZWN0JyB9KS52YWx1ZSlcclxuXHJcbiAgICAvLyBkZWxlZ2F0ZSB0byB0aGUgRW50aXR5IGNvbnN0cnVjdGFibGUgY2xhc3NcclxuICAgIHNlbGY6OmluaXRpYWxpemVTd2l0Y2goeyBpbXBsZW1lbnRhdGlvbktleTogUmVmZXJlbmNlLmluaXRpYWxpemUua2V5LmVudGl0eSwgcmVjdXJzaXZlRGVsZWdhdGlvbkNoYWluRXhlY3V0aW9uOiB0cnVlIH0pXHJcbiAgICAgIHw+IChnID0+IHtcclxuICAgICAgICBnLm5leHQoJ2ludGVybWl0dGVudCcpXHJcbiAgICAgICAgLy8gcGFzcyB0byBhbGwgaW1wbGVtZW5hdGF0aW9ucyB0aGUgc2FtZSBhcmd1bWVudFxyXG4gICAgICAgIGxldCBnZW5lcmF0b3JcclxuICAgICAgICBkbyB7XHJcbiAgICAgICAgICBnZW5lcmF0b3IgPSBnLm5leHQoeyB0YXJnZXRJbnN0YW5jZTogaW5zdGFuY2UsIGNvbnN0cnV0b3JQcm9wZXJ0eTogc2VsZiwgZGVsZWdhdGlvbkxpc3QgfSlcclxuICAgICAgICB9IHdoaWxlICghZ2VuZXJhdG9yLmRvbmUpXHJcbiAgICAgICAgLy8gcmV0dXJuIGdlbmVyYXRvci52YWx1ZVxyXG4gICAgICB9KVxyXG5cclxuICAgIC8vIGFkZCBhZGRpdGlvbmFsIGRlbGVnYXRpb24gcHJvdG90eXBlc1xyXG4gICAgc2VsZjo6aW5pdGlhbGl6ZVN3aXRjaCh7IGltcGxlbWVudGF0aW9uS2V5OiBSZWZlcmVuY2UuaW5pdGlhbGl6ZS5rZXkubXVsdGlwbGVEZWxlZ2F0aW9uIH0pIHw+IChnID0+IGcubmV4dCgnaW50ZXJtaXR0ZW50JykgJiYgZy5uZXh0KHsgdGFyZ2V0SW5zdGFuY2U6IGluc3RhbmNlLCBkZWxlZ2F0aW9uTGlzdCB9KS52YWx1ZSlcclxuXHJcbiAgICAvLyBpbml0aWFsaXplIGluc3RhbmNlIGRhdGEuXHJcbiAgICBzZWxmOjppbml0aWFsaXplU3dpdGNoKHsgaW1wbGVtZW50YXRpb25LZXk6IFJlZmVyZW5jZS5pbml0aWFsaXplLmtleS5kYXRhLCByZWN1cnNpdmVEZWxlZ2F0aW9uQ2hhaW5FeGVjdXRpb246IHRydWUgfSlcclxuICAgICAgfD4gKGcgPT4ge1xyXG4gICAgICAgIGcubmV4dCgnaW50ZXJtaXR0ZW50JylcclxuICAgICAgICAvLyBwYXNzIHRvIGFsbCBpbXBsZW1lbmF0YXRpb25zIHRoZSBzYW1lIGFyZ3VtZW50XHJcbiAgICAgICAgbGV0IGdlbmVyYXRvclxyXG4gICAgICAgIGRvIHtcclxuICAgICAgICAgIGdlbmVyYXRvciA9IGcubmV4dCh7IHRhcmdldEluc3RhbmNlOiBpbnN0YW5jZSwgZGF0YTogZGF0YSB9KVxyXG4gICAgICAgIH0gd2hpbGUgKCFnZW5lcmF0b3IuZG9uZSlcclxuICAgICAgICAvLyByZXR1cm4gZ2VuZXJhdG9yLnZhbHVlXHJcbiAgICAgIH0pXHJcbiAgICByZXR1cm4gaW5zdGFuY2VcclxuICB9LFxyXG4gIFtSZWZlcmVuY2UuY29uc3RydWN0b3Iua2V5LmNvbmZpZ3VyZWRDbGFzc10oeyBkZXNjcmlwdGlvbiwgc2VsZiA9IHRoaXMsIHBhcmFtZXRlciB9ID0ge30pIHtcclxuICAgIGxldCBpbnN0YW5jZSA9XHJcbiAgICAgIHNlbGZbQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uaW5zdGFudGlhdGUuc3dpdGNoXSh7IGltcGxlbWVudGF0aW9uS2V5OiBSZWZlcmVuY2UuaW5zdGFudGlhdGUua2V5LmNyZWF0ZU9iamVjdFdpdGhEZWxlZ2F0aW9uIH0pXHJcbiAgICAgIHw+IChnID0+IGcubmV4dCgnaW50ZXJtaXR0ZW50JykgJiYgZy5uZXh0KHsgZGVzY3JpcHRpb24sIHByb3RvdHlwZURlbGVnYXRpb246IHNlbGYgfSkudmFsdWUpXHJcbiAgICBzZWxmW0NvbnN0cnVjdGFibGVbJ3JlZmVyZW5jZSddLmluaXRpYWxpemUuc3dpdGNoXSh7IGltcGxlbWVudGF0aW9uS2V5OiBSZWZlcmVuY2UuaW5pdGlhbGl6ZS5rZXkuY29uZmlndXJlZENsYXNzIH0pXHJcbiAgICAgIHw+IChnID0+IGcubmV4dCgnaW50ZXJtaXR0ZW50JykgJiYgZy5uZXh0KHsgZGVzY3JpcHRpb24sIHRhcmdldEluc3RhbmNlOiBpbnN0YW5jZSwgcGFyYW1ldGVyIH0pLnZhbHVlKVxyXG4gICAgcmV0dXJuIGluc3RhbmNlXHJcbiAgfSxcclxufSlcclxuXHJcbi8qXHJcbiAgICBfX19fIF8gXyAgICAgICAgICAgIF8gICBfX18gICAgICAgXyAgICAgICAgICAgICBfXyAgICAgICAgICAgICAgICBcclxuICAgLyBfX198IChfKSBfX18gXyBfXyB8IHxffF8gX3xfIF9fIHwgfF8gX19fIF8gX18gLyBffCBfXyBfICBfX18gX19fIFxyXG4gIHwgfCAgIHwgfCB8LyBfIFxcICdfIFxcfCBfX3x8IHx8ICdfIFxcfCBfXy8gXyBcXCAnX198IHxfIC8gX2AgfC8gX18vIF8gXFxcclxuICB8IHxfX198IHwgfCAgX18vIHwgfCB8IHxfIHwgfHwgfCB8IHwgfHwgIF9fLyB8ICB8ICBffCAoX3wgfCAoX3wgIF9fL1xyXG4gICBcXF9fX198X3xffFxcX19ffF98IHxffFxcX198X19ffF98IHxffFxcX19cXF9fX3xffCAgfF98ICBcXF9fLF98XFxfX19cXF9fX3xcclxuKi9cclxuUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZSA9IHtcclxuICBrZXk6IHtcclxuICAgIGVudGl0eTogU3ltYm9sKCdGdW50aW9uYWxpdHk6Y2xpZW50SW50ZXJmYWNlLmtleS5lbnRpdHknKSxcclxuICB9LFxyXG59XHJcblByb3RvdHlwZVtDb25zdHJ1Y3RhYmxlWydyZWZlcmVuY2UnXS5jbGllbnRJbnRlcmZhY2Uuc2V0dGVyLmxpc3RdKHtcclxuICBbUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZS5rZXkuZW50aXR5XSh7XHJcbiAgICBjb25zdHJ1Y3RvckltcGxlbWVudGF0aW9uID0gdGhyb3cgbmV3IEVycm9yKCfigKIgUGFyYW1ldGVyIGBjb25zdHJ1Y3RvckltcGxlbWVudGF0aW9uYCBtdXN0IGJlIHBhc3NlZC4nKSxcclxuICAgIGNvbmZpZ3VyZWRDb25zdHJ1Y3RhYmxlSW1wbGVtZW50YXRpb24gPSBSZWZlcmVuY2UuY29uc3RydWN0b3Iua2V5LmNvbmZpZ3VyZWRDbGFzcyxcclxuICAgIGNsaWVudEludGVyZmFjZUltcGxlbWVudGF0aW9uID0gUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZS5rZXkuZW50aXR5LFxyXG4gICAgLy8gYXBwbHkgY2hhbmdlcyB0byBhcmd1bWVudHMgZGF0YSBzdHJ1Y3R1cmUuXHJcbiAgICBhcmd1bWVudExpc3RBZGFwdGVyLFxyXG4gIH0gPSB7fSkge1xyXG4gICAgY29uc3QgY2FsbGVyQ2xhc3MgPSB0aGlzLFxyXG4gICAgICBjbGllbnRJbnRlcmZhY2VBcmd1bWVudHMgPSBhcmd1bWVudHNcclxuICAgIGxldCBjb25zdHJ1Y3RvclN3aXRjaCA9IENvbnN0cnVjdGFibGVbQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uY29uc3RydWN0b3Iuc3dpdGNoXSxcclxuICAgICAgY2xpZW50SW50ZXJmYWNlU3dpdGNoID0gQ29uc3RydWN0YWJsZVtDb25zdHJ1Y3RhYmxlWydyZWZlcmVuY2UnXS5jbGllbnRJbnRlcmZhY2Uuc3dpdGNoXVxyXG4gICAgY29uc3QgcHJveGllZFRhcmdldCA9IG5ldyBQcm94eShmdW5jdGlvbigpIHt9LCB7XHJcbiAgICAgIGNvbnN0cnVjdCh0YXJnZXQsIGFyZ3VtZW50TGlzdCwgcHJveGllZFRhcmdldCkge1xyXG4gICAgICAgIGlmIChhcmd1bWVudExpc3RBZGFwdGVyKSBhcmd1bWVudExpc3RBZGFwdGVyKGFyZ3VtZW50TGlzdCkgLy8gcmVzdHJ1Y3R1cmUgYXJndW1lbnRzXHJcbiAgICAgICAgaWYgKGNhbGxlckNsYXNzLnBhcmFtZXRlcikgbWVyZ2VBcnJheVdpdGhPYmplY3RJdGVtKHsgbGlzdFRhcmdldDogYXJndW1lbnRMaXN0LCBsaXN0RGVmYXVsdDogY2FsbGVyQ2xhc3MucGFyYW1ldGVyIH0pIC8vIGluIGNhc2UgY29uZmlndXJlZCBjb25zdHJ1Y3RhYmxlIHdoaWNoIGhvbGRzIGRlZmF1bHQgcGFyYW1ldGVyIHZhbHVlcy5cclxuICAgICAgICBsZXQgaW5zdGFuY2UgPSBjYWxsZXJDbGFzczo6Y29uc3RydWN0b3JTd2l0Y2goeyBpbXBsZW1lbnRhdGlvbktleTogY29uc3RydWN0b3JJbXBsZW1lbnRhdGlvbiB9KSB8PiAoZyA9PiBnLm5leHQoJ2ludGVybWl0dGVudCcpICYmIGcubmV4dCguLi5hcmd1bWVudExpc3QpLnZhbHVlKVxyXG4gICAgICAgIHJldHVybiBpbnN0YW5jZVxyXG4gICAgICB9LFxyXG4gICAgICBhcHBseSh0YXJnZXQsIHRoaXNBcmcsIFt7IGRlc2NyaXB0aW9uLCBwYXJhbWV0ZXIgPSBbXSB9ID0ge31dKSB7XHJcbiAgICAgICAgbGV0IG5ld0NvbmZpZ3VyZWRDb25zdHJ1Y3RhYmxlID1cclxuICAgICAgICAgIGNhbGxlckNsYXNzOjpjb25zdHJ1Y3RvclN3aXRjaCh7IGltcGxlbWVudGF0aW9uS2V5OiBjb25maWd1cmVkQ29uc3RydWN0YWJsZUltcGxlbWVudGF0aW9uIH0pIHw+IChnID0+IGcubmV4dCgnaW50ZXJtaXR0ZW50JykgJiYgZy5uZXh0KHsgZGVzY3JpcHRpb246IGRlc2NyaXB0aW9uLCBwYXJhbWV0ZXIgfSkudmFsdWUpXHJcbiAgICAgICAgbGV0IGNsaWVudEludGVyZmFjZSA9XHJcbiAgICAgICAgICBuZXdDb25maWd1cmVkQ29uc3RydWN0YWJsZTo6Y2xpZW50SW50ZXJmYWNlU3dpdGNoKHsgaW1wbGVtZW50YXRpb25LZXk6IGNsaWVudEludGVyZmFjZUltcGxlbWVudGF0aW9uIH0pXHJcbiAgICAgICAgICB8PiAoZyA9PiBnLm5leHQoJ2ludGVybWl0dGVudCcpICYmIC8qIFBhc3Mgc2FtZSBhcmd1bWVudHMgZnJvbSBwcmV2aW91cyBjbGllbnQgaXRuZXJmYWNlICovIGcubmV4dCguLi5jbGllbnRJbnRlcmZhY2VBcmd1bWVudHMpLnZhbHVlKVxyXG4gICAgICAgIHJldHVybiBjbGllbnRJbnRlcmZhY2VcclxuICAgICAgfSxcclxuICAgIH0pXHJcbiAgICByZXR1cm4gcHJveGllZFRhcmdldFxyXG4gIH0sXHJcbn0pXHJcblxyXG4vLyBjbGllbnQgaW50ZXJmYWNlIGZvciBjcmVhdGluZyBzdWIgY2xhc3MgaW5zdGFuY2UgZGVsZWdhdGluZyB0byB0aGUgYENvbnN0cnVjdGFibGVgIGZ1bmN0aW9uYWxpdHkgY2hhaW4uXHJcbkVudGl0eS5jbGllbnRJbnRlcmZhY2VDb25zdHJ1Y3RhYmxlID1cclxuICBFbnRpdHlbQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uY2xpZW50SW50ZXJmYWNlLnN3aXRjaF0oeyBpbXBsZW1lbnRhdGlvbktleTogQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uY2xpZW50SW50ZXJmYWNlLmtleS5jb25zdHJ1Y3RhYmxlIH0pIHw+IChnID0+IGcubmV4dCgnaW50ZXJtaXR0ZW50JykgJiYgZy5uZXh0KCkudmFsdWUpXHJcblxyXG4vLyBFbnRpdHkgaW5zdGFuY2UgcmVsYXRpbmcgdG8gcHJvdG90eXBlIGNoYWluIHdpdGggZnVuY3Rpb25hbGl0eSBzcGVjaWZpYyB0byB0aGUgaW1wbGVtZW50ZXIgY2xhc3MgKHN1YiBjbGFzcywgZS5nLiBHcmFwaCBFbGVtZW50KVxyXG5FbnRpdHkuY2xpZW50SW50ZXJmYWNlID1cclxuICBFbnRpdHlbQ29uc3RydWN0YWJsZVsncmVmZXJlbmNlJ10uY2xpZW50SW50ZXJmYWNlLnN3aXRjaF0oeyBpbXBsZW1lbnRhdGlvbktleTogUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZS5rZXkuZW50aXR5IH0pXHJcbiAgfD4gKGcgPT5cclxuICAgIGcubmV4dCgnaW50ZXJtaXR0ZW50JykgJiZcclxuICAgIGcubmV4dCh7XHJcbiAgICAgIGNvbnN0cnVjdG9ySW1wbGVtZW50YXRpb246IFJlZmVyZW5jZS5jb25zdHJ1Y3Rvci5rZXkuZGF0YSxcclxuICAgIH0pLnZhbHVlKVxyXG4iXX0=

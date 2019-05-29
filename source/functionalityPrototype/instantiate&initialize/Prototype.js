@@ -1,62 +1,62 @@
-import { Reference } from './Reference.js'
-import { deepFreeze } from '../../utility/deepObjectFreeze.js'
-import { mergeNonexistentProperties, mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupAdapter } from '../prototypeMethod.js'
-import * as symbol from '../Symbol.reference.js'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.Prototype = void 0;var _Reference = require("./Reference.js");
 
-export const Prototype = {
+var _mergeProperty = require("../../utility/mergeProperty.js");
+var _prototypeMethod = require("../prototypeMethod.js");
+var symbol = _interopRequireWildcard(require("../Symbol.reference.js"));
+
+const Prototype = {
   [symbol.metadata]: {
-    type: Symbol('Instantiate & Initialize functionality'),
-  },
-  /*
-                     _        _                    ____       _                  _   _             
-     _ __  _ __ ___ | |_ ___ | |_ _   _ _ __   ___|  _ \  ___| | ___  __ _  __ _| |_(_) ___  _ __  
-    | '_ \| '__/ _ \| __/ _ \| __| | | | '_ \ / _ \ | | |/ _ \ |/ _ \/ _` |/ _` | __| |/ _ \| '_ \ 
-    | |_) | | | (_) | || (_) | |_| |_| | |_) |  __/ |_| |  __/ |  __/ (_| | (_| | |_| | (_) | | | |
-    | .__/|_|  \___/ \__\___/ \__|\__, | .__/ \___|____/ \___|_|\___|\__, |\__,_|\__|_|\___/|_| |_|
-    |_|                           |___/|_|                           |___/                         
-*/
-  [Reference.prototypeDelegation.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({
+    type: Symbol('Instantiate & Initialize functionality') },
+
+
+
+
+
+
+
+
+
+  [_Reference.Reference.prototypeDelegation.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({
       target: this,
-      ownProperty: Reference.prototypeDelegation.list,
-      value: implementation,
-    })
-  },
-  [Reference.prototypeDelegation.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.prototypeDelegation.list }),
-  [Reference.prototypeDelegation.list]: {},
+      ownProperty: _Reference.Reference.prototypeDelegation.list,
+      value: implementation });
 
-  /*
-     _           _              _   _       _       
-    (_)_ __  ___| |_ __ _ _ __ | |_(_) __ _| |_ ___ 
-    | | '_ \/ __| __/ _` | '_ \| __| |/ _` | __/ _ \
-    | | | | \__ \ || (_| | | | | |_| | (_| | ||  __/
-    |_|_| |_|___/\__\__,_|_| |_|\__|_|\__,_|\__\___|
-*/
-  [Reference.instantiate.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.instantiate.list, value: implementation })
   },
-  [Reference.instantiate.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.instantiate.list }),
-  [Reference.instantiate.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.instantiate.fallback,
-    implementationGetterSymbol: Reference.instantiate.getter.list,
-  }),
-  [Reference.instantiate.list]: {},
+  [_Reference.Reference.prototypeDelegation.getter.list]: (0, _prototypeMethod.nestedPropertyDelegatedLookupAdapter)({ baseProperty: _Reference.Reference.prototypeDelegation.list }),
+  [_Reference.Reference.prototypeDelegation.list]: {},
 
-  /*
-     _       _ _   _       _ _         
-    (_)_ __ (_) |_(_) __ _| (_)_______ 
-    | | '_ \| | __| |/ _` | | |_  / _ \
-    | | | | | | |_| | (_| | | |/ /  __/
-    |_|_| |_|_|\__|_|\__,_|_|_/___\___|
-*/
-  [Reference.initialize.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.initialize.list, value: implementation })
+
+
+
+
+
+
+
+  [_Reference.Reference.instantiate.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({ target: this, ownProperty: _Reference.Reference.instantiate.list, value: implementation });
   },
-  [Reference.initialize.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.initialize.list }),
-  [Reference.initialize.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.initialize.fallback,
-    implementationGetterSymbol: Reference.initialize.getter.list,
-  }),
-  [Reference.initialize.list]: {},
-}
+  [_Reference.Reference.instantiate.getter.list]: (0, _prototypeMethod.nestedPropertyDelegatedLookupAdapter)({ baseProperty: _Reference.Reference.instantiate.list }),
+  [_Reference.Reference.instantiate.switch]: (0, _prototypeMethod.createSwitchGeneratorFunction)({
+    fallbackSymbol: _Reference.Reference.instantiate.fallback,
+    implementationGetterSymbol: _Reference.Reference.instantiate.getter.list }),
+
+  [_Reference.Reference.instantiate.list]: {},
+
+
+
+
+
+
+
+
+  [_Reference.Reference.initialize.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({ target: this, ownProperty: _Reference.Reference.initialize.list, value: implementation });
+  },
+  [_Reference.Reference.initialize.getter.list]: (0, _prototypeMethod.nestedPropertyDelegatedLookupAdapter)({ baseProperty: _Reference.Reference.initialize.list }),
+  [_Reference.Reference.initialize.switch]: (0, _prototypeMethod.createSwitchGeneratorFunction)({
+    fallbackSymbol: _Reference.Reference.initialize.fallback,
+    implementationGetterSymbol: _Reference.Reference.initialize.getter.list }),
+
+  [_Reference.Reference.initialize.list]: {} };exports.Prototype = Prototype;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9mdW5jdGlvbmFsaXR5UHJvdG90eXBlL2luc3RhbnRpYXRlJmluaXRpYWxpemUvUHJvdG90eXBlLmpzIl0sIm5hbWVzIjpbIlByb3RvdHlwZSIsInN5bWJvbCIsIm1ldGFkYXRhIiwidHlwZSIsIlN5bWJvbCIsIlJlZmVyZW5jZSIsInByb3RvdHlwZURlbGVnYXRpb24iLCJzZXR0ZXIiLCJsaXN0IiwiaW1wbGVtZW50YXRpb24iLCJ0YXJnZXQiLCJvd25Qcm9wZXJ0eSIsInZhbHVlIiwiZ2V0dGVyIiwiYmFzZVByb3BlcnR5IiwiaW5zdGFudGlhdGUiLCJzd2l0Y2giLCJmYWxsYmFja1N5bWJvbCIsImZhbGxiYWNrIiwiaW1wbGVtZW50YXRpb25HZXR0ZXJTeW1ib2wiLCJpbml0aWFsaXplIl0sIm1hcHBpbmdzIjoiNkxBQUE7O0FBRUE7QUFDQTtBQUNBOztBQUVPLE1BQU1BLFNBQVMsR0FBRztBQUN2QixHQUFDQyxNQUFNLENBQUNDLFFBQVIsR0FBbUI7QUFDakJDLElBQUFBLElBQUksRUFBRUMsTUFBTSxDQUFDLHdDQUFELENBREssRUFESTs7Ozs7Ozs7OztBQVl2QixHQUFDQyxxQkFBVUMsbUJBQVYsQ0FBOEJDLE1BQTlCLENBQXFDQyxJQUF0QyxFQUE0Q0MsY0FBNUMsRUFBb0U7QUFDbEUsV0FBTywyQ0FBdUI7QUFDNUJDLE1BQUFBLE1BQU0sRUFBRSxJQURvQjtBQUU1QkMsTUFBQUEsV0FBVyxFQUFFTixxQkFBVUMsbUJBQVYsQ0FBOEJFLElBRmY7QUFHNUJJLE1BQUFBLEtBQUssRUFBRUgsY0FIcUIsRUFBdkIsQ0FBUDs7QUFLRCxHQWxCc0I7QUFtQnZCLEdBQUNKLHFCQUFVQyxtQkFBVixDQUE4Qk8sTUFBOUIsQ0FBcUNMLElBQXRDLEdBQTZDLDJEQUFxQyxFQUFFTSxZQUFZLEVBQUVULHFCQUFVQyxtQkFBVixDQUE4QkUsSUFBOUMsRUFBckMsQ0FuQnRCO0FBb0J2QixHQUFDSCxxQkFBVUMsbUJBQVYsQ0FBOEJFLElBQS9CLEdBQXNDLEVBcEJmOzs7Ozs7Ozs7QUE2QnZCLEdBQUNILHFCQUFVVSxXQUFWLENBQXNCUixNQUF0QixDQUE2QkMsSUFBOUIsRUFBb0NDLGNBQXBDLEVBQTREO0FBQzFELFdBQU8sMkNBQXVCLEVBQUVDLE1BQU0sRUFBRSxJQUFWLEVBQWdCQyxXQUFXLEVBQUVOLHFCQUFVVSxXQUFWLENBQXNCUCxJQUFuRCxFQUF5REksS0FBSyxFQUFFSCxjQUFoRSxFQUF2QixDQUFQO0FBQ0QsR0EvQnNCO0FBZ0N2QixHQUFDSixxQkFBVVUsV0FBVixDQUFzQkYsTUFBdEIsQ0FBNkJMLElBQTlCLEdBQXFDLDJEQUFxQyxFQUFFTSxZQUFZLEVBQUVULHFCQUFVVSxXQUFWLENBQXNCUCxJQUF0QyxFQUFyQyxDQWhDZDtBQWlDdkIsR0FBQ0gscUJBQVVVLFdBQVYsQ0FBc0JDLE1BQXZCLEdBQWdDLG9EQUE4QjtBQUM1REMsSUFBQUEsY0FBYyxFQUFFWixxQkFBVVUsV0FBVixDQUFzQkcsUUFEc0I7QUFFNURDLElBQUFBLDBCQUEwQixFQUFFZCxxQkFBVVUsV0FBVixDQUFzQkYsTUFBdEIsQ0FBNkJMLElBRkcsRUFBOUIsQ0FqQ1Q7O0FBcUN2QixHQUFDSCxxQkFBVVUsV0FBVixDQUFzQlAsSUFBdkIsR0FBOEIsRUFyQ1A7Ozs7Ozs7OztBQThDdkIsR0FBQ0gscUJBQVVlLFVBQVYsQ0FBcUJiLE1BQXJCLENBQTRCQyxJQUE3QixFQUFtQ0MsY0FBbkMsRUFBMkQ7QUFDekQsV0FBTywyQ0FBdUIsRUFBRUMsTUFBTSxFQUFFLElBQVYsRUFBZ0JDLFdBQVcsRUFBRU4scUJBQVVlLFVBQVYsQ0FBcUJaLElBQWxELEVBQXdESSxLQUFLLEVBQUVILGNBQS9ELEVBQXZCLENBQVA7QUFDRCxHQWhEc0I7QUFpRHZCLEdBQUNKLHFCQUFVZSxVQUFWLENBQXFCUCxNQUFyQixDQUE0QkwsSUFBN0IsR0FBb0MsMkRBQXFDLEVBQUVNLFlBQVksRUFBRVQscUJBQVVlLFVBQVYsQ0FBcUJaLElBQXJDLEVBQXJDLENBakRiO0FBa0R2QixHQUFDSCxxQkFBVWUsVUFBVixDQUFxQkosTUFBdEIsR0FBK0Isb0RBQThCO0FBQzNEQyxJQUFBQSxjQUFjLEVBQUVaLHFCQUFVZSxVQUFWLENBQXFCRixRQURzQjtBQUUzREMsSUFBQUEsMEJBQTBCLEVBQUVkLHFCQUFVZSxVQUFWLENBQXFCUCxNQUFyQixDQUE0QkwsSUFGRyxFQUE5QixDQWxEUjs7QUFzRHZCLEdBQUNILHFCQUFVZSxVQUFWLENBQXFCWixJQUF0QixHQUE2QixFQXRETixFQUFsQixDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgUmVmZXJlbmNlIH0gZnJvbSAnLi9SZWZlcmVuY2UuanMnXG5pbXBvcnQgeyBkZWVwRnJlZXplIH0gZnJvbSAnLi4vLi4vdXRpbGl0eS9kZWVwT2JqZWN0RnJlZXplLmpzJ1xuaW1wb3J0IHsgbWVyZ2VOb25leGlzdGVudFByb3BlcnRpZXMsIG1lcmdlT3duTmVzdGVkUHJvcGVydHkgfSBmcm9tICcuLi8uLi91dGlsaXR5L21lcmdlUHJvcGVydHkuanMnXG5pbXBvcnQgeyBjcmVhdGVTd2l0Y2hHZW5lcmF0b3JGdW5jdGlvbiwgbmVzdGVkUHJvcGVydHlEZWxlZ2F0ZWRMb29rdXBBZGFwdGVyIH0gZnJvbSAnLi4vcHJvdG90eXBlTWV0aG9kLmpzJ1xuaW1wb3J0ICogYXMgc3ltYm9sIGZyb20gJy4uL1N5bWJvbC5yZWZlcmVuY2UuanMnXG5cbmV4cG9ydCBjb25zdCBQcm90b3R5cGUgPSB7XG4gIFtzeW1ib2wubWV0YWRhdGFdOiB7XG4gICAgdHlwZTogU3ltYm9sKCdJbnN0YW50aWF0ZSAmIEluaXRpYWxpemUgZnVuY3Rpb25hbGl0eScpLFxuICB9LFxuICAvKlxuICAgICAgICAgICAgICAgICAgICAgXyAgICAgICAgXyAgICAgICAgICAgICAgICAgICAgX19fXyAgICAgICBfICAgICAgICAgICAgICAgICAgXyAgIF8gICAgICAgICAgICAgXG4gICAgIF8gX18gIF8gX18gX19fIHwgfF8gX19fIHwgfF8gXyAgIF8gXyBfXyAgIF9fX3wgIF8gXFwgIF9fX3wgfCBfX18gIF9fIF8gIF9fIF98IHxfKF8pIF9fXyAgXyBfXyAgXG4gICAgfCAnXyBcXHwgJ19fLyBfIFxcfCBfXy8gXyBcXHwgX198IHwgfCB8ICdfIFxcIC8gXyBcXCB8IHwgfC8gXyBcXCB8LyBfIFxcLyBfYCB8LyBfYCB8IF9ffCB8LyBfIFxcfCAnXyBcXCBcbiAgICB8IHxfKSB8IHwgfCAoXykgfCB8fCAoXykgfCB8X3wgfF98IHwgfF8pIHwgIF9fLyB8X3wgfCAgX18vIHwgIF9fLyAoX3wgfCAoX3wgfCB8X3wgfCAoXykgfCB8IHwgfFxuICAgIHwgLl9fL3xffCAgXFxfX18vIFxcX19cXF9fXy8gXFxfX3xcXF9fLCB8IC5fXy8gXFxfX198X19fXy8gXFxfX198X3xcXF9fX3xcXF9fLCB8XFxfXyxffFxcX198X3xcXF9fXy98X3wgfF98XG4gICAgfF98ICAgICAgICAgICAgICAgICAgICAgICAgICAgfF9fXy98X3wgICAgICAgICAgICAgICAgICAgICAgICAgICB8X19fLyAgICAgICAgICAgICAgICAgICAgICAgICBcbiovXG4gIFtSZWZlcmVuY2UucHJvdG90eXBlRGVsZWdhdGlvbi5zZXR0ZXIubGlzdF0oaW1wbGVtZW50YXRpb246IE9iamVjdCkge1xuICAgIHJldHVybiBtZXJnZU93bk5lc3RlZFByb3BlcnR5KHtcbiAgICAgIHRhcmdldDogdGhpcyxcbiAgICAgIG93blByb3BlcnR5OiBSZWZlcmVuY2UucHJvdG90eXBlRGVsZWdhdGlvbi5saXN0LFxuICAgICAgdmFsdWU6IGltcGxlbWVudGF0aW9uLFxuICAgIH0pXG4gIH0sXG4gIFtSZWZlcmVuY2UucHJvdG90eXBlRGVsZWdhdGlvbi5nZXR0ZXIubGlzdF06IG5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwQWRhcHRlcih7IGJhc2VQcm9wZXJ0eTogUmVmZXJlbmNlLnByb3RvdHlwZURlbGVnYXRpb24ubGlzdCB9KSxcbiAgW1JlZmVyZW5jZS5wcm90b3R5cGVEZWxlZ2F0aW9uLmxpc3RdOiB7fSxcblxuICAvKlxuICAgICBfICAgICAgICAgICBfICAgICAgICAgICAgICBfICAgXyAgICAgICBfICAgICAgIFxuICAgIChfKV8gX18gIF9fX3wgfF8gX18gXyBfIF9fIHwgfF8oXykgX18gX3wgfF8gX19fIFxuICAgIHwgfCAnXyBcXC8gX198IF9fLyBfYCB8ICdfIFxcfCBfX3wgfC8gX2AgfCBfXy8gXyBcXFxuICAgIHwgfCB8IHwgXFxfXyBcXCB8fCAoX3wgfCB8IHwgfCB8X3wgfCAoX3wgfCB8fCAgX18vXG4gICAgfF98X3wgfF98X19fL1xcX19cXF9fLF98X3wgfF98XFxfX3xffFxcX18sX3xcXF9fXFxfX198XG4qL1xuICBbUmVmZXJlbmNlLmluc3RhbnRpYXRlLnNldHRlci5saXN0XShpbXBsZW1lbnRhdGlvbjogT2JqZWN0KSB7XG4gICAgcmV0dXJuIG1lcmdlT3duTmVzdGVkUHJvcGVydHkoeyB0YXJnZXQ6IHRoaXMsIG93blByb3BlcnR5OiBSZWZlcmVuY2UuaW5zdGFudGlhdGUubGlzdCwgdmFsdWU6IGltcGxlbWVudGF0aW9uIH0pXG4gIH0sXG4gIFtSZWZlcmVuY2UuaW5zdGFudGlhdGUuZ2V0dGVyLmxpc3RdOiBuZXN0ZWRQcm9wZXJ0eURlbGVnYXRlZExvb2t1cEFkYXB0ZXIoeyBiYXNlUHJvcGVydHk6IFJlZmVyZW5jZS5pbnN0YW50aWF0ZS5saXN0IH0pLFxuICBbUmVmZXJlbmNlLmluc3RhbnRpYXRlLnN3aXRjaF06IGNyZWF0ZVN3aXRjaEdlbmVyYXRvckZ1bmN0aW9uKHtcbiAgICBmYWxsYmFja1N5bWJvbDogUmVmZXJlbmNlLmluc3RhbnRpYXRlLmZhbGxiYWNrLFxuICAgIGltcGxlbWVudGF0aW9uR2V0dGVyU3ltYm9sOiBSZWZlcmVuY2UuaW5zdGFudGlhdGUuZ2V0dGVyLmxpc3QsXG4gIH0pLFxuICBbUmVmZXJlbmNlLmluc3RhbnRpYXRlLmxpc3RdOiB7fSxcblxuICAvKlxuICAgICBfICAgICAgIF8gXyAgIF8gICAgICAgXyBfICAgICAgICAgXG4gICAgKF8pXyBfXyAoXykgfF8oXykgX18gX3wgKF8pX19fX19fXyBcbiAgICB8IHwgJ18gXFx8IHwgX198IHwvIF9gIHwgfCB8XyAgLyBfIFxcXG4gICAgfCB8IHwgfCB8IHwgfF98IHwgKF98IHwgfCB8LyAvICBfXy9cbiAgICB8X3xffCB8X3xffFxcX198X3xcXF9fLF98X3xfL19fX1xcX19ffFxuKi9cbiAgW1JlZmVyZW5jZS5pbml0aWFsaXplLnNldHRlci5saXN0XShpbXBsZW1lbnRhdGlvbjogT2JqZWN0KSB7XG4gICAgcmV0dXJuIG1lcmdlT3duTmVzdGVkUHJvcGVydHkoeyB0YXJnZXQ6IHRoaXMsIG93blByb3BlcnR5OiBSZWZlcmVuY2UuaW5pdGlhbGl6ZS5saXN0LCB2YWx1ZTogaW1wbGVtZW50YXRpb24gfSlcbiAgfSxcbiAgW1JlZmVyZW5jZS5pbml0aWFsaXplLmdldHRlci5saXN0XTogbmVzdGVkUHJvcGVydHlEZWxlZ2F0ZWRMb29rdXBBZGFwdGVyKHsgYmFzZVByb3BlcnR5OiBSZWZlcmVuY2UuaW5pdGlhbGl6ZS5saXN0IH0pLFxuICBbUmVmZXJlbmNlLmluaXRpYWxpemUuc3dpdGNoXTogY3JlYXRlU3dpdGNoR2VuZXJhdG9yRnVuY3Rpb24oe1xuICAgIGZhbGxiYWNrU3ltYm9sOiBSZWZlcmVuY2UuaW5pdGlhbGl6ZS5mYWxsYmFjayxcbiAgICBpbXBsZW1lbnRhdGlvbkdldHRlclN5bWJvbDogUmVmZXJlbmNlLmluaXRpYWxpemUuZ2V0dGVyLmxpc3QsXG4gIH0pLFxuICBbUmVmZXJlbmNlLmluaXRpYWxpemUubGlzdF06IHt9LFxufVxuIl19

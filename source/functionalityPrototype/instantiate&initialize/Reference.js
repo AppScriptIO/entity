@@ -1,42 +1,38 @@
-import { deepFreeze } from '../../utility/deepObjectFreeze.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.Reference = void 0;
 
-export const Reference = {
-  // Hold all related objects needed to create a delegation to a specific prototype (e.g. a key may hold `reference` symbols & a functionality `prototype` object)
+const Reference = {
+
   prototypeDelegation: {
     list: Symbol('Funtionality:prototypeDelegation.list'),
     setter: {
-      list: Symbol('Funtionality:prototypeDelegation.setter.list'),
-    },
-    getter: {
-      list: Symbol('Funtionality:prototypeDelegation.getter.list'),
-    },
-  },
+      list: Symbol('Funtionality:prototypeDelegation.setter.list') },
 
-  // Responsible for the creation of instances with setting prototype delegation - e.g. instance could be a JS Object or a JS Function.
+    getter: {
+      list: Symbol('Funtionality:prototypeDelegation.getter.list') } },
+
+
+
+
   instantiate: {
     switch: Symbol('Funtionality:instantiate.switch'),
     fallback: Symbol('Funtionality:instantiate.fallback'),
     list: Symbol('Funtionality:instantiate.list'),
     setter: {
-      list: Symbol('Funtionality:instantiate.setter.list'),
-    },
-    getter: {
-      list: Symbol('Funtionality:instantiate.getter.list'),
-    },
-  },
+      list: Symbol('Funtionality:instantiate.setter.list') },
 
-  // Responsible for manipulating an instance - e.g. add properties to the instance, change delegation, wrap with proxy to change behavior.
+    getter: {
+      list: Symbol('Funtionality:instantiate.getter.list') } },
+
+
+
+
   initialize: {
     switch: Symbol('Funtionality:initialize.switch'),
     fallback: Symbol('Funtionality:initialize.fallback'),
     list: Symbol('Funtionality:initialize.list'),
     setter: {
-      list: Symbol('Funtionality:initialize.setter.list'),
-    },
-    getter: {
-      list: Symbol('Funtionality:initialize.getter.list'),
-    },
-  },
-}
+      list: Symbol('Funtionality:initialize.setter.list') },
 
-// deepFreeze({ object: Reference, getPropertyImplementation: Object.getOwnPropertyNames })
+    getter: {
+      list: Symbol('Funtionality:initialize.getter.list') } } };exports.Reference = Reference;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9mdW5jdGlvbmFsaXR5UHJvdG90eXBlL2luc3RhbnRpYXRlJmluaXRpYWxpemUvUmVmZXJlbmNlLmpzIl0sIm5hbWVzIjpbIlJlZmVyZW5jZSIsInByb3RvdHlwZURlbGVnYXRpb24iLCJsaXN0IiwiU3ltYm9sIiwic2V0dGVyIiwiZ2V0dGVyIiwiaW5zdGFudGlhdGUiLCJzd2l0Y2giLCJmYWxsYmFjayIsImluaXRpYWxpemUiXSwibWFwcGluZ3MiOiI7O0FBRU8sTUFBTUEsU0FBUyxHQUFHOztBQUV2QkMsRUFBQUEsbUJBQW1CLEVBQUU7QUFDbkJDLElBQUFBLElBQUksRUFBRUMsTUFBTSxDQUFDLHVDQUFELENBRE87QUFFbkJDLElBQUFBLE1BQU0sRUFBRTtBQUNORixNQUFBQSxJQUFJLEVBQUVDLE1BQU0sQ0FBQyw4Q0FBRCxDQUROLEVBRlc7O0FBS25CRSxJQUFBQSxNQUFNLEVBQUU7QUFDTkgsTUFBQUEsSUFBSSxFQUFFQyxNQUFNLENBQUMsOENBQUQsQ0FETixFQUxXLEVBRkU7Ozs7O0FBYXZCRyxFQUFBQSxXQUFXLEVBQUU7QUFDWEMsSUFBQUEsTUFBTSxFQUFFSixNQUFNLENBQUMsaUNBQUQsQ0FESDtBQUVYSyxJQUFBQSxRQUFRLEVBQUVMLE1BQU0sQ0FBQyxtQ0FBRCxDQUZMO0FBR1hELElBQUFBLElBQUksRUFBRUMsTUFBTSxDQUFDLCtCQUFELENBSEQ7QUFJWEMsSUFBQUEsTUFBTSxFQUFFO0FBQ05GLE1BQUFBLElBQUksRUFBRUMsTUFBTSxDQUFDLHNDQUFELENBRE4sRUFKRzs7QUFPWEUsSUFBQUEsTUFBTSxFQUFFO0FBQ05ILE1BQUFBLElBQUksRUFBRUMsTUFBTSxDQUFDLHNDQUFELENBRE4sRUFQRyxFQWJVOzs7OztBQTBCdkJNLEVBQUFBLFVBQVUsRUFBRTtBQUNWRixJQUFBQSxNQUFNLEVBQUVKLE1BQU0sQ0FBQyxnQ0FBRCxDQURKO0FBRVZLLElBQUFBLFFBQVEsRUFBRUwsTUFBTSxDQUFDLGtDQUFELENBRk47QUFHVkQsSUFBQUEsSUFBSSxFQUFFQyxNQUFNLENBQUMsOEJBQUQsQ0FIRjtBQUlWQyxJQUFBQSxNQUFNLEVBQUU7QUFDTkYsTUFBQUEsSUFBSSxFQUFFQyxNQUFNLENBQUMscUNBQUQsQ0FETixFQUpFOztBQU9WRSxJQUFBQSxNQUFNLEVBQUU7QUFDTkgsTUFBQUEsSUFBSSxFQUFFQyxNQUFNLENBQUMscUNBQUQsQ0FETixFQVBFLEVBMUJXLEVBQWxCLEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBkZWVwRnJlZXplIH0gZnJvbSAnLi4vLi4vdXRpbGl0eS9kZWVwT2JqZWN0RnJlZXplLmpzJ1xuXG5leHBvcnQgY29uc3QgUmVmZXJlbmNlID0ge1xuICAvLyBIb2xkIGFsbCByZWxhdGVkIG9iamVjdHMgbmVlZGVkIHRvIGNyZWF0ZSBhIGRlbGVnYXRpb24gdG8gYSBzcGVjaWZpYyBwcm90b3R5cGUgKGUuZy4gYSBrZXkgbWF5IGhvbGQgYHJlZmVyZW5jZWAgc3ltYm9scyAmIGEgZnVuY3Rpb25hbGl0eSBgcHJvdG90eXBlYCBvYmplY3QpXG4gIHByb3RvdHlwZURlbGVnYXRpb246IHtcbiAgICBsaXN0OiBTeW1ib2woJ0Z1bnRpb25hbGl0eTpwcm90b3R5cGVEZWxlZ2F0aW9uLmxpc3QnKSxcbiAgICBzZXR0ZXI6IHtcbiAgICAgIGxpc3Q6IFN5bWJvbCgnRnVudGlvbmFsaXR5OnByb3RvdHlwZURlbGVnYXRpb24uc2V0dGVyLmxpc3QnKSxcbiAgICB9LFxuICAgIGdldHRlcjoge1xuICAgICAgbGlzdDogU3ltYm9sKCdGdW50aW9uYWxpdHk6cHJvdG90eXBlRGVsZWdhdGlvbi5nZXR0ZXIubGlzdCcpLFxuICAgIH0sXG4gIH0sXG5cbiAgLy8gUmVzcG9uc2libGUgZm9yIHRoZSBjcmVhdGlvbiBvZiBpbnN0YW5jZXMgd2l0aCBzZXR0aW5nIHByb3RvdHlwZSBkZWxlZ2F0aW9uIC0gZS5nLiBpbnN0YW5jZSBjb3VsZCBiZSBhIEpTIE9iamVjdCBvciBhIEpTIEZ1bmN0aW9uLlxuICBpbnN0YW50aWF0ZToge1xuICAgIHN3aXRjaDogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5zdGFudGlhdGUuc3dpdGNoJyksXG4gICAgZmFsbGJhY2s6IFN5bWJvbCgnRnVudGlvbmFsaXR5Omluc3RhbnRpYXRlLmZhbGxiYWNrJyksXG4gICAgbGlzdDogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5zdGFudGlhdGUubGlzdCcpLFxuICAgIHNldHRlcjoge1xuICAgICAgbGlzdDogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5zdGFudGlhdGUuc2V0dGVyLmxpc3QnKSxcbiAgICB9LFxuICAgIGdldHRlcjoge1xuICAgICAgbGlzdDogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5zdGFudGlhdGUuZ2V0dGVyLmxpc3QnKSxcbiAgICB9LFxuICB9LFxuXG4gIC8vIFJlc3BvbnNpYmxlIGZvciBtYW5pcHVsYXRpbmcgYW4gaW5zdGFuY2UgLSBlLmcuIGFkZCBwcm9wZXJ0aWVzIHRvIHRoZSBpbnN0YW5jZSwgY2hhbmdlIGRlbGVnYXRpb24sIHdyYXAgd2l0aCBwcm94eSB0byBjaGFuZ2UgYmVoYXZpb3IuXG4gIGluaXRpYWxpemU6IHtcbiAgICBzd2l0Y2g6IFN5bWJvbCgnRnVudGlvbmFsaXR5OmluaXRpYWxpemUuc3dpdGNoJyksXG4gICAgZmFsbGJhY2s6IFN5bWJvbCgnRnVudGlvbmFsaXR5OmluaXRpYWxpemUuZmFsbGJhY2snKSxcbiAgICBsaXN0OiBTeW1ib2woJ0Z1bnRpb25hbGl0eTppbml0aWFsaXplLmxpc3QnKSxcbiAgICBzZXR0ZXI6IHtcbiAgICAgIGxpc3Q6IFN5bWJvbCgnRnVudGlvbmFsaXR5OmluaXRpYWxpemUuc2V0dGVyLmxpc3QnKSxcbiAgICB9LFxuICAgIGdldHRlcjoge1xuICAgICAgbGlzdDogU3ltYm9sKCdGdW50aW9uYWxpdHk6aW5pdGlhbGl6ZS5nZXR0ZXIubGlzdCcpLFxuICAgIH0sXG4gIH0sXG59XG5cbi8vIGRlZXBGcmVlemUoeyBvYmplY3Q6IFJlZmVyZW5jZSwgZ2V0UHJvcGVydHlJbXBsZW1lbnRhdGlvbjogT2JqZWN0LmdldE93blByb3BlcnR5TmFtZXMgfSlcbiJdfQ==

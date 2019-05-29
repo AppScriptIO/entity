@@ -1,17 +1,17 @@
-import { Reference } from './Reference.js'
-import { mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupAdapter } from '../prototypeMethod.js'
-import * as symbol from '../Symbol.reference.js'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.Prototype = void 0;var _Reference = require("./Reference.js");
+var _mergeProperty = require("../../utility/mergeProperty.js");
+var _prototypeMethod = require("../prototypeMethod.js");
+var symbol = _interopRequireWildcard(require("../Symbol.reference.js"));
 
-export const Prototype = {
+const Prototype = {
   [symbol.metadata]: {
-    type: Symbol('Client interface functionality'),
+    type: Symbol('Client interface functionality') },
+
+  [_Reference.Reference.clientInterface.setter.list](implementation) {
+    return (0, _mergeProperty.mergeOwnNestedProperty)({ target: this, ownProperty: _Reference.Reference.clientInterface.list, value: implementation });
   },
-  [Reference.clientInterface.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.clientInterface.list, value: implementation })
-  },
-  [Reference.clientInterface.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.clientInterface.list }),
-  [Reference.clientInterface.switch]: createSwitchGeneratorFunction({ fallbackSymbol: Reference.clientInterface.fallback, implementationGetterSymbol: Reference.clientInterface.getter.list }),
-  [Reference.clientInterface.fallback]: undefined,
-  [Reference.clientInterface.list]: {},
-}
+  [_Reference.Reference.clientInterface.getter.list]: (0, _prototypeMethod.nestedPropertyDelegatedLookupAdapter)({ baseProperty: _Reference.Reference.clientInterface.list }),
+  [_Reference.Reference.clientInterface.switch]: (0, _prototypeMethod.createSwitchGeneratorFunction)({ fallbackSymbol: _Reference.Reference.clientInterface.fallback, implementationGetterSymbol: _Reference.Reference.clientInterface.getter.list }),
+  [_Reference.Reference.clientInterface.fallback]: undefined,
+  [_Reference.Reference.clientInterface.list]: {} };exports.Prototype = Prototype;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9mdW5jdGlvbmFsaXR5UHJvdG90eXBlL2NsaWVudEludGVyZmFjZS9Qcm90b3R5cGUuanMiXSwibmFtZXMiOlsiUHJvdG90eXBlIiwic3ltYm9sIiwibWV0YWRhdGEiLCJ0eXBlIiwiU3ltYm9sIiwiUmVmZXJlbmNlIiwiY2xpZW50SW50ZXJmYWNlIiwic2V0dGVyIiwibGlzdCIsImltcGxlbWVudGF0aW9uIiwidGFyZ2V0Iiwib3duUHJvcGVydHkiLCJ2YWx1ZSIsImdldHRlciIsImJhc2VQcm9wZXJ0eSIsInN3aXRjaCIsImZhbGxiYWNrU3ltYm9sIiwiZmFsbGJhY2siLCJpbXBsZW1lbnRhdGlvbkdldHRlclN5bWJvbCIsInVuZGVmaW5lZCJdLCJtYXBwaW5ncyI6IjZMQUFBO0FBQ0E7QUFDQTtBQUNBOztBQUVPLE1BQU1BLFNBQVMsR0FBRztBQUN2QixHQUFDQyxNQUFNLENBQUNDLFFBQVIsR0FBbUI7QUFDakJDLElBQUFBLElBQUksRUFBRUMsTUFBTSxDQUFDLGdDQUFELENBREssRUFESTs7QUFJdkIsR0FBQ0MscUJBQVVDLGVBQVYsQ0FBMEJDLE1BQTFCLENBQWlDQyxJQUFsQyxFQUF3Q0MsY0FBeEMsRUFBZ0U7QUFDOUQsV0FBTywyQ0FBdUIsRUFBRUMsTUFBTSxFQUFFLElBQVYsRUFBZ0JDLFdBQVcsRUFBRU4scUJBQVVDLGVBQVYsQ0FBMEJFLElBQXZELEVBQTZESSxLQUFLLEVBQUVILGNBQXBFLEVBQXZCLENBQVA7QUFDRCxHQU5zQjtBQU92QixHQUFDSixxQkFBVUMsZUFBVixDQUEwQk8sTUFBMUIsQ0FBaUNMLElBQWxDLEdBQXlDLDJEQUFxQyxFQUFFTSxZQUFZLEVBQUVULHFCQUFVQyxlQUFWLENBQTBCRSxJQUExQyxFQUFyQyxDQVBsQjtBQVF2QixHQUFDSCxxQkFBVUMsZUFBVixDQUEwQlMsTUFBM0IsR0FBb0Msb0RBQThCLEVBQUVDLGNBQWMsRUFBRVgscUJBQVVDLGVBQVYsQ0FBMEJXLFFBQTVDLEVBQXNEQywwQkFBMEIsRUFBRWIscUJBQVVDLGVBQVYsQ0FBMEJPLE1BQTFCLENBQWlDTCxJQUFuSCxFQUE5QixDQVJiO0FBU3ZCLEdBQUNILHFCQUFVQyxlQUFWLENBQTBCVyxRQUEzQixHQUFzQ0UsU0FUZjtBQVV2QixHQUFDZCxxQkFBVUMsZUFBVixDQUEwQkUsSUFBM0IsR0FBa0MsRUFWWCxFQUFsQixDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgUmVmZXJlbmNlIH0gZnJvbSAnLi9SZWZlcmVuY2UuanMnXG5pbXBvcnQgeyBtZXJnZU93bk5lc3RlZFByb3BlcnR5IH0gZnJvbSAnLi4vLi4vdXRpbGl0eS9tZXJnZVByb3BlcnR5LmpzJ1xuaW1wb3J0IHsgY3JlYXRlU3dpdGNoR2VuZXJhdG9yRnVuY3Rpb24sIG5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwQWRhcHRlciB9IGZyb20gJy4uL3Byb3RvdHlwZU1ldGhvZC5qcydcbmltcG9ydCAqIGFzIHN5bWJvbCBmcm9tICcuLi9TeW1ib2wucmVmZXJlbmNlLmpzJ1xuXG5leHBvcnQgY29uc3QgUHJvdG90eXBlID0ge1xuICBbc3ltYm9sLm1ldGFkYXRhXToge1xuICAgIHR5cGU6IFN5bWJvbCgnQ2xpZW50IGludGVyZmFjZSBmdW5jdGlvbmFsaXR5JyksXG4gIH0sXG4gIFtSZWZlcmVuY2UuY2xpZW50SW50ZXJmYWNlLnNldHRlci5saXN0XShpbXBsZW1lbnRhdGlvbjogT2JqZWN0KSB7XG4gICAgcmV0dXJuIG1lcmdlT3duTmVzdGVkUHJvcGVydHkoeyB0YXJnZXQ6IHRoaXMsIG93blByb3BlcnR5OiBSZWZlcmVuY2UuY2xpZW50SW50ZXJmYWNlLmxpc3QsIHZhbHVlOiBpbXBsZW1lbnRhdGlvbiB9KVxuICB9LFxuICBbUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZS5nZXR0ZXIubGlzdF06IG5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwQWRhcHRlcih7IGJhc2VQcm9wZXJ0eTogUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZS5saXN0IH0pLFxuICBbUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZS5zd2l0Y2hdOiBjcmVhdGVTd2l0Y2hHZW5lcmF0b3JGdW5jdGlvbih7IGZhbGxiYWNrU3ltYm9sOiBSZWZlcmVuY2UuY2xpZW50SW50ZXJmYWNlLmZhbGxiYWNrLCBpbXBsZW1lbnRhdGlvbkdldHRlclN5bWJvbDogUmVmZXJlbmNlLmNsaWVudEludGVyZmFjZS5nZXR0ZXIubGlzdCB9KSxcbiAgW1JlZmVyZW5jZS5jbGllbnRJbnRlcmZhY2UuZmFsbGJhY2tdOiB1bmRlZmluZWQsXG4gIFtSZWZlcmVuY2UuY2xpZW50SW50ZXJmYWNlLmxpc3RdOiB7fSxcbn1cbiJdfQ==

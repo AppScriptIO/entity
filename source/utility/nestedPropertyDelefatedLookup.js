@@ -1,23 +1,24 @@
-import { metadata } from '../functionalityPrototype/Symbol.reference.js'
-/** Lookup algorithm used by 'functionality prototype'.
- * In case multiple matching properties the array produces is ordered from the target object property to the delegated (parent) objects` properties.
- */
-export const nestedPropertyDelegatedLookup = ({
-  target, // the object to lookup property on.
-  baseProperty, // direct property / base property to check in.
-  nestedProperty, // nested property key to check if exist.
-  recursive = false, // recusively lookup and allow to return multiple results.
-}) => {
-  const hasOwnProperty = Object.prototype.hasOwnProperty // allows supporting objects delefating null.
-  let result = [],
-    breakOnFirstMatch = !recursive
-  do {
-    if (hasOwnProperty.call(target, baseProperty) && hasOwnProperty.call(target[baseProperty], nestedProperty)) {
-      target[baseProperty][nestedProperty] |> result.push
-    }
-    if (breakOnFirstMatch && result.length > 0) break // break in case only a single match is required.
-    target = Object.getPrototypeOf(target)
-  } while (target != null)
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.nestedPropertyDelegatedLookup = void 0;
 
-  return recursive ? result : result[0]
-}
+
+
+const nestedPropertyDelegatedLookup = ({
+  target,
+  baseProperty,
+  nestedProperty,
+  recursive = false }) =>
+{
+  const hasOwnProperty = Object.prototype.hasOwnProperty;
+  let result = [],
+  breakOnFirstMatch = !recursive;
+  do {
+    if (hasOwnProperty.call(target, baseProperty) && hasOwnProperty.call(target[baseProperty], nestedProperty)) {var _target$baseProperty$;
+      _target$baseProperty$ = target[baseProperty][nestedProperty], result.push(_target$baseProperty$);
+    }
+    if (breakOnFirstMatch && result.length > 0) break;
+    target = Object.getPrototypeOf(target);
+  } while (target != null);
+
+  return recursive ? result : result[0];
+};exports.nestedPropertyDelegatedLookup = nestedPropertyDelegatedLookup;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS91dGlsaXR5L25lc3RlZFByb3BlcnR5RGVsZWZhdGVkTG9va3VwLmpzIl0sIm5hbWVzIjpbIm5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwIiwidGFyZ2V0IiwiYmFzZVByb3BlcnR5IiwibmVzdGVkUHJvcGVydHkiLCJyZWN1cnNpdmUiLCJoYXNPd25Qcm9wZXJ0eSIsIk9iamVjdCIsInByb3RvdHlwZSIsInJlc3VsdCIsImJyZWFrT25GaXJzdE1hdGNoIiwiY2FsbCIsInB1c2giLCJsZW5ndGgiLCJnZXRQcm90b3R5cGVPZiJdLCJtYXBwaW5ncyI6Ijs7OztBQUlPLE1BQU1BLDZCQUE2QixHQUFHLENBQUM7QUFDNUNDLEVBQUFBLE1BRDRDO0FBRTVDQyxFQUFBQSxZQUY0QztBQUc1Q0MsRUFBQUEsY0FINEM7QUFJNUNDLEVBQUFBLFNBQVMsR0FBRyxLQUpnQyxFQUFEO0FBS3ZDO0FBQ0osUUFBTUMsY0FBYyxHQUFHQyxNQUFNLENBQUNDLFNBQVAsQ0FBaUJGLGNBQXhDO0FBQ0EsTUFBSUcsTUFBTSxHQUFHLEVBQWI7QUFDRUMsRUFBQUEsaUJBQWlCLEdBQUcsQ0FBQ0wsU0FEdkI7QUFFQSxLQUFHO0FBQ0QsUUFBSUMsY0FBYyxDQUFDSyxJQUFmLENBQW9CVCxNQUFwQixFQUE0QkMsWUFBNUIsS0FBNkNHLGNBQWMsQ0FBQ0ssSUFBZixDQUFvQlQsTUFBTSxDQUFDQyxZQUFELENBQTFCLEVBQTBDQyxjQUExQyxDQUFqRCxFQUE0RztBQUMxRyw4QkFBQUYsTUFBTSxDQUFDQyxZQUFELENBQU4sQ0FBcUJDLGNBQXJCLEdBQXdDSyxNQUFNLENBQUNHLElBQS9DO0FBQ0Q7QUFDRCxRQUFJRixpQkFBaUIsSUFBSUQsTUFBTSxDQUFDSSxNQUFQLEdBQWdCLENBQXpDLEVBQTRDO0FBQzVDWCxJQUFBQSxNQUFNLEdBQUdLLE1BQU0sQ0FBQ08sY0FBUCxDQUFzQlosTUFBdEIsQ0FBVDtBQUNELEdBTkQsUUFNU0EsTUFBTSxJQUFJLElBTm5COztBQVFBLFNBQU9HLFNBQVMsR0FBR0ksTUFBSCxHQUFZQSxNQUFNLENBQUMsQ0FBRCxDQUFsQztBQUNELENBbEJNLEMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBtZXRhZGF0YSB9IGZyb20gJy4uL2Z1bmN0aW9uYWxpdHlQcm90b3R5cGUvU3ltYm9sLnJlZmVyZW5jZS5qcydcbi8qKiBMb29rdXAgYWxnb3JpdGhtIHVzZWQgYnkgJ2Z1bmN0aW9uYWxpdHkgcHJvdG90eXBlJy5cbiAqIEluIGNhc2UgbXVsdGlwbGUgbWF0Y2hpbmcgcHJvcGVydGllcyB0aGUgYXJyYXkgcHJvZHVjZXMgaXMgb3JkZXJlZCBmcm9tIHRoZSB0YXJnZXQgb2JqZWN0IHByb3BlcnR5IHRvIHRoZSBkZWxlZ2F0ZWQgKHBhcmVudCkgb2JqZWN0c2AgcHJvcGVydGllcy5cbiAqL1xuZXhwb3J0IGNvbnN0IG5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwID0gKHtcbiAgdGFyZ2V0LCAvLyB0aGUgb2JqZWN0IHRvIGxvb2t1cCBwcm9wZXJ0eSBvbi5cbiAgYmFzZVByb3BlcnR5LCAvLyBkaXJlY3QgcHJvcGVydHkgLyBiYXNlIHByb3BlcnR5IHRvIGNoZWNrIGluLlxuICBuZXN0ZWRQcm9wZXJ0eSwgLy8gbmVzdGVkIHByb3BlcnR5IGtleSB0byBjaGVjayBpZiBleGlzdC5cbiAgcmVjdXJzaXZlID0gZmFsc2UsIC8vIHJlY3VzaXZlbHkgbG9va3VwIGFuZCBhbGxvdyB0byByZXR1cm4gbXVsdGlwbGUgcmVzdWx0cy5cbn0pID0+IHtcbiAgY29uc3QgaGFzT3duUHJvcGVydHkgPSBPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5IC8vIGFsbG93cyBzdXBwb3J0aW5nIG9iamVjdHMgZGVsZWZhdGluZyBudWxsLlxuICBsZXQgcmVzdWx0ID0gW10sXG4gICAgYnJlYWtPbkZpcnN0TWF0Y2ggPSAhcmVjdXJzaXZlXG4gIGRvIHtcbiAgICBpZiAoaGFzT3duUHJvcGVydHkuY2FsbCh0YXJnZXQsIGJhc2VQcm9wZXJ0eSkgJiYgaGFzT3duUHJvcGVydHkuY2FsbCh0YXJnZXRbYmFzZVByb3BlcnR5XSwgbmVzdGVkUHJvcGVydHkpKSB7XG4gICAgICB0YXJnZXRbYmFzZVByb3BlcnR5XVtuZXN0ZWRQcm9wZXJ0eV0gfD4gcmVzdWx0LnB1c2hcbiAgICB9XG4gICAgaWYgKGJyZWFrT25GaXJzdE1hdGNoICYmIHJlc3VsdC5sZW5ndGggPiAwKSBicmVhayAvLyBicmVhayBpbiBjYXNlIG9ubHkgYSBzaW5nbGUgbWF0Y2ggaXMgcmVxdWlyZWQuXG4gICAgdGFyZ2V0ID0gT2JqZWN0LmdldFByb3RvdHlwZU9mKHRhcmdldClcbiAgfSB3aGlsZSAodGFyZ2V0ICE9IG51bGwpXG5cbiAgcmV0dXJuIHJlY3Vyc2l2ZSA/IHJlc3VsdCA6IHJlc3VsdFswXVxufVxuIl19
