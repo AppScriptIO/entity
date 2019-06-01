@@ -17,11 +17,7 @@ export const Prototype = {
     |_|                           |___/|_|                           |___/                         
 */
   [Reference.prototypeDelegation.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({
-      target: this,
-      ownProperty: Reference.prototypeDelegation.list,
-      value: implementation,
-    })
+    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.prototypeDelegation.list, value: implementation })
   },
   [Reference.prototypeDelegation.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.prototypeDelegation.list }),
   [Reference.prototypeDelegation.list]: {},
@@ -37,10 +33,7 @@ export const Prototype = {
     return mergeOwnNestedProperty({ target: this, ownProperty: Reference.instantiate.list, value: implementation })
   },
   [Reference.instantiate.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.instantiate.list }),
-  [Reference.instantiate.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.instantiate.fallback,
-    implementationGetterSymbol: Reference.instantiate.getter.list,
-  }),
+  [Reference.instantiate.switch]: createSwitchGeneratorFunction({ fallbackSymbol: Reference.instantiate.fallback, implementationGetterSymbol: Reference.instantiate.getter.list }),
   [Reference.instantiate.list]: {},
 
   /*
@@ -54,9 +47,6 @@ export const Prototype = {
     return mergeOwnNestedProperty({ target: this, ownProperty: Reference.initialize.list, value: implementation })
   },
   [Reference.initialize.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.initialize.list }),
-  [Reference.initialize.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.initialize.fallback,
-    implementationGetterSymbol: Reference.initialize.getter.list,
-  }),
+  [Reference.initialize.switch]: createSwitchGeneratorFunction({ fallbackSymbol: Reference.initialize.fallback, implementationGetterSymbol: Reference.initialize.getter.list }),
   [Reference.initialize.list]: {},
 }

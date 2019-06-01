@@ -39,7 +39,7 @@ export const createSwitchGeneratorFunction = function({
     } else {
       // single implementation
       lookupResult = callerClass::callerClass[implementationGetterSymbol](implementationKey)
-      assert(lookupResult, `• No implementation constructor found for key ${implementationKey.toString()}`)
+      assert(lookupResult, `• No implementation constructor found for key ${(implementationKey && implementationKey.toString()) || implementationKey}`)
     }
     if (!Array.isArray(lookupResult)) lookupResult = [lookupResult] // for preventing separate code for execution.
     implementation = lookupResult.map((func, index) => {

@@ -12,6 +12,7 @@ const Reference = Object.assign(
     prototype: Symbol('prototype'),
     class: Symbol('class'), // the constructable used to create the instance (to which class does it belong).
     metadata: metadataSymbol,
+    name: Symbol('Own class name'), // own class name
   },
   instantiateInitialize.Reference,
   constructor.Reference,
@@ -100,6 +101,7 @@ Prototype[Reference.initialize.setter.list]({
       },
       [Reference.class]: construtorProperty, // the class used to construct the instance.
     })
+    Object.defineProperty(targetInstance, Reference.name, { writable: false, enumerable: false, value: description }) // set metadata information for debugging.
     // add debugging information.
     Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(description) } }) // set metadata information for debugging.
     if (!prototype.hasOwnProperty(Reference.metadata))

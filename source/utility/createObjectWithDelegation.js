@@ -3,7 +3,7 @@ import { createConstructableWithoutContructor } from './createConstructableWitho
 /**
  * Create an instance (either a function or an object) with a delegation to another prototype.
  */
-export function createObjectWithDelegation({ description, prototypeDelegation = null, targetInstance, instanceType }: { instanceType: 'object' | 'function' }) {
+export function createObjectWithDelegation({ description, prototypeDelegation = null, targetInstance, instanceType }: { instanceType: 'object' | 'function' } = {}) {
   switch (instanceType) {
     case 'function':
       targetInstance ||= createConstructableWithoutContructor(description)
