@@ -16,7 +16,7 @@ const Reference = Object.assign(Entity[Constructable.reference.reference], {
     instanceDelegatingToClassPrototype: Symbol('instanceDelegatingToClassPrototype'),
   },
 })
-const Prototype = Entity[Constructable.reference.prototype]
+const Prototype = Entity::Entity[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructable).prototype // or `Entity |> Object.getPrototypeOf`
 
 /*
                    _        _                    ____       _                  _   _             

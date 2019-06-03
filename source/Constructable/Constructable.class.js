@@ -8,8 +8,7 @@ import { mergeNonexistentProperties, mergeArrayWithObjectItem } from '../utility
 const Reference = Object.assign(
   Object.create(Object.prototype),
   {
-    reference: 'reference',
-    prototype: Symbol('prototype'), // constructable delegationPrototype
+    reference: 'reference', // reference key to be set on the class for short access to `prototypeDelegation.reference`.
     class: Symbol('class'), // the constructable used to create the instance (to which class does it belong).
     metadata: metadataSymbol,
     name: Symbol('Own class name'), // own class name
@@ -90,12 +89,13 @@ Prototype::Prototype[Reference.initialize.functionality].setter({
       get reference() {
         return prototypeDelegationGetter(Reference.key.constructable).reference
       },
-      get [Reference.prototype]() {
-        return prototypeDelegationGetter(Reference.key.constructable).prototype
-      },
+      // get [Reference.prototype]() {
+      //   return targetInstance::targetInstance[Reference.prototypeDelegation.functionality].getter(Reference.key.constructable).prototype
+      // },
       [Reference.class]: construtorProperty, // the class used to construct the instance.
     })
     Object.defineProperty(targetInstance, Reference.name, { writable: false, enumerable: false, value: description }) // set metadata information for debugging.
+    targetInstance.constructor = construtorProperty // for native js integration
     // add debugging information.
     Object.defineProperty(targetInstance, Reference.metadata, { writable: false, enumerable: false, value: { type: Symbol(`${description} class`) } }) // set metadata information for debugging.
     if (!prototype.hasOwnProperty(Reference.metadata))
@@ -122,7 +122,7 @@ Prototype::Prototype[Reference.constructor.functionality].setter({
   // TODO: Document pattern used for handing over control to client and pipping results through the chain
   [Reference.key.constructable]: function*({ description, reference, prototype, prototypeDelegation, self = this } = {}) {
     const shouldHandOverControl = executionControl.shouldHandOver(function.sent)
-    prototypeDelegation ||= self[Reference.prototype]
+    prototypeDelegation ||= self::self[Reference.prototypeDelegation.functionality].getter(Reference.key.constructable).prototype
     const step = [
       // execution of steps allows for passing argument for each step and pipping the result of the previous step.
       {
