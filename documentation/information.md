@@ -43,6 +43,12 @@ The behavior of native JS constructor is that it instantiates a new object and s
 - Some prototype may have multiple constructors that create instances which utilize them. Therefore, the Function & Object constructors aren't nested in the prototype but a separate entity.
 - Function & Object constructors use functionality from the same prototype they serve/utilizt in the creation of instances.
 - A differentiation should be pointed between constuctor's own properties/features and the functionality they use through delegation.
+
+# Target object (e.g. class) location of storing functionality
+- Functionality methods and value properties (i.e. key-value pair) can be saved directly on the target object or saved in a nested classified structure on the target object (like namespaces for each functionality). 
+- Each property consists of at least a getter and setter functions and a property on the target object, that are accisible through the api it provides.
+- properties located in the prototype (e.g. Constructable prototypeDelegation property) will be shared between the class and its instances.
+
 ___
 [Development TODO list](/documentation/TODO.md)
 
