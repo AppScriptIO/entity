@@ -6,17 +6,18 @@ import { delegateToMultipleObject as multipleDelegationProxy } from '@dependency
 export const Entity = new Constructable.clientInterface({ description: 'Entity' })
 const Reference = Object.assign(Entity[Constructable.reference.reference], {
   key: {
-    data: Symbol('data initialization'),
     multipleDelegation: Symbol('Multiple delegation initialization'),
-    entityClass: Symbol('entity class related'),
-    entity: Symbol('Entity instance related'),
-    classInstance: Symbol('class instance related'),
-    configuredClass: Symbol('Configured class related'),
+    data: Symbol('data initialization'),
+    // class related
     prototype: Symbol('prototype delegation object creation for Entity instances.'),
+    entityClass: Symbol('entity class related'),
+    configuredClass: Symbol('Configured class related'),
+    // instance related
+    entityInstance: Symbol('Entity instance related'),
     instanceDelegatingToClassPrototype: Symbol('instanceDelegatingToClassPrototype'),
   },
 })
-const Prototype = Entity::Entity[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructable).prototype // or `Entity |> Object.getPrototypeOf`
+const Prototype = Entity::Entity[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructableClass).prototype // or `Entity |> Object.getPrototypeOf`
 
 /*
                    _        _                    ____       _                  _   _             
@@ -28,7 +29,7 @@ const Prototype = Entity::Entity[Constructable.reference.prototypeDelegation.fun
 */
 Prototype::Prototype[Constructable.reference.prototypeDelegation.functionality].setter({
   // for direct objects created from Entity immediately
-  [Reference.key.entity]: {
+  [Reference.key.entityInstance]: {
     prototype: {
       // type Object, usually contains `prototype` protperty
       [symbol.metadata]: { type: 'Entity class prototype for `entity` prototypeDelegation chain.' },
@@ -54,10 +55,10 @@ Prototype::Prototype[Constructable.reference.instantiate.functionality].setter({
 */
 Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
   // initialize instance with entity delegation values.
-  [Reference.key.entity]({ targetInstance, prototype, construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
+  [Reference.key.entityInstance]({ targetInstance, prototype, construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
     if (!prototype) {
       let prototypeDelegationGetter = construtorProperty::construtorProperty[Constructable.reference.prototypeDelegation.functionality].getter
-      let prototypeDelegationSetting = construtorProperty::prototypeDelegationGetter(Reference.key.entity)
+      let prototypeDelegationSetting = construtorProperty::prototypeDelegationGetter(Reference.key.entityInstance)
       prototype = prototypeDelegationSetting.prototype // Entities prototypes delegate to each other.
     }
     Object.setPrototypeOf(targetInstance, prototype) // inherit own and delegated functionalities.
@@ -74,26 +75,16 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
   },
 
   // Example: Trying to override a symbol of a parent class in the child class properties, when called with recursive option (e.g. in Constructable.reference.construct) will execute all functions with the same key throughout the prototype chain.
-  // [Constructable.reference.initialize.key.constructable]() {
-  //   console.log(`Executed together with other Constructable.reference.initialize.key.constructable in the prototype chain`)
+  // [Constructable.reference.initialize.key.constructableClass]() {
+  //   console.log(`Executed together with other Constructable.reference.initialize.key.constructableClass in the prototype chain`)
   // },
 
-  // initialize a prototype that belongs to an entity class.
-  [Reference.key.classInstance]({ targetInstance, callerClass = this, description = '' } = {}) {
-    Object.defineProperty(targetInstance, Constructable.reference.metadata, {
-      writable: false,
-      enumerable: false,
-      value: { type: Symbol(`${callerClass[Constructable.reference.name]} ${description}`) },
-    }) // set metadata information for debugging.
-    targetInstance.constructor = callerClass // to preserve functionality of native JS functions.
-    return targetInstance
-  },
   [Reference.key.entityClass]({ targetInstance, callerClass = this } = {}) {
     let constructorSwitch = callerClass::callerClass[Constructable.reference.constructor.functionality].switch
     let entityPrototypeDelegation =
-      constructorSwitch({ implementationKey: Entity.reference.key.prototype }) |> (g => g.next('intermittent') && g.next({ description: 'Entity.reference.key.entity' }).value)
+      constructorSwitch({ implementationKey: Entity.reference.key.prototype }) |> (g => g.next('intermittent') && g.next({ description: 'Entity.reference.key.entityClass' }).value)
     targetInstance::targetInstance[Constructable.reference.prototypeDelegation.functionality].setter({
-      [Entity.reference.key.entity]: {
+      [Entity.reference.key.entityInstance]: {
         prototype: entityPrototypeDelegation,
       },
     })
@@ -113,7 +104,7 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   [Reference.key.entityClass]({ description, callerClass = this } = {}) {
     const initializeSwitch = callerClass[Constructable.reference.initialize.functionality].switch,
       constructorSwitch = callerClass[Constructable.reference.constructor.functionality].switch
-    let entityClass = callerClass::constructorSwitch({ implementationKey: Constructable.reference.key.constructable }) |> (g => g.next('intermittent') && g.next({ description }).value)
+    let entityClass = callerClass::constructorSwitch({ implementationKey: Constructable.reference.key.constructableClass }) |> (g => g.next('intermittent') && g.next({ description }).value)
     entityClass::initializeSwitch({ implementationKey: Reference.key.entityClass }) |> (g => g.next('intermittent') && g.next({ targetInstance: entityClass }).value)
     return entityClass
   },
@@ -127,7 +118,7 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
       callerClass::instantiateSwitch({ implementationKey: Constructable.reference.key.createObjectWithDelegation }) |> (g => g.next('intermittent') && g.next({ instanceType: 'object' }).value)
 
     // delegate to the Entity constructable class
-    callerClass::initializeSwitch({ implementationKey: Reference.key.entity, recursiveDelegationChainExecution: true })
+    callerClass::initializeSwitch({ implementationKey: Reference.key.entityInstance, recursiveDelegationChainExecution: true })
       |> (g => {
         g.next('intermittent')
         // pass to all implemenatations the same argument
@@ -154,11 +145,12 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
       })
     return instance
   },
+  // TODO: merge this implementation with the Constructable implementation.
   [Reference.key.configuredClass]({ description = 'Configued Class', callerClass = this, parameter } = {}) {
     let instance =
       callerClass::callerClass[Constructable.reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation })
       |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: callerClass }).value)
-    callerClass::callerClass[Constructable.reference.initialize.functionality].switch({ implementationKey: Reference.key.classInstance })
+    callerClass::callerClass[Constructable.reference.initialize.functionality].switch({ implementationKey: Constructable.reference.key.classInstance })
       |> (g => g.next('intermittent') && g.next({ targetInstance: instance, description: description }).value)
     instance.parameter = parameter
     return instance
@@ -168,7 +160,7 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
     let instance =
       callerClass::callerClass[Constructable.reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation })
       |> (g => g.next('intermittent') && g.next().value)
-    callerClass::callerClass[Constructable.reference.initialize.functionality].switch({ implementationKey: Reference.key.classInstance })
+    callerClass::callerClass[Constructable.reference.initialize.functionality].switch({ implementationKey: Constructable.reference.key.classInstance })
       |> (g => g.next('intermittent') && g.next({ targetInstance: instance, description: description }).value)
     if (propertyObject) Object.assign(instance, propertyObject)
     return instance
