@@ -1,23 +1,36 @@
 import assert from 'assert'
 import { isGeneratorFunction } from '../utility/isGeneratorFunction.js'
 import { executionControl } from '../utility/generatorExecutionControl.js'
-import { nestedPropertyDelegatedLookup } from '../utility/nestedPropertyDelefatedLookup.js'
+import { nestedPropertyDelegatedLookup } from '../utility/propertyDelegatedLookup.js'
+import { mergeOwnNestedProperty } from '../utility/mergeProperty.js'
+import { getNestedObject } from '../utility/getNestedObject.js'
 
-export const nestedPropertyDelegatedLookupAdapter = ({ baseProperty }) =>
-  function(implementationKey: String, recursive: Boolean = false, callerClass = this) {
+export const nestedPropertyDelegatedLookupCurried = ({ baseProperty }) => {
+  if (!Array.isArray(baseProperty)) baseProperty = [baseProperty]
+  return function(implementationKey: String, recursive: Boolean = false, callerClass = this) {
     return nestedPropertyDelegatedLookup({
       target: callerClass,
-      baseProperty,
-      nestedProperty: implementationKey,
+      propertyPath: [...baseProperty, implementationKey],
       recursive,
     })
   }
+}
+
+export const mergeOwnNestedPropertyCurried = ({ property }) => {
+  if (!Array.isArray(property)) property = [property]
+  return function(implementation: Object) {
+    return mergeOwnNestedProperty({ target: this, propertyPath: property, value: implementation })
+  }
+}
 
 // The generator function uses a pattern that allows to handover control (yield values) and propagate to the request function (switch target function)
 export const createSwitchGeneratorFunction = function({
-  fallbackSymbol,
-  implementationGetterSymbol, // the getter function for the implementation using its key.
+  fallbackPropertyPath,
+  implementationGetterPropertyPath, // the getter function for the implementation using its key.
 }) {
+  if (!Array.isArray(fallbackPropertyPath)) fallbackPropertyPath = [fallbackPropertyPath]
+  if (!Array.isArray(implementationGetterPropertyPath)) implementationGetterPropertyPath = [implementationGetterPropertyPath]
+
   let generatorFunction = function*({
     implementationKey,
     /* Like the native JS behavior for `constructor` function that calls the super constructor as well in the chain.
@@ -30,15 +43,16 @@ export const createSwitchGeneratorFunction = function({
       shouldHandOver = executionControl.shouldHandOver(controlArg),
       shouldPropagate = executionControl.shouldPropagate(controlArg)
 
-    implementationKey ||= callerClass[fallbackSymbol]
+    implementationKey ||= getNestedObject(callerClass, fallbackPropertyPath)
 
     let implementation: Object | Array<Object>, lookupResult // implementation functions to execute
+    let implementationGetter = getNestedObject(callerClass, implementationGetterPropertyPath)
     if (recursiveDelegationChainExecution) {
-      lookupResult = callerClass::callerClass[implementationGetterSymbol](implementationKey, true /*recursive execution of multiple implementations*/)
+      lookupResult = callerClass::implementationGetter(implementationKey, true /*recursive execution of multiple implementations*/)
       assert(lookupResult && lookupResult.length > 0, `• No implementation constructor found for key ${implementationKey.toString()}`)
     } else {
       // single implementation
-      lookupResult = callerClass::callerClass[implementationGetterSymbol](implementationKey)
+      lookupResult = callerClass::implementationGetter(implementationKey)
       assert(lookupResult, `• No implementation constructor found for key ${(implementationKey && implementationKey.toString()) || implementationKey}`)
     }
     if (!Array.isArray(lookupResult)) lookupResult = [lookupResult] // for preventing separate code for execution.

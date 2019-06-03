@@ -10,15 +10,9 @@ import { deepFreeze } from '../../utility/deepObjectFreeze.js'
 export const Reference = {
   // Constructor combines instantiation, prototypeDelegation, & initialization
   constructor: {
-    switch: Symbol('Funtionality:constructor.switch'),
-    fallback: Symbol('Funtionality:constructor.fallback'),
-    list: Symbol('Funtionality:constructor.list'),
-    setter: {
-      list: Symbol('Funtionality:constructor.setter.list'),
-    },
-    getter: {
-      list: Symbol('Funtionality:constructor.getter.list'),
-    },
+    functionality: Symbol('constructor functionality methods'),
+    list: Symbol('constructor implementation list'),
+    fallback: Symbol('constructor fallback implementation key'),
   },
 }
 

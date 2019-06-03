@@ -1,23 +1,17 @@
 import { Reference } from './Reference.js'
 import { deepFreeze } from '../../utility/deepObjectFreeze.js'
-import { mergeNonexistentProperties, mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupAdapter } from '../prototypeMethod.js'
+import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
 import * as symbol from '../Symbol.reference.js'
 
 export const Prototype = {
-  [symbol.metadata]: {
-    type: Symbol('Constructor functionality'),
+  // [symbol.metadata]: { type: Symbol('Constructor functionality') },
+  [Reference.constructor.functionality]: {
+    setter: mergeOwnNestedPropertyCurried({ property: Reference.constructor.list }),
+    getter: nestedPropertyDelegatedLookupCurried({ baseProperty: Reference.constructor.list }),
+    switch: createSwitchGeneratorFunction({ fallbackPropertyPath: Reference.constructor.fallback, implementationGetterPropertyPath: [Reference.constructor.functionality, 'getter'] }),
   },
-  [Reference.constructor.setter.list](implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, ownProperty: Reference.constructor.list, value: implementation })
-  },
-  [Reference.constructor.getter.list]: nestedPropertyDelegatedLookupAdapter({ baseProperty: Reference.constructor.list }),
-  [Reference.constructor.switch]: createSwitchGeneratorFunction({
-    fallbackSymbol: Reference.constructor.fallback,
-    implementationGetterSymbol: Reference.constructor.getter.list,
-  }),
-  [Reference.constructor.fallback]: undefined,
   [Reference.constructor.list]: {},
+  [Reference.constructor.fallback]: undefined,
 }
 
 // prevent accidental manipulation of delegated prototype

@@ -2,15 +2,9 @@ import { deepFreeze } from '../../utility/deepObjectFreeze.js'
 
 export const Reference = {
   clientInterface: {
-    switch: Symbol('Funtionality:clientInterface.switch'),
-    fallback: Symbol('Funtionality:clientInterface.fallback'),
-    list: Symbol('Funtionality:clientInterface.list'),
-    setter: {
-      list: Symbol('Funtionality:clientInterface.setter.list'),
-    },
-    getter: {
-      list: Symbol('Funtionality:clientInterface.getter.list'),
-    },
+    functionality: Symbol('clientInterface functionality methods'),
+    list: Symbol('clientInterface implementation list'),
+    fallback: Symbol('clientInterface fallback implementation key'),
   },
 }
 
