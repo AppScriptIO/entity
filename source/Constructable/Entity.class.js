@@ -3,21 +3,17 @@ import { mergeArrayWithObjectItem } from '../utility/mergeProperty.js'
 import * as symbol from '../functionalityPrototype/Symbol.reference.js'
 import { delegateToMultipleObject as multipleDelegationProxy } from '@dependency/multiplePrototypeDelegation'
 
-export const Entity = new Constructable.clientInterface({ description: 'Entity' })
-const Reference = Object.assign(Entity[Constructable.reference.reference], {
+export const { class: Entity, reference: Reference, constructablePrototype: Prototype } = new Constructable.clientInterface({ description: 'Entity' })
+Object.assign(Reference, {
   key: {
     multipleDelegation: Symbol('Multiple delegation initialization'),
     data: Symbol('data initialization'),
-    // class related
-    prototype: Symbol('prototype delegation object creation for Entity instances.'),
     entityClass: Symbol('entity class related'),
-    configuredClass: Symbol('Configured class related'),
-    // instance related
+    prototypeForInstance: Symbol('prototype delegation object creation for Entity instances.'),
     entityInstance: Symbol('Entity instance related'),
     instanceDelegatingToClassPrototype: Symbol('instanceDelegatingToClassPrototype'),
   },
 })
-const Prototype = Entity::Entity[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructableClass).prototype // or `Entity |> Object.getPrototypeOf`
 
 /*
                    _        _                    ____       _                  _   _             
@@ -82,7 +78,7 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
   [Reference.key.entityClass]({ targetInstance, callerClass = this } = {}) {
     let constructorSwitch = callerClass::callerClass[Constructable.reference.constructor.functionality].switch
     let entityPrototypeDelegation =
-      constructorSwitch({ implementationKey: Entity.reference.key.prototype }) |> (g => g.next('intermittent') && g.next({ description: 'Entity.reference.key.entityClass' }).value)
+      constructorSwitch({ implementationKey: Entity.reference.key.prototypeForInstance }) |> (g => g.next('intermittent') && g.next({ description: 'Prototype for entity instances' }).value)
     targetInstance::targetInstance[Constructable.reference.prototypeDelegation.functionality].setter({
       [Entity.reference.key.entityInstance]: {
         prototype: entityPrototypeDelegation,
@@ -145,23 +141,11 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
       })
     return instance
   },
-  // TODO: merge this implementation with the Constructable implementation.
-  [Reference.key.configuredClass]({ description = 'Configued Class', callerClass = this, parameter } = {}) {
-    let instance =
-      callerClass::callerClass[Constructable.reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation })
-      |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: callerClass }).value)
-    callerClass::callerClass[Constructable.reference.initialize.functionality].switch({ implementationKey: Constructable.reference.key.classInstance })
-      |> (g => g.next('intermittent') && g.next({ targetInstance: instance, description: description }).value)
-    instance.parameter = parameter
-    return instance
-  },
   // prototype - creates a prototype that belongs to the caller class (sets constructor to class)
-  [Reference.key.prototype]({ propertyObject /* The prototype initial value */, callerClass = this, description } = {}, previousResult) {
+  [Reference.key.prototypeForInstance]({ propertyObject /* The prototype initial value */, callerClass = this, description } = {}, previousResult) {
     let instance =
-      callerClass::callerClass[Constructable.reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation })
-      |> (g => g.next('intermittent') && g.next().value)
-    callerClass::callerClass[Constructable.reference.initialize.functionality].switch({ implementationKey: Constructable.reference.key.classInstance })
-      |> (g => g.next('intermittent') && g.next({ targetInstance: instance, description: description }).value)
+      callerClass::callerClass[Constructable.reference.constructor.functionality].switch({ implementationKey: Constructable.reference.key.classInstance })
+      |> (g => g.next('intermittent') && g.next({ description: description }).value)
     if (propertyObject) Object.assign(instance, propertyObject)
     return instance
   },
@@ -182,7 +166,12 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
     const proxiedTarget = new Proxy(function() {}, {
       construct(target, argumentList, proxiedTarget) {
         let instance = callerClass::constructorSwitch({ implementationKey: Reference.key.entityClass }) |> (g => g.next('intermittent') && g.next(...argumentList).value)
-        return instance
+        return {
+          class: instance,
+          reference: instance[Reference.reference],
+          constructablePrototype: instance::instance[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructableClass).prototype,
+          entityPrototype: instance::instance[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance).prototype,
+        }
       },
     })
     return proxiedTarget
@@ -192,7 +181,7 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
   // create an instance using entity defined prototype and innitialization functions. Used by Entity classes to create an interface for their class.
   [Reference.key.instanceDelegatingToClassPrototype]({
     constructorImplementation = throw new Error('• Parameter `constructorImplementation` must be passed.'),
-    configuredConstructableImplementation = Reference.key.configuredClass,
+    configuredConstructableImplementation = Constructable.reference.key.configuredClass,
     clientInterfaceImplementation = Reference.key.instanceDelegatingToClassPrototype,
     // apply changes to arguments data structure.
     argumentListAdapter,
