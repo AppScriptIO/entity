@@ -2,6 +2,11 @@ import { Constructable } from './Constructable.class.js'
 import { mergeArrayWithObjectItem } from '../utility/mergeProperty.js'
 import * as symbol from '../functionalityPrototype/Symbol.reference.js'
 import { delegateToMultipleObject as multipleDelegationProxy } from '@dependency/multiplePrototypeDelegation'
+// shorter forms for switch functions
+const instantiateSwitch = Constructable[Constructable.reference.instantiate.functionality].switch,
+  initializeSwitch = Constructable[Constructable.reference.initialize.functionality].switch,
+  constructorSwitch = Constructable[Constructable.reference.constructor.functionality].switch,
+  clientInterfaceSwitch = Constructable[Constructable.reference.clientInterface.functionality].switch
 
 export const { class: Entity, reference: Reference, constructablePrototype: Prototype } = new Constructable.clientInterface({ description: 'Entity' })
 Object.assign(Reference, {
@@ -28,7 +33,7 @@ Prototype::Prototype[Constructable.reference.prototypeDelegation.functionality].
   [Reference.key.entityInstance]: {
     prototype: {
       // type Object, usually contains `prototype` protperty
-      [symbol.metadata]: { type: 'Entity class prototype for `entity` prototypeDelegation chain.' },
+      [symbol.metadata]: { type: 'Prototype of Entity pattern - on toplevel Entity constructable.' },
     },
   },
 })
@@ -53,8 +58,7 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
   // initialize instance with entity delegation values.
   [Reference.key.entityInstance]({ targetInstance, prototype, construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
     if (!prototype) {
-      let prototypeDelegationGetter = construtorProperty::construtorProperty[Constructable.reference.prototypeDelegation.functionality].getter
-      let prototypeDelegationSetting = construtorProperty::prototypeDelegationGetter(Reference.key.entityInstance)
+      let prototypeDelegationSetting = construtorProperty::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance)
       prototype = prototypeDelegationSetting.prototype // Entities prototypes delegate to each other.
     }
     Object.setPrototypeOf(targetInstance, prototype) // inherit own and delegated functionalities.
@@ -79,7 +83,7 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
     let constructorSwitch = callerClass::callerClass[Constructable.reference.constructor.functionality].switch
     let entityPrototypeDelegation =
       constructorSwitch({ implementationKey: Entity.reference.key.prototypeForInstance }) |> (g => g.next('intermittent') && g.next({ description: 'Prototype for entity instances' }).value)
-    targetInstance::targetInstance[Constructable.reference.prototypeDelegation.functionality].setter({
+    targetInstance::Constructable[Constructable.reference.prototypeDelegation.functionality].setter({
       [Entity.reference.key.entityInstance]: {
         prototype: entityPrototypeDelegation,
       },
@@ -98,17 +102,12 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
 Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   // creates an entity class (a Constructable with speicific Entity related properties)
   [Reference.key.entityClass]({ description, callerClass = this } = {}) {
-    const initializeSwitch = callerClass[Constructable.reference.initialize.functionality].switch,
-      constructorSwitch = callerClass[Constructable.reference.constructor.functionality].switch
     let entityClass = callerClass::constructorSwitch({ implementationKey: Constructable.reference.key.constructableClass }) |> (g => g.next('intermittent') && g.next({ description }).value)
     entityClass::initializeSwitch({ implementationKey: Reference.key.entityClass }) |> (g => g.next('intermittent') && g.next({ targetInstance: entityClass }).value)
     return entityClass
   },
   // merge data into instance properties
   [Reference.key.data]({ data, delegationList, callerClass = this } = {}) {
-    let instantiateSwitch = callerClass[Constructable.reference.instantiate.functionality].switch,
-      initializeSwitch = callerClass[Constructable.reference.initialize.functionality].switch
-
     // create instance
     let instance =
       callerClass::instantiateSwitch({ implementationKey: Constructable.reference.key.createObjectWithDelegation }) |> (g => g.next('intermittent') && g.next({ instanceType: 'object' }).value)
@@ -143,9 +142,13 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   },
   // prototype - creates a prototype that belongs to the caller class (sets constructor to class)
   [Reference.key.prototypeForInstance]({ propertyObject /* The prototype initial value */, callerClass = this, description } = {}, previousResult) {
+    // get the parent entity pattern related prototype.
+    let parentEntityPrototypeDelegation = callerClass::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance) || null
     let instance =
-      callerClass::callerClass[Constructable.reference.constructor.functionality].switch({ implementationKey: Constructable.reference.key.classInstance })
-      |> (g => g.next('intermittent') && g.next({ description: description }).value)
+      callerClass::instantiateSwitch({ implementationKey: Constructable.reference.key.createObjectWithDelegation })
+      |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: parentEntityPrototypeDelegation }).value)
+    callerClass::initializeSwitch({ implementationKey: Constructable.reference.key.classInstance })
+      |> (g => g.next('intermittent') && g.next({ targetInstance: instance, description: description }).value)
     if (propertyObject) Object.assign(instance, propertyObject)
     return instance
   },
@@ -158,9 +161,6 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   | |___| | |  __/ | | | |_ | || | | | ||  __/ |  |  _| (_| | (_|  __/
    \____|_|_|\___|_| |_|\__|___|_| |_|\__\___|_|  |_|  \__,_|\___\___|
 */
-const prototypeDelegationGetter = Constructable[Constructable.reference.prototypeDelegation.functionality].getter,
-  constructorSwitch = Constructable[Constructable.reference.constructor.functionality].switch,
-  clientInterfaceSwitch = Constructable[Constructable.reference.clientInterface.functionality].switch
 Prototype::Prototype[Constructable.reference.clientInterface.functionality].setter({
   // create an entity class that has follows that Entity pattern to create instances with custom prototype chains.
   [Reference.key.entityClass]({ callerClass = this }) {
@@ -173,8 +173,8 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
           returnedInstanceAdapter: instance => ({
             class: instance,
             reference: instance[Constructable.reference.reference],
-            constructablePrototype: instance::prototypeDelegationGetter(Constructable.reference.key.constructableClass).prototype,
-            entityPrototype: instance::prototypeDelegationGetter(Reference.key.entityInstance).prototype,
+            constructablePrototype: instance::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructableClass).prototype,
+            entityPrototype: instance::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance).prototype,
           }),
         }).value)
     return clientInterface
@@ -210,5 +210,4 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
 })
 
 // client interface for creating sub class instance delegating to the `Entity` & `Constructable` functionality chain.
-Entity.clientInterface =
-  Entity::Entity[Constructable.reference.clientInterface.functionality].switch({ implementationKey: Reference.key.entityClass }) |> (g => g.next('intermittent') && g.next({}).value)
+Entity.clientInterface = Entity::clientInterfaceSwitch({ implementationKey: Reference.key.entityClass }) |> (g => g.next('intermittent') && g.next({}).value)

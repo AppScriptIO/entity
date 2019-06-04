@@ -108,7 +108,7 @@ Prototype::Prototype[Reference.initialize.functionality].setter({
       Object.defineProperty(targetInstance, Reference.metadata, {
         writable: false,
         enumerable: false,
-        value: { type: Symbol(`${targetInstance[Reference.name]} class - ${description}`) },
+        value: { type: Symbol(`${description} - created by ${construtorProperty[Reference.name]} class`) },
       }) // set metadata information for debugging.
     targetInstance.constructor = construtorProperty // to preserve functionality of native JS functions integration.
     return targetInstance
