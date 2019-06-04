@@ -11,7 +11,7 @@ Object.assign(Reference, {
     entityClass: Symbol('entity class related'),
     prototypeForInstance: Symbol('prototype delegation object creation for Entity instances.'),
     entityInstance: Symbol('Entity instance related'),
-    instanceDelegatingToClassPrototype: Symbol('instanceDelegatingToClassPrototype'),
+    instanceDelegatingToEntityInstancePrototype: Symbol('instanceDelegatingToEntityInstancePrototype'),
   },
 })
 
@@ -158,38 +158,37 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   | |___| | |  __/ | | | |_ | || | | | ||  __/ |  |  _| (_| | (_|  __/
    \____|_|_|\___|_| |_|\__|___|_| |_|\__\___|_|  |_|  \__,_|\___\___|
 */
+const prototypeDelegationGetter = Constructable[Constructable.reference.prototypeDelegation.functionality].getter,
+  constructorSwitch = Constructable[Constructable.reference.constructor.functionality].switch,
+  clientInterfaceSwitch = Constructable[Constructable.reference.clientInterface.functionality].switch
 Prototype::Prototype[Constructable.reference.clientInterface.functionality].setter({
   // create an entity class that has follows that Entity pattern to create instances with custom prototype chains.
-  [Reference.key.entityClass]() {
-    const callerClass = this
-    let constructorSwitch = Constructable[Constructable.reference.constructor.functionality].switch
-    const proxiedTarget = new Proxy(function() {}, {
-      construct(target, argumentList, proxiedTarget) {
-        let instance = callerClass::constructorSwitch({ implementationKey: Reference.key.entityClass }) |> (g => g.next('intermittent') && g.next(...argumentList).value)
-        return {
-          class: instance,
-          reference: instance[Reference.reference],
-          constructablePrototype: instance::instance[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructableClass).prototype,
-          entityPrototype: instance::instance[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance).prototype,
-        }
-      },
-    })
-    return proxiedTarget
+  [Reference.key.entityClass]({ callerClass = this }) {
+    let clientInterface =
+      callerClass::clientInterfaceSwitch({ implementationKey: Constructable.reference.key.constructableClass })
+      |> (g =>
+        g.next('intermittent') &&
+        g.next({
+          constructorImplementation: Reference.key.entityClass,
+          returnedInstanceAdapter: instance => ({
+            class: instance,
+            reference: instance[Constructable.reference.reference],
+            constructablePrototype: instance::prototypeDelegationGetter(Constructable.reference.key.constructableClass).prototype,
+            entityPrototype: instance::prototypeDelegationGetter(Reference.key.entityInstance).prototype,
+          }),
+        }).value)
+    return clientInterface
   },
 
   // Entity instance relating to prototype chain with functionality specific to the implementer class (sub class, e.g. Graph Element)
   // create an instance using entity defined prototype and innitialization functions. Used by Entity classes to create an interface for their class.
-  [Reference.key.instanceDelegatingToClassPrototype]({
+  [Reference.key.instanceDelegatingToEntityInstancePrototype]({
     constructorImplementation = throw new Error('• Parameter `constructorImplementation` must be passed.'),
-    configuredConstructableImplementation = Constructable.reference.key.configuredClass,
-    clientInterfaceImplementation = Reference.key.instanceDelegatingToClassPrototype,
-    // apply changes to arguments data structure.
-    argumentListAdapter,
+    argumentListAdapter, // apply changes to arguments data structure.
   } = {}) {
     const callerClass = this,
       clientInterfaceArguments = arguments
-    let constructorSwitch = Constructable[Constructable.reference.constructor.functionality].switch,
-      clientInterfaceSwitch = Constructable[Constructable.reference.clientInterface.functionality].switch
+
     const proxiedTarget = new Proxy(function() {}, {
       construct(target, argumentList, proxiedTarget) {
         if (argumentListAdapter) argumentListAdapter(argumentList) // restructure arguments
@@ -199,9 +198,9 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
       },
       apply(target, thisArg, [{ description, parameter = [] } = {}]) {
         let newConfiguredConstructable =
-          callerClass::constructorSwitch({ implementationKey: configuredConstructableImplementation }) |> (g => g.next('intermittent') && g.next({ description: description, parameter }).value)
+          callerClass::constructorSwitch({ implementationKey: Constructable.reference.key.configuredClass }) |> (g => g.next('intermittent') && g.next({ description: description, parameter }).value)
         let clientInterface =
-          newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: clientInterfaceImplementation })
+          newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: Reference.key.instanceDelegatingToEntityInstancePrototype })
           |> (g => g.next('intermittent') && /* Pass same arguments from previous client itnerface */ g.next(...clientInterfaceArguments).value)
         return clientInterface
       },

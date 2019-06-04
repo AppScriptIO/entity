@@ -8,7 +8,7 @@ import { getNestedObject } from '../utility/getNestedObject.js'
 export const nestedPropertyDelegatedLookupCurried = ({ baseProperty }) => {
   if (!Array.isArray(baseProperty)) baseProperty = [baseProperty]
   return function(implementationKey: String, recursive: Boolean = false, callerClass = this) {
-    assert(implementationKey, `• implementationKey must be passed.`)
+    assert(implementationKey, `• implementationKey must be passed, cannot be undefined.`)
     return nestedPropertyDelegatedLookup({
       target: callerClass,
       propertyPath: [...baseProperty, implementationKey],
