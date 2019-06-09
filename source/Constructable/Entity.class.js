@@ -11,8 +11,8 @@ const instantiateSwitch = Constructable[Constructable.reference.instantiate.func
 export const { class: Entity, reference: Reference, constructablePrototype: Prototype } = new Constructable.clientInterface({ description: 'Entity' })
 Object.assign(Reference, {
   key: {
-    multipleDelegation: Symbol('Multiple delegation initialization'),
-    data: Symbol('data initialization'),
+    multipleDelegation: Symbol('Multiple delegation'),
+    mergeDataToInstance: Symbol('mergeDataToInstance'),
     entityClass: Symbol('entity class related'),
     prototypeForInstance: Symbol('prototype delegation object creation for Entity instances.'),
     entityInstance: Symbol('Entity instance related'),
@@ -69,7 +69,7 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
     return multipleDelegationProxy({ targetObject: targetInstance, delegationList })
   },
   // merge data into instance properties
-  [Reference.key.data]({ data = {}, targetInstance }: { data: Object } = {}) {
+  [Reference.key.mergeDataToInstance]({ data = {}, targetInstance }: { data: Object } = {}) {
     Object.assign(targetInstance, data) // apply data to instance
     return targetInstance
   },
@@ -106,8 +106,7 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
     entityClass::initializeSwitch({ implementationKey: Reference.key.entityClass }) |> (g => g.next('intermittent') && g.next({ targetInstance: entityClass }).value)
     return entityClass
   },
-  // merge data into instance properties
-  [Reference.key.data]({ data, delegationList, callerClass = this } = {}) {
+  [Reference.key.multipleDelegation]({ delegationList, callerClass = this } = {}) {
     // create instance
     let instance =
       callerClass::instantiateSwitch({ implementationKey: Constructable.reference.key.createObjectWithDelegation }) |> (g => g.next('intermittent') && g.next({ instanceType: 'object' }).value)
@@ -119,7 +118,7 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
         // pass to all implemenatations the same argument
         let generator
         do {
-          generator = g.next({ targetInstance: instance, construtorProperty: callerClass, delegationList })
+          generator = g.next({ targetInstance: instance, construtorProperty: callerClass })
         } while (!generator.done)
         // return generator.value
       })
@@ -127,8 +126,13 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
     // add additional delegation prototypes
     callerClass::initializeSwitch({ implementationKey: Reference.key.multipleDelegation }) |> (g => g.next('intermittent') && g.next({ targetInstance: instance, delegationList }).value)
 
+    return instance
+  },
+  // merge data into instance properties with multiple delegation.
+  [Reference.key.mergeDataToInstance]({ data, delegationList, callerClass = this } = {}) {
+    let instance = callerClass::constructorSwitch({ implementationKey: Entity.reference.key.multipleDelegation }) |> (g => g.next('intermittent') && g.next({ delegationList }).value)
     // initialize instance data.
-    callerClass::initializeSwitch({ implementationKey: Reference.key.data, recursiveDelegationChainExecution: true })
+    callerClass::initializeSwitch({ implementationKey: Reference.key.mergeDataToInstance, recursiveDelegationChainExecution: true })
       |> (g => {
         g.next('intermittent')
         // pass to all implemenatations the same argument
@@ -179,7 +183,6 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
         }).value)
     return clientInterface
   },
-
   // Entity instance relating to prototype chain with functionality specific to the implementer class (sub class, e.g. Graph Element)
   // create an instance using entity defined prototype and innitialization functions. Used by Entity classes to create an interface for their class.
   [Reference.key.instanceDelegatingToEntityInstancePrototype]({
@@ -206,6 +209,20 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
       },
     })
     return proxiedTarget
+  },
+
+  [Reference.key.mergeDataToInstance]({ callerClass = this } = {}) {
+    let g = callerClass::Prototype[Constructable.reference.clientInterface.functionality].switch({ implementationKey: Reference.key.instanceDelegatingToEntityInstancePrototype })
+    return (
+      g.next('intermittent') &&
+      g.next({
+        constructorImplementation: Reference.key.mergeDataToInstance,
+        argumentListAdapter: argumentList => {
+          argumentList[0] = { data: argumentList[0] }
+          return argumentList
+        },
+      }).value
+    )
   },
 })
 

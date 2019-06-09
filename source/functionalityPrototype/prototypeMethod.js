@@ -77,7 +77,7 @@ export const createSwitchGeneratorFunction = function({
           result = currentResult |> (g => g.next('complete').value)
         }
       } else {
-        // regular function (non-generator)
+        // return the regular function (non-generator)
         result = currentResult
       }
     }
