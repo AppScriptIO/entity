@@ -210,7 +210,6 @@ Prototype::Prototype[Constructable.reference.clientInterface.functionality].sett
     })
     return proxiedTarget
   },
-
   [Reference.key.mergeDataToInstance]({ callerClass = this } = {}) {
     let g = callerClass::Prototype[Constructable.reference.clientInterface.functionality].switch({ implementationKey: Reference.key.instanceDelegatingToEntityInstancePrototype })
     return (

@@ -85,5 +85,23 @@ export const createSwitchGeneratorFunction = function({
     return result
   }
 
-  return generatorFunction
+  /**
+   * Change interface behavior for non generator targets - expose generator as regular function for quick non propagating calls.
+   * When the generator's iterator is called the construct trap will iterate over it and return the result.
+   **/
+  return new Proxy(generatorFunction, {
+    apply(target, thisArg, argumentList) {
+      let iterator = Reflect.apply(target, thisArg, argumentList)
+      return new Proxy(function() {} /*allow non function to set apply handler*/, {
+        apply(_, thisArg, _argumentList) {
+          return iterator |> (g => g.next('intermittent') && g.next(..._argumentList).value)
+        },
+        get(_, property, receiver) {
+          let value = Reflect.get(iterator, property, receiver)
+          if (property == 'next') return iterator::value // bind the original target iterator to prevent and error as the native generator implementation checks the target executing 'next' function.
+          return value
+        },
+      })
+    },
+  })
 }
