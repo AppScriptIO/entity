@@ -94,7 +94,19 @@ export const createSwitchGeneratorFunction = function({
       let iterator = Reflect.apply(target, thisArg, argumentList)
       return new Proxy(function() {} /*allow non function to set apply handler*/, {
         apply(_, thisArg, _argumentList) {
-          return iterator |> (g => g.next('intermittent') && g.next(..._argumentList).value)
+          return (
+            // execute iterator till the end.
+            iterator
+            |> (g => {
+              g.next('intermittent')
+              // pass to all implemenatations the same argument
+              let iterator
+              do {
+                iterator = g.next(..._argumentList)
+              } while (!iterator.done)
+              return iterator.value
+            })
+          )
         },
         get(_, property, receiver) {
           let value = Reflect.get(iterator, property, receiver)

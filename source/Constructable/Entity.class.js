@@ -148,11 +148,8 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   [Reference.key.prototypeForInstance]({ propertyObject /* The prototype initial value */, callerClass = this, description } = {}, previousResult) {
     // get the parent entity pattern related prototype.
     let parentEntityPrototypeDelegation = callerClass::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance) || null
-    let instance =
-      callerClass::instantiateSwitch({ implementationKey: Constructable.reference.key.createObjectWithDelegation })
-      |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: parentEntityPrototypeDelegation }).value)
-    callerClass::initializeSwitch({ implementationKey: Constructable.reference.key.classInstance })
-      |> (g => g.next('intermittent') && g.next({ targetInstance: instance, description: description }).value)
+    let instance = callerClass::instantiateSwitch({ implementationKey: Constructable.reference.key.createObjectWithDelegation })({ description, prototypeDelegation: parentEntityPrototypeDelegation })
+    callerClass::initializeSwitch({ implementationKey: Constructable.reference.key.classInstance })({ targetInstance: instance, description: description })
     if (propertyObject) Object.assign(instance, propertyObject)
     return instance
   },
