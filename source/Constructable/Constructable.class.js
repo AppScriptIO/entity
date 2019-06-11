@@ -138,8 +138,7 @@ Prototype::Prototype[Reference.constructor.functionality].setter({
       {
         passThroughArg: { description, prototypeDelegation: prototypeDelegation },
         func: function(previousArg, arg) {
-          let instance =
-            callerClass::callerClass[Reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation }) |> (g => g.next('intermittent') && g.next(arg).value)
+          let instance = callerClass::callerClass[Reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation })(arg)
           return { instance }
         },
         condition: true,
@@ -149,17 +148,10 @@ Prototype::Prototype[Reference.constructor.functionality].setter({
         func: function({ instance }, arg) {
           // pass to all implemenatations the same argument
           let argumentObject = Object.assign({ targetInstance: instance }, arg)
-          callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.constructableClass, recursiveDelegationChainExecution: true })
-            |> (g => {
-              g.next('intermittent')
-              let generator
-              do {
-                generator = g.next(argumentObject)
-              } while (!generator.done)
-              // return generator.value
-            })
-          callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.classInstance })
-            |> (g => g.next('intermittent') && g.next(lodash.pick(argumentObject, ['description', 'targetInstance', 'construtorProperty'])).value)
+          callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.constructableClass, recursiveDelegationChainExecution: true })(argumentObject)
+          callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.classInstance })(
+            lodash.pick(argumentObject, ['description', 'targetInstance', 'construtorProperty']),
+          )
           return instance
         },
         condition: true,
@@ -185,20 +177,17 @@ Prototype::Prototype[Reference.constructor.functionality].setter({
     return result
   },
   [Reference.key.classInstance]({ description = 'Class', callerClass = this } = {}) {
-    let instance =
-      callerClass::callerClass[Reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation })
-      |> (g => g.next('intermittent') && g.next({ description, prototypeDelegation: callerClass }).value)
-    callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.classInstance })
-      |> (g => g.next('intermittent') && g.next({ targetInstance: instance, description: description }).value)
+    let instance = callerClass::callerClass[Reference.instantiate.functionality].switch({ implementationKey: Reference.key.createObjectWithDelegation })({
+      description,
+      prototypeDelegation: callerClass,
+    })
+    callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.classInstance })({ targetInstance: instance, description: description })
     return instance
   },
   // create instance of a Constructable that is prepopulated with parameters, calling the functions will use these params. This allows usage of params multiple times without repeating them in each requrest.
   [Reference.key.configuredClass]({ description = 'Configured Class.', parameter, callerClass = this } = {}) {
-    let instance =
-      callerClass::callerClass[Reference.constructor.functionality].switch({ implementationKey: Reference.key.classInstance })
-      |> (g => g.next('intermittent') && g.next({ description: description }).value)
-    callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.configuredClass })
-      |> (g => g.next('intermittent') && g.next({ targetInstance: instance, parameter }).value)
+    let instance = callerClass::callerClass[Reference.constructor.functionality].switch({ implementationKey: Reference.key.classInstance })({ description: description })
+    callerClass::callerClass[Reference.initialize.functionality].switch({ implementationKey: Reference.key.configuredClass })({ targetInstance: instance, parameter })
     return instance
   },
 })
@@ -213,11 +202,11 @@ Prototype::Prototype[Reference.constructor.functionality].setter({
    Creation of Constructable class relies on functionality from it's own prototype. Therefore defining functionality implementations comes before the class creation. 
    Another way could be - using the imported functionalities as their own separate prototype, but this will create Constructable in another level in the delegation chain, which is not needed.
 */
-export const Constructable =
-  Prototype::Prototype[Reference.constructor.functionality].switch({ implementationKey: Reference.key.constructableClass })
-  |> (g =>
-    g.next('intermittent') &&
-    g.next({ description: 'Constructable', reference: Reference, prototype: Prototype /* Passing prototype & reference will prevent creation of another prototype chain level. */ }).value)
+export const Constructable = Prototype::Prototype[Reference.constructor.functionality].switch({ implementationKey: Reference.key.constructableClass })({
+  description: 'Constructable',
+  reference: Reference,
+  prototype: Prototype /* Passing prototype & reference will prevent creation of another prototype chain level. */,
+})
 
 /*
     ____ _ _            _   ___       _             __                
@@ -251,13 +240,12 @@ Prototype::Prototype[Reference.clientInterface.functionality].setter({
     const proxiedTarget = new Proxy(function() {}, {
       construct(target, argumentList, proxiedTarget) {
         if (callerClass.parameter) mergeArrayWithObjectItem({ listTarget: argumentList, listDefault: callerClass.parameter }) // in case configured constructable which holds default parameter values.
-        let instance = callerClass::constructorSwitch({ implementationKey: constructorImplementation }) |> (g => g.next('intermittent') && g.next(...argumentList).value)
+        let instance = callerClass::constructorSwitch({ implementationKey: constructorImplementation })(...argumentList)
         return returnedInstanceAdapter ? returnedInstanceAdapter(instance) : instance
       },
       apply(target, thisArg, [{ description, parameter = [] } = {}]) {
-        let newConfiguredConstructable =
-          callerClass::constructorSwitch({ implementationKey: configuredConstructableImplementation }) |> (g => g.next('intermittent') && g.next({ description: description, parameter }).value)
-        let clientInterface = newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: clientInterfaceImplementation }) |> (g => g.next('intermittent') && g.next().value)
+        let newConfiguredConstructable = callerClass::constructorSwitch({ implementationKey: configuredConstructableImplementation })({ description: description, parameter })
+        let clientInterface = newConfiguredConstructable::clientInterfaceSwitch({ implementationKey: clientInterfaceImplementation })()
         return clientInterface
       },
     })
@@ -265,6 +253,6 @@ Prototype::Prototype[Reference.clientInterface.functionality].setter({
   },
 })
 
-Constructable.clientInterface =
-  Constructable::Constructable[Reference.clientInterface.functionality].switch({ implementationKey: Reference.key.constructableClass })
-  |> (g => g.next('intermittent') && g.next({ constructorImplementation: Reference.key.constructableClass }).value)
+Constructable.clientInterface = Constructable::Constructable[Reference.clientInterface.functionality].switch({ implementationKey: Reference.key.constructableClass })({
+  constructorImplementation: Reference.key.constructableClass,
+})
