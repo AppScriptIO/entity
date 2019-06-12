@@ -110,13 +110,29 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
     return instance
   },
   // initialize target instance using concerete bahviors that extend it. Each concrete behavior taps into the construction phase of the instance, adds itself as delegation and processes the instance.
-  [Reference.key.concereteBehavior]({ concreteBehaviorList = [], constructorImplementation = Reference.key.mergeDataToInstance, constructorCallback, callerClass = this }) {
+  [Reference.key.concereteBehavior]({
+    concreteBehaviorList = [],
+    constructorImplementation = Reference.key.mergeDataToInstance,
+    constructorCallback,
+    // Additional interception function
+    interceptCallback = false ||
+      // example interception callback
+      (constructorCallback =>
+        new Proxy(constructorCallback, {
+          apply(target, thisArg, argumentList) {
+            return Reflect.apply(...arguments)
+          },
+        })),
+    callerClass = this,
+  }) {
     constructorCallback ||= (...args) => callerClass::constructorSwitch({ implementationKey: constructorImplementation })(...args)
-    // intercept constructor callback
+    // intercept constructor callback using concrete behaviors
     for (let concereteBehavior of concreteBehaviorList) {
       if (concereteBehavior[Reference.key.concereteBehavior])
         constructorCallback = concereteBehavior[Reference.key.concereteBehavior]({ constructorCallback, currentConcereteBehavior: concereteBehavior })
     }
+    // intercept using intercept callback parameter
+    if (interceptCallback) constructorCallback = interceptCallback(constructorCallback)
     return constructorCallback(...arguments)
   },
   // merge data into instance properties with multiple delegation.
