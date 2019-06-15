@@ -13,6 +13,13 @@ Constructable alternative to JS `class` or `function` with feature rich capabili
         interface function `call` --> for constructor config
     - `Instance Construction` - create object delegated to specific prototype chain.
         interface constractable `new` --> for instance creation.
+    - The client interface allows to interact with the module in multiple ways. i.e. it doesn't contain the core logic, but the wiring simplifying the configuration & usage of the different componenets of this module.
+    - The initialization behavior - e.g. through instantiation (executing interface as constructor with `new` keyword) or executing the interface by calling (executing interface as function): 
+        - Apply => Create constructor with specific implementation, manipulating the behavior of the instance creation.
+        - Construct => Create instance from default class. E.g. Node subclass instance.
+    - Sets default parameters for the different components of the module.
+    - Manages interface instances allowing to create new interface from a previously configured interface instance.
+    - Provides a consistent exposed client interface - allowing easier refactoring of internal components when needed.
 - **Entity design pattern specification**: 
     - Through each `entitiy` programmatic api is exposed, which will be used to construct instance, configure constructors, and create client interfaces. 
     - instances created by Entity class maybe refered to as `Entity instance`

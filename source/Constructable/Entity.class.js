@@ -72,9 +72,11 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
   // },
 
   [Reference.key.entityClass]({ targetInstance, callerClass = this } = {}) {
-    let constructorSwitch = callerClass::callerClass[Constructable.reference.constructor.functionality].switch
-    let entityPrototypeDelegation = constructorSwitch({ implementationKey: Entity.reference.key.prototypeForInstance })({ description: 'Prototype for entity instances' })
-    targetInstance::Constructable[Constructable.reference.prototypeDelegation.functionality].setter({
+    let constructorSwitch = Constructable[Constructable.reference.constructor.functionality].switch
+    let entityPrototypeDelegation = callerClass::constructorSwitch({ implementationKey: Entity.reference.key.prototypeForInstance })({ description: 'Prototype for entity instances' })
+    // set prototypeDelegation on the target class's Constructable Prototype, because it is used for subclasses entityPrototype delegation.
+    let targetConstructablePrototype = targetInstance::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructableClass).prototype
+    targetConstructablePrototype::Constructable[Constructable.reference.prototypeDelegation.functionality].setter({
       [Entity.reference.key.entityInstance]: {
         prototype: entityPrototypeDelegation,
       },
@@ -152,7 +154,7 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   // prototype - creates a prototype that belongs to the caller class (sets constructor to class)
   [Reference.key.prototypeForInstance]({ propertyObject /* The prototype initial value */, callerClass = this, description } = {}, previousResult) {
     // get the parent entity pattern related prototype.
-    let parentEntityPrototypeDelegation = callerClass::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance) || null
+    let parentEntityPrototypeDelegation = callerClass::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Reference.key.entityInstance).prototype || null
     let instance = callerClass::instantiateSwitch({ implementationKey: Constructable.reference.key.createObjectWithDelegation })({ description, prototypeDelegation: parentEntityPrototypeDelegation })
     callerClass::initializeSwitch({ implementationKey: Constructable.reference.key.classInstance })({ targetInstance: instance, description: description })
     if (propertyObject) Object.assign(instance, propertyObject)
