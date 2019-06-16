@@ -127,7 +127,12 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
         })),
     callerClass = this,
   }) {
-    constructorCallback ||= (...args) => callerClass::constructorSwitch({ implementationKey: constructorImplementation })(...args)
+    constructorCallback ||= (...args) => {
+      let instance = callerClass::constructorSwitch({ implementationKey: constructorImplementation })(...args)
+      args[0].targetInstance = instance
+      callerClass::initializeSwitch({ implementationKey: Reference.key.concereteBehavior, recursiveDelegationChainExecution: true })(...args) // allow classes to hook over the initializaiion process.
+      return instance
+    }
     // intercept constructor callback using concrete behaviors
     for (let concereteBehavior of concreteBehaviorList) {
       if (concereteBehavior[Reference.key.concereteBehavior])
@@ -146,7 +151,7 @@ Prototype::Prototype[Constructable.reference.constructor.functionality].setter({
   },
   // subclasses will provide an initialization implementation with key 'handleDataInstance'
   [Reference.key.handleDataInstance]({ data, delegationList, callerClass = this } = {}) {
-    let instance = callerClass::constructorSwitch({ implementationKey: Entity.reference.key.multipleDelegation })({ delegationList })
+    let instance = callerClass::constructorSwitch({ implementationKey: Reference.key.multipleDelegation })({ delegationList })
     // initialize instance data.
     callerClass::initializeSwitch({ implementationKey: Reference.key.handleDataInstance, recursiveDelegationChainExecution: true })({ targetInstance: instance, data: data })
     return instance
