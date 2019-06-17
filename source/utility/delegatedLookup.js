@@ -70,7 +70,7 @@ export const delegatedLookup = ({
 
       let targetPrototpye = Object.getPrototypeOf(currentTarget)
       // check for multiple delegation return array.
-      if (Array.isArray(targetPrototpye) && MultipleDelegation.isInstanceof(target)) {
+      if (Array.isArray(targetPrototpye) && MultipleDelegation.isInstanceof(currentTarget)) {
         targetAggregator = [...targetAggregator, ...targetPrototpye]
       } else if (targetPrototpye /* not null or undefined */) {
         targetAggregator.push(targetPrototpye)
