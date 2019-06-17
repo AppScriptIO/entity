@@ -981,8 +981,8 @@
     del "^3.0.0"
 
 "@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
-  version "1.0.6"
-  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#d36e2476d2bb480e07bf483caa9aa4078126cb41"
+  version "1.0.7"
+  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#55b7e23a83a0d2aaf11739fc850453776e19c9c0"
 
 "@dependency/nodejsLiveReload@git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x":
   version "1.0.2"
