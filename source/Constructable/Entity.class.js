@@ -2,6 +2,8 @@ import { Constructable } from './Constructable.class.js'
 import { mergeArrayWithObjectItem } from '../utility/mergeProperty.js'
 import * as symbol from '../functionalityPrototype/Symbol.reference.js'
 import { MultipleDelegation } from '@dependency/multiplePrototypeDelegation'
+import { conditionDelegatedLookup } from '../utility/delegatedLookup.js'
+
 // shorter forms for switch functions
 const instantiateSwitch = Constructable[Constructable.reference.instantiate.functionality].switch,
   initializeSwitch = Constructable[Constructable.reference.initialize.functionality].switch,
@@ -20,6 +22,8 @@ Object.assign(Reference, {
     entityInstance: Symbol('Entity instance related'),
     instanceDelegatingToEntityInstancePrototype: Symbol('instanceDelegatingToEntityInstancePrototype'),
   },
+  // Lookup the prototype chain for an instance that was constructed using a specific class. e.g. usefull in getter the concrete behavior of classes of a target instance (that has the behaviors in it's prototype chain.)
+  getInstanceOf: Symbol('Entity:getInstanceOf prototype chian lookup'),
 })
 
 /*
@@ -36,6 +40,10 @@ Prototype::Prototype[Constructable.reference.prototypeDelegation.functionality].
     prototype: {
       // type Object, usually contains `prototype` protperty
       [symbol.metadata]: { type: 'Prototype of Entity pattern - on toplevel Entity constructable.' },
+      [Reference.getInstanceOf](Class /*The class that constructed the concerete instance*/, callerInstance = this) {
+        // lookup in this for constructor class in prototype chain
+        return conditionDelegatedLookup({ target: callerInstance, conditionCheck: prototypeTarget => prototypeTarget.constructor === Class })
+      },
     },
   },
 })
@@ -72,7 +80,6 @@ Prototype::Prototype[Constructable.reference.initialize.functionality].setter({
   // },
 
   [Reference.key.entityClass]({ targetInstance, callerClass = this } = {}) {
-    let constructorSwitch = Constructable[Constructable.reference.constructor.functionality].switch
     let entityPrototypeDelegation = callerClass::constructorSwitch({ implementationKey: Entity.reference.key.prototypeForInstance })({ description: 'Prototype for entity instances' })
     // set prototypeDelegation on the target class's Constructable Prototype, because it is used for subclasses entityPrototype delegation.
     let targetConstructablePrototype = targetInstance::Constructable[Constructable.reference.prototypeDelegation.functionality].getter(Constructable.reference.key.constructableClass).prototype

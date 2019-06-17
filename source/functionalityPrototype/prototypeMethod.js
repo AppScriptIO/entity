@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { isGeneratorFunction } from '../utility/isGeneratorFunction.js'
 import { executionControl } from '../utility/generatorExecutionControl.js'
-import { nestedPropertyDelegatedLookup } from '../utility/propertyDelegatedLookup.js'
+import { nestedPropertyDelegatedLookup } from '../utility/delegatedLookup.js'
 import { mergeOwnNestedProperty } from '../utility/mergeProperty.js'
 import { getNestedObject } from '../utility/getNestedObject.js'
 
