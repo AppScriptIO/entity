@@ -3,9 +3,7 @@
     "version": "1.0.7",
     "main": "./entrypoint/programmaticAPI",
     "scripts": {
-        "setup": "yarn install --production=false",
-        "test": "yarn run scriptManager test \"({ testPath: './test', shouldDebugger: true })\"",
-        "generateTypes": "tsc --project ./configuration/typescript.config.json"
+        "buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
     },
     "dependencies": {
         "@dependency/multiplePrototypeDelegation": "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x",
