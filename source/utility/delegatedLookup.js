@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { MultipleDelegation } from '@dependency/multiplePrototypeDelegation'
-import { metadata } from '../functionalityPrototype/Symbol.reference.js'
+import { metadata } from '../constructableElement/Functionality/sharedSymbol.js'
 const hasOwnProperty = Object.prototype.hasOwnProperty // allows supporting objects delefating null.
 
 /** Lookup algorithm used by 'functionality prototype'.
@@ -19,11 +19,12 @@ export const nestedPropertyDelegatedLookup = ({
     // multiple nested properties lookup
     retrieveValueFromPrototype: targetObject => {
       if (!Array.isArray(propertyPath)) propertyPath = [propertyPath] // use same implementation for all cases.
-      let propertyValue = targetObject
       for (let property of propertyPath) {
-        if (hasOwnProperty.call(propertyValue, property)) propertyValue = propertyValue[property]
+        let targetPropertyArray = [...Object.keys(Object.getOwnPropertyDescriptors(targetObject)), ...Object.getOwnPropertySymbols(targetObject)]
+        if (targetPropertyArray.includes(property)) targetObject = targetObject[property]
         else return undefined
       }
+      let propertyValue = targetObject
       return propertyValue
     },
   })

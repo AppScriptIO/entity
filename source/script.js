@@ -1,3 +1,2 @@
-export * from './constructable/Entity.class.js'
-export * from './constructable/Constructable.class.js'
-export * as symbol from './functionalityPrototype/Symbol.reference.js'
+export * as Entity from './constructableElement/Entity/Entity.class.js'
+export * as Constructable from './constructableElement/Constructable/Constructable.class.js'

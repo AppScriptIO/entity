@@ -1,9 +1,9 @@
 import assert from 'assert'
-import { isGeneratorFunction } from '../utility/isGeneratorFunction.js'
-import { executionControl } from '../utility/generatorExecutionControl.js'
-import { nestedPropertyDelegatedLookup } from '../utility/delegatedLookup.js'
-import { mergeOwnNestedProperty } from '../utility/mergeProperty.js'
-import { getNestedObject } from '../utility/getNestedObject.js'
+import { isGeneratorFunction } from '../../utility/isGeneratorFunction.js'
+import { executionControl } from '../../utility/generatorExecutionControl.js'
+import { nestedPropertyDelegatedLookup } from '../../utility/delegatedLookup.js'
+import { mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
+import { getNestedObject } from '../../utility/getNestedObject.js'
 
 export const nestedPropertyDelegatedLookupCurried = ({ baseProperty }) => {
   if (!Array.isArray(baseProperty)) baseProperty = [baseProperty]
@@ -32,14 +32,17 @@ export const createSwitchGeneratorFunction = function({
   if (!Array.isArray(fallbackPropertyPath)) fallbackPropertyPath = [fallbackPropertyPath]
   if (!Array.isArray(implementationGetterPropertyPath)) implementationGetterPropertyPath = [implementationGetterPropertyPath]
 
-  let generatorFunction = function*({
-    implementationKey,
-    /* Like the native JS behavior for `constructor` function that calls the super constructor as well in the chain.
+  let generatorFunction = function*(
+    implementationKey: string,
+    // options
+    {
+      /* Like the native JS behavior for `constructor` function that calls the super constructor as well in the chain.
       Functions using recursive option must follow the function definition -  function(argumentList<Object>, previousResult<any>)
     */
-    recursiveDelegationChainExecution = false, // Execute all functions in the delegation chain that match the `implementationKey` value. e.g. use initialization function from each class in the prototype chain.
-    callerClass = this, // the constructable class that initiated the function call.
-  }: { implementationKey: String } = {}) {
+      recursiveDelegationChainExecution = false, // Execute all functions in the delegation chain that match the `implementationKey` value. e.g. use initialization function from each class in the prototype chain.
+      callerClass = this, // the constructable class that initiated the function call.
+    } = {},
+  ) {
     const controlArg = function.sent,
       shouldHandOver = executionControl.shouldHandOver(controlArg),
       shouldPropagate = executionControl.shouldPropagate(controlArg)

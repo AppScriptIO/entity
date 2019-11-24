@@ -3,7 +3,10 @@
 	"version": "1.0.8",
 	"main": "./entrypoint/programmaticAPI",
 	"scripts": {
-		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true JSProject/buildAndRelease \".moduleProject({})\""
+		"test": "yarn run scriptManager @dependency/deploymentScript \".test.default({ testPath: ['./test'] })\"",
+		"test-break": "export NODE_OPTIONS='--inspect-brk' && yarn run scriptManager shouldCompileScript=true @dependency/deploymentScript \".test.default({ testPath: ['./test'], shouldDebugger: false, shouldCompileTest: true })\"",
+		"build": "yarn run scriptManager shouldCompileScript=true @dependency/deploymentScript \".buildSourceCode.moduleProject({}, {compile:[/**'./test'*/]})\"",
+		"buildAndRelease": "yarn run scriptManager shouldCompileScript=true @dependency/deploymentScript \".buildAndRelease.moduleProject({})\""
 	},
 	"dependencies": {
 		"@dependency/multiplePrototypeDelegation": "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x",
