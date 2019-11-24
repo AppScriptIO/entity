@@ -29,11 +29,11 @@ module.exports = {
   // }
 
   [$.key.entityClass]: function({ targetInstance, callerClass = this } = {}) {
-    let entityPrototypeDelegation = callerClass::Constructable.Class[Constructable.$.constructor.switch](Entity.$.key.prototypeForInstance)({ description: 'Prototype for entity instances' })
+    let entityPrototypeDelegation = callerClass::Constructable.Class[Constructable.$.constructor.switch]($.key.prototypeForInstance)({ description: 'Prototype for entity instances' })
     // set prototypeDelegation on the target class's Constructable Prototype, because it is used for subclasses entityPrototype delegation.
     let targetConstructablePrototype = targetInstance::Constructable.Class[Constructable.$.prototypeDelegation.getter](Constructable.$.key.constructableClass).prototype
     targetConstructablePrototype::Constructable.Class[Constructable.$.prototypeDelegation.setter]({
-      [Entity.$.key.entityInstance]: {
+      [$.key.entityInstance]: {
         prototype: entityPrototypeDelegation,
       },
     })

@@ -10,8 +10,8 @@ module.exports = {
       returnedInstanceAdapter: instance => ({
         class: instance,
         reference: instance[Constructable.$.reference],
-        constructablePrototype: instance::Constructable[Constructable.$.prototypeDelegation.getter](Constructable.$.key.constructableClass).prototype,
-        entityPrototype: instance::Constructable[Constructable.$.prototypeDelegation.getter]($.key.entityInstance).prototype,
+        constructablePrototype: instance::Constructable.Class[Constructable.$.prototypeDelegation.getter](Constructable.$.key.constructableClass).prototype,
+        entityPrototype: instance::Constructable.Class[Constructable.$.prototypeDelegation.getter]($.key.entityInstance).prototype,
       }),
     })
     return clientInterface

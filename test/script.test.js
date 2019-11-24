@@ -69,16 +69,16 @@ suite('Functionality element', () => {
   })
 })
 
-suite.only('Constructable element', () => {
-  Constructable
-  test('Should create instance successfully', () => {
-    assert(true, '• The test is incomplete, used just to run the modules.')
+suite('Constructable element', () => {
+  test('Should create instances successfully', () => {
+    assert(Constructable.clientInterface(), '• Constructable class must return a configured instance when apply is envoked.')
+    assert(new Constructable.clientInterface(), '• Constructable class must return an instance object when new constructor is envoked.')
   })
 })
 
 suite('Entity element', () => {
-  Entity
-  test('Should create instance successfully', () => {
-    assert(true, '• The test is incomplete, used just to run the modules.')
+  test('Should create instances successfully', () => {
+    assert(Entity.clientInterface(), '• Entity class must return a configured instance when apply is envoked.')
+    assert(new Entity.clientInterface(), '• Entity class must return an instance object when new constructor is envoked.')
   })
 })
