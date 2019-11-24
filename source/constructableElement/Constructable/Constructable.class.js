@@ -22,10 +22,7 @@ Creation of Constructable class relies on functionality from it's own prototype.
 Another way could be - using the imported functionalities as their own separate prototype, but this will create Constructable in another level in the delegation chain, which is not needed.
 */
 functionality::functionality[$.prototypeDelegation.setter]({
-  [$.key.constructableClass]: {
-    prototype: functionality,
-    reference: $,
-  },
+  [$.key.constructableClass]: { prototype: functionality, reference: $ },
 })
 functionality::functionality[$.instantiate.setter](require('./property/instantiate'))
 functionality::functionality[$.initialize.setter](require('./property/initialize'))

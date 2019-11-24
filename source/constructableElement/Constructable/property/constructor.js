@@ -14,7 +14,7 @@ module.exports = {
       {
         passThroughArg: { description, prototypeDelegation: prototypeDelegation },
         func: function(previousArg, arg) {
-          let instance = callerClass::callerClass[$.instantiate.switch]( $.key.createObjectWithDelegation )(arg)
+          let instance = callerClass::callerClass[$.instantiate.switch]($.key.createObjectWithDelegation)(arg)
           return { instance }
         },
         condition: true,
@@ -24,8 +24,8 @@ module.exports = {
         func: function({ instance }, arg) {
           // pass to all implemenatations the same argument
           let argumentObject = Object.assign({ targetInstance: instance }, arg)
-          callerClass::callerClass[$.initialize.switch]( $.key.constructableClass, {recursiveDelegationChainExecution: true })(argumentObject)
-          callerClass::callerClass[$.initialize.switch]( $.key.classInstance )(lodash.pick(argumentObject, ['description', 'targetInstance', 'construtorProperty']))
+          callerClass::callerClass[$.initialize.switch]($.key.constructableClass, { recursiveDelegationChainExecution: true })(argumentObject)
+          callerClass::callerClass[$.initialize.switch]($.key.classInstance)(lodash.pick(argumentObject, ['description', 'targetInstance', 'construtorProperty']))
           return instance
         },
         condition: true,
@@ -52,18 +52,18 @@ module.exports = {
   },
 
   [$.key.classInstance]({ description = 'Class', callerClass = this } = {}) {
-    let instance = callerClass::callerClass[$.instantiate.switch]( $.key.createObjectWithDelegation )({
+    let instance = callerClass::callerClass[$.instantiate.switch]($.key.createObjectWithDelegation)({
       description,
       prototypeDelegation: callerClass,
     })
-    callerClass::callerClass[$.initialize.switch]( $.key.classInstance )({ targetInstance: instance, description: description })
+    callerClass::callerClass[$.initialize.switch]($.key.classInstance)({ targetInstance: instance, description: description })
     return instance
   },
 
   // create instance of a Constructable that is prepopulated with parameters, calling the functions will use these params. This allows usage of params multiple times without repeating them in each requrest.
   [$.key.configuredClass]({ description = 'Configured Class.', parameter, callerClass = this } = {}) {
-    let instance = callerClass::callerClass[$.constructor.switch]( $.key.classInstance )({ description: description })
-    callerClass::callerClass[$.initialize.switch]( $.key.configuredClass )({ targetInstance: instance, parameter })
+    let instance = callerClass::callerClass[$.constructor.switch]($.key.classInstance)({ description: description })
+    callerClass::callerClass[$.initialize.switch]($.key.configuredClass)({ targetInstance: instance, parameter })
     return instance
   },
 }

@@ -2,7 +2,11 @@ import { conditionDelegatedLookup } from '../../utility/delegatedLookup.js'
 import * as Constructable from '../Constructable/Constructable.class.js'
 import * as symbol from '../sharedSymbol.js'
 
-export const { class: Class, reference: $, constructablePrototype } = new Constructable.clientInterface({ description: 'Entity' })
+export const {
+  class: Class,
+  reference: $,
+  constructablePrototype, // prototype that will be used in constructing instances of Entity element. It implements the Constructable functionality with registered implementations.
+} = new Constructable.clientInterface({ description: 'Entity' })
 
 // reference symbols
 Object.assign($, {
@@ -21,9 +25,8 @@ Object.assign($, {
   },
 })
 
-// set implementations
-// for direct objects created from Entity immediately
-constructablePrototype::constructablePrototype[Constructable.$.prototypeDelegation.setter]({
+// set implementations for direct objects created from Entity immediately (Entity functionality.)
+constructablePrototype::Class[Constructable.$.prototypeDelegation.setter]({
   [$.key.entityInstance]: {
     prototype: {
       // type Object, usually contains `prototype` protperty
@@ -35,10 +38,10 @@ constructablePrototype::constructablePrototype[Constructable.$.prototypeDelegati
     },
   },
 })
-constructablePrototype::constructablePrototype[Constructable.$.instantiate.setter](require('./property/instantiate'))
-constructablePrototype::constructablePrototype[Constructable.$.initialize.setter](require('./property/initialize'))
-constructablePrototype::constructablePrototype[Constructable.$.constructor.setter](require('./property/constructor'))
-constructablePrototype::constructablePrototype[Constructable.$.clientInterface.setter](require('./property/clientInterface'))
+constructablePrototype::Class[Constructable.$.instantiate.setter](require('./property/instantiate'))
+constructablePrototype::Class[Constructable.$.initialize.setter](require('./property/initialize'))
+constructablePrototype::Class[Constructable.$.constructor.setter](require('./property/constructor'))
+constructablePrototype::Class[Constructable.$.clientInterface.setter](require('./property/clientInterface'))
 
 // client interface for creating sub class instance delegating to the `Entity` & `Constructable` functionality chain.
 export const clientInterface = Class::Constructable.Class[Constructable.$.clientInterface.switch]($.key.entityClass)({})

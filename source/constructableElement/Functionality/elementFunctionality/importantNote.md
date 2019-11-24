@@ -1,1 +1,3 @@
 Do not try to implement nested property lookup for functionality list, as you will reach the limits in Javascript proxy and features (will cause recursive calls while trapping `get` handler, because there so many depend on it, and implementing a separate lookup than the native will actually make the interface harder to deal with). The overcomplication is unnecessary, as these functionalities are not meant to be user friendly, this is the job of the client interfaces.
+
+If for future refatoring, have decided to implement the functionality in nested objects, then use a separate getter function to retrieve the properties requested.
