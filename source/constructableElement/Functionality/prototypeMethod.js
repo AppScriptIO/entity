@@ -29,9 +29,6 @@ export const createSwitchGeneratorFunction = function({
   fallbackPropertyPath,
   implementationGetterPropertyPath, // the getter function for the implementation using its key.
 }) {
-  if (!Array.isArray(fallbackPropertyPath)) fallbackPropertyPath = [fallbackPropertyPath]
-  if (!Array.isArray(implementationGetterPropertyPath)) implementationGetterPropertyPath = [implementationGetterPropertyPath]
-
   /* The generator function uses a pattern that allows to handover control (yield values) and propagate to the request function (switch target function)
   The switch function supports:
   - Generator function yielding.
@@ -65,13 +62,14 @@ export const createSwitchGeneratorFunction = function({
       lookupResult = callerClass::implementationGetter(implementationKey)
       assert(lookupResult, `• No implementation constructor found for key ${(implementationKey && implementationKey.toString()) || implementationKey}`)
     }
-
     if (!Array.isArray(lookupResult)) lookupResult = [lookupResult] // for preventing separate code for execution.
+
+    // preparate functions registered for a specific implementation 
     implementation = lookupResult.map((func, index) => {
       return { func: func, passThroughArg: {} /** Note: supporting array args is possible but adds additional complexity */ }
     })
-
     let result = null // acts as previous result (similar to reduce function but allows usage of `yield*` keyword)
+    // Chain and execute functions of a specific implementation
     for (let index in implementation) {
       // NOte: execution starts from the first matching function in the prototype chain to the last i.e. from class caller to delegated object. This behavior is similar to the native JS `constructor` execution behavior in class inheritance.
       if (shouldHandOver) implementation[index].passThroughArg = yield implementation[index].passThroughArg // client should manipulate `implementation.passThroughArg` for each function in the chain.
@@ -91,7 +89,6 @@ export const createSwitchGeneratorFunction = function({
         result = currentResult
       }
     }
-
     return result
   }
 
