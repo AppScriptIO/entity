@@ -11,28 +11,26 @@ function extendFromNull(constructable) {
   Object.setPrototypeOf(constructable, null)
   Object.setPrototypeOf(constructable.prototype, null)
 }
-// E.g. used to be used with Proxy wrapper, allowing construct & apply handlers.
-const createConstructableWithoutContructor = description => {
+// create a function (constructable) without a constructor (throws when run)  E.g. used to be used with Proxy wrapper, allowing construct & apply handlers.
+const createConstructableWithoutContructor = () => {
   // returns an anonymous function, that when called produces a named function.
-  return new Function(`return function ${description}(){ throw new Error('• Construction should not be reached, rather the proxy wrapping it should deal with the construct handler.') }`)
+  return new Function(`return function (){ throw new Error('• Construction should not be reached, rather the proxy wrapping it should deal with the construct handler.') }`)
 }
 
-// general implementation which creates an object delegating to passed param.
 /**
  * Create an instance (either a function or an object) with a delegation to another prototype.
+ * general implementation which creates an object delegating to passed param.
  */
-module.exports = {
-  [$.key.createObjectWithDelegation]: function createObjectWithDelegation({ description, prototypeDelegation = null, targetInstance, instanceType }: { instanceType: 'object' | 'function' } = {}) {
-    switch (instanceType) {
-      case 'function':
-        targetInstance ||= createConstructableWithoutContructor(description)
-        Object.setPrototypeOf(targetInstance, prototypeDelegation)
-        break
-      case 'object':
-      default:
-        targetInstance ||= Object.create(prototypeDelegation)
-        break
-    }
-    return targetInstance
-  },
+export function createObjectWithDelegation({ prototype = null, targetInstance, instanceType }: { instanceType: 'object' | 'function' } = {}) {
+  switch (instanceType) {
+    case 'function':
+      targetInstance ||= createConstructableWithoutContructor()
+      Object.setPrototypeOf(targetInstance, prototype)
+      break
+    case 'object':
+    default:
+      targetInstance ||= Object.create(prototype)
+      break
+  }
+  return targetInstance
 }

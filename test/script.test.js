@@ -9,7 +9,7 @@ suite('Functionality element', () => {
   const fixture = { symbol1: Symbol(), symbol2: Symbol(), function1: () => fixture.symbol1, function2: () => fixture.symbol2 }
 
   suite('Getter functionality - implementation retrieval:', () => {
-    const functionality = Functionality.Constructor() // create object with merged functionality
+    const { instance: functionality } = Functionality.Constructor() // create object with merged functionality
 
     functionality::functionality[Functionality.$.prototypeDelegation.setter]({
       'implementation-1': fixture.symbol1,
@@ -43,7 +43,7 @@ suite('Functionality element', () => {
   })
 
   suite('Recursive property lookup in the nested list object:', () => {
-    const functionality = Functionality.Constructor() // create object with merged functionality
+    const { instance: functionality } = Functionality.Constructor() // create object with merged functionality
     let delegatingFunctionality = Object.create(functionality) // delegating instance with its own implementation storage.
 
     functionality::functionality[Functionality.$.prototypeDelegation.setter]({
@@ -71,14 +71,43 @@ suite('Functionality element', () => {
 
 suite('Constructable element', () => {
   test('Should create instances successfully', () => {
-    assert(Constructable.clientInterface(), '• Constructable class must return a configured instance when apply is envoked.')
+    assert(
+      Constructable.clientInterface()
+        .clientInterface()
+        .clientInterface()
+        .clientInterface(),
+      '• Constructable class must return a configured instance when apply is envoked.',
+    )
     assert(new Constructable.clientInterface(), '• Constructable class must return an instance object when new constructor is envoked.')
+  })
+
+  suite('Constructable instances (metaclasses):', () => {
+    const { class: constructable1, reference: $ } = new Constructable.clientInterface({ label: 'Constructable 1' })
+    const constructable2 = constructable1::constructable1[$.constructor.switch]($.key.constructableClass)({ label: 'Constructable 2' })
+    const constructable3 = constructable2::constructable2[$.constructor.switch]($.key.constructableClass)({ label: 'Constructable 3' })
+    test('Should inherit their constructable class', () => {
+      assert(Object.getPrototypeOf(constructable2) === constructable1, '• constructable instance must inhirit from constructable class.')
+      assert(Object.getPrototypeOf(constructable3) === constructable2, '• constructable instance must inhirit from constructable class.')
+    })
+  })
+
+  suite('Memoization of Consrtuctable client interface:', () => {
+    const fixture = 'classY'
+    let configuredConstructable = Constructable.clientInterface({ label: 'X', parameter: [{ label: 'X' }] })
+      .clientInterface({ label: 'Y', parameter: [{ label: fixture }] })
+      .clientInterface({ label: 'Z', parameter: [] })
+    let { class: class1 } = new configuredConstructable.clientInterface()
+    let { class: class2 } = new configuredConstructable.clientInterface({ label: 'class2' })
+    test('Should resolve memoized parameter from previous calls', () => {
+      assert(class2[Constructable.$.label] == 'class2', '• Constructable class must return an instance object when new constructor is envoked.')
+      assert(class1[Constructable.$.label] == fixture, '• Constructable class must return an instance object when new constructor is envoked.')
+    })
   })
 })
 
 suite('Entity element', () => {
-  test('Should create instances successfully', () => {
-    assert(Entity.clientInterface(), '• Entity class must return a configured instance when apply is envoked.')
-    assert(new Entity.clientInterface(), '• Entity class must return an instance object when new constructor is envoked.')
-  })
+  // test('Should create instances successfully', () => {
+  //   assert(Entity.clientInterface()()()(), '• Entity class must return a configured instance when apply is envoked.')
+  //   assert(new Entity.clientInterface(), '• Entity class must return an instance object when new constructor is envoked.')
+  // })
 })

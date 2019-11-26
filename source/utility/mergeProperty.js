@@ -31,7 +31,7 @@ export const mergeNonexistentProperties = (targetObject, defaultValue: Object) =
 // merge arguments array that may have object items
 export const mergeArrayWithObjectItem = ({ listTarget, listDefault }) => {
   // merge arguments with default parameters
-  for (let index in listTarget) {
+  for (let index in listDefault /** listDefault not listTarget because if the target is empty the default should always apply */) {
     if (typeof listTarget[index] == 'object' && typeof listDefault[index] == 'object') listTarget[index] = Object.assign(listDefault[index], listTarget[index])
     listTarget[index] ||= listDefault[index]
   }

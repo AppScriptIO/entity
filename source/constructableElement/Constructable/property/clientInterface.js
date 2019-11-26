@@ -1,33 +1,44 @@
-import { $, Class as Constructable } from '../Constructable.class.js'
+import assert from 'assert'
 import { mergeNonexistentProperties, mergeArrayWithObjectItem } from '../../../utility/mergeProperty.js'
+import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.js'
+import { $, Class as Constructable } from '../Constructable.class.js'
+import { createObjectWithDelegation } from './instantiate.js'
 
-/**
- * Example of configured constructable creation: 
-  let configuredConstructable = Constructable.clientInterface({ parameter: [] })
-  const Entity = new configuredConstructable({ description: 'Entity' })
-  */
+function constructableClass({ constructorImplementation } = {}, previousConstructorResult) {
+  const callerClass = this,
+    _arguments = arguments
+  assert(constructorImplementation, `• "constructorImplementation" parameter must be passed`)
+
+  return new Proxy(function() {}, {
+    /**
+     * @return { constructable: of new type class } subclass (new type class) from metaclass (Constructable class)
+     */
+    construct(target, argumentList, proxiedTarget) {
+      // memoization - recursive lookup for parameter key and merge to the arguments list:
+      let parameterList = nestedPropertyDelegatedLookup({ target: callerClass, recursive: true, propertyPath: $.parameter })
+      for (let parameter of parameterList) mergeArrayWithObjectItem({ listDefault: parameter, listTarget: argumentList }) // in case configured constructable which holds default parameter values.
+
+      let instance = callerClass::callerClass[$.constructor.switch](constructorImplementation)(...argumentList)
+
+      return { class: instance, reference: instance[$.reference] }
+    },
+    /**
+     * @return { constructable: of type Constructable class } configured Constructable metaclass
+     */
+    apply(target, thisArg, [{ label, parameter = [] } = {}]) {
+      // create instance of a Constructable that is prepopulated with parameters, calling the functions will use these params. This allows usage of params multiple times without repeating them in each requrest.
+      let instance = createObjectWithDelegation({ prototype: callerClass }) // initialize a prototype that is a class.
+      instance[$.label] = `${label || ''} (configured class/constructable) of ${callerClass[$.label]}`
+      instance.constructor = callerClass // to preserve functionality of native JS functions integration.
+
+      instance[$.parameter] = parameter
+      instance.clientInterface = instance::constructableClass(..._arguments)
+
+      return { class: instance, clientInterface: instance.clientInterface }
+    },
+  })
+}
+
 module.exports = {
-  [$.key.constructableClass]: function({
-    constructorImplementation,
-    returnedInstanceAdapter = instance => ({
-      class: instance,
-      reference: instance[$.reference],
-      constructablePrototype: instance::Constructable[$.prototypeDelegation.getter]($.key.constructableClass).prototype,
-    }),
-    callerClass = this,
-  } = {}) {
-    const proxiedTarget = new Proxy(function() {}, {
-      construct(target, argumentList, proxiedTarget) {
-        if (callerClass.parameter) mergeArrayWithObjectItem({ listTarget: argumentList, listDefault: callerClass.parameter }) // in case configured constructable which holds default parameter values.
-        let instance = callerClass::Constructable[$.constructor.switch](constructorImplementation)(...argumentList)
-        return returnedInstanceAdapter ? returnedInstanceAdapter(instance) : instance
-      },
-      apply(target, thisArg, [{ description, parameter = [] } = {}]) {
-        let newConfiguredConstructable = callerClass::Constructable[$.constructor.switch]($.key.configuredClass)({ description: description, parameter })
-        let clientInterface = newConfiguredConstructable::Constructable[$.clientInterface.switch]($.key.constructableClass)()
-        return clientInterface
-      },
-    })
-    return proxiedTarget
-  },
+  [$.key.constructableClass]: constructableClass,
 }

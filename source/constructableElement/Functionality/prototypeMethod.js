@@ -24,7 +24,7 @@ export const mergeOwnNestedPropertyCurried = ({ property }) => {
   }
 }
 
-// The generator function uses a pattern that allows to handover control (yield values) and propagate to the request function (switch target function)
+/** interface allowing to externally manipulate the behavior of the function */
 export const createSwitchGeneratorFunction = function({
   fallbackPropertyPath,
   implementationGetterPropertyPath, // the getter function for the implementation using its key.
@@ -32,6 +32,12 @@ export const createSwitchGeneratorFunction = function({
   if (!Array.isArray(fallbackPropertyPath)) fallbackPropertyPath = [fallbackPropertyPath]
   if (!Array.isArray(implementationGetterPropertyPath)) implementationGetterPropertyPath = [implementationGetterPropertyPath]
 
+  /* The generator function uses a pattern that allows to handover control (yield values) and propagate to the request function (switch target function)
+  The switch function supports:
+  - Generator function yielding.
+  - Generator functions as regular functions - when handover parameter is false.
+  - regular functions
+*/
   let generatorFunction = function*(
     implementationKey: string,
     // options
@@ -50,7 +56,7 @@ export const createSwitchGeneratorFunction = function({
     implementationKey ||= getNestedObject(callerClass, fallbackPropertyPath)
 
     let implementation: Object | Array<Object>, lookupResult // implementation functions to execute
-    let implementationGetter = getNestedObject(callerClass, implementationGetterPropertyPath)
+    let implementationGetter = getNestedObject(callerClass, implementationGetterPropertyPath) // returns as nested property, in this case it is a function
     if (recursiveDelegationChainExecution) {
       lookupResult = callerClass::implementationGetter(implementationKey, true /*recursive execution of multiple implementations*/)
       assert(lookupResult && lookupResult.length > 0, `• No implementation constructor found for key ${implementationKey.toString()}`)
@@ -59,6 +65,7 @@ export const createSwitchGeneratorFunction = function({
       lookupResult = callerClass::implementationGetter(implementationKey)
       assert(lookupResult, `• No implementation constructor found for key ${(implementationKey && implementationKey.toString()) || implementationKey}`)
     }
+
     if (!Array.isArray(lookupResult)) lookupResult = [lookupResult] // for preventing separate code for execution.
     implementation = lookupResult.map((func, index) => {
       return { func: func, passThroughArg: {} /** Note: supporting array args is possible but adds additional complexity */ }
@@ -120,3 +127,54 @@ export const createSwitchGeneratorFunction = function({
     },
   })
 }
+
+/** this example was used with the above switch function, which allows to separate the function into steps and allows to intercept them from the client.
+  generator function that uses a pattern allowing for handing over control to caller - i.e. running the function in steps.
+  TODO: Document pattern used for handing over control to client and pipping results through the chain
+*/
+// let exampleOfHandoverPattern = {
+//   [$.key.constructableClass]: function*({ description, reference, prototype, prototypeDelegation } = {}, { callerClass = this } = {}) {
+//     prototypeDelegation ||= callerClass::callerClass[$.prototypeDelegation.getter]($.key.constructableClass).prototype
+//     const step = [
+//       // execution of steps allows for passing argument for each step and pipping the result of the previous step.
+//       {
+//         passThroughArg: { description, prototype: prototypeDelegation },
+//         func: function(previousArg, arg) {
+//           // get the prototype set in 'prototypeDelegation' list of the caller
+//           let instance = createObjectWithDelegation(arg)
+//           return { instance }
+//         },
+//         condition: true,
+//       },
+//       {
+//         passThroughArg: { description, reference, prototype, construtorProperty: callerClass },
+//         func: function({ instance }, arg) {
+//           Object.assign(arg, { targetInstance: instance }) // pass to all implemenatations the same argument
+//           callerClass::callerClass[$.initialize.switch]($.key.constructableClass, { recursiveDelegationChainExecution: true })(arg)
+//           callerClass::callerClass[$.initialize.switch]($.key.classInstance)(lodash.pick(arg, ['description', 'targetInstance', 'construtorProperty']))
+//           return instance
+//         },
+//         condition: true,
+//       },
+//     ]
+
+//     // Run chain of step functions
+//     let i = 0,
+//       result,
+//       shouldHandOverControl = executionControl.shouldHandOver(function.sent)
+//     while (i < step.length) {
+//       if (step[i].condition == false) {
+//         i++
+//         continue
+//       }
+//       if (shouldHandOverControl) {
+//         yield step[i].passThroughArg
+//         result = step[i].func(result, function.sent)
+//       } else {
+//         result = step[i].func(result, step[i].passThroughArg)
+//       }
+//       i++
+//     }
+//     return result
+//   },
+// }

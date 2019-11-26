@@ -5,7 +5,8 @@ Constructable alternative to JS `class` or `function` with feature rich capabili
   - instantiation
   - initialization
 - Client interface - splitting the internal programmatic API from the client exposed API. 
-- Creating configured instances for the constructables.
+- Creating configured instances for the constructables themselves, that would then create instances with prototype chains according to the configured parameters. Program-code-templates for creating an instance with custom prototype chain.
+    - Metaclass: classes that produce other classes with specific definition for creating instances
 
 # Concepts:
 - Dynamic interface concept: Ability to configure an interface (e.g. a function) with a specific implementation before using it. Where from the same interface multiple others could be created.
@@ -59,6 +60,8 @@ The behavior of native JS constructor is that it instantiates a new object and s
 ___
 [Development TODO list](/documentation/TODO.md)
 
+Resources: 
+- https://en.wikipedia.org/wiki/Class_(computer_programming)
 ___
 
 ### 🔑 License: [MIT](/.github/LICENSE)
