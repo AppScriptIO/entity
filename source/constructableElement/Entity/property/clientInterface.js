@@ -1,8 +1,9 @@
 import assert from 'assert'
-import { $ } from '../Entity.class.js'
 import { mergeArrayWithObjectItem } from '../../../utility/mergeProperty.js'
+import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.js'
 import * as Constructable from '../../Constructable/Constructable.class.js'
 import { createObjectWithDelegation } from '../../Constructable/property/instantiate.js'
+import { $ } from '../Entity.class.js'
 
 // Entity instance relating to prototype chain with functionality specific to the implementer class (sub class, e.g. Graph Element). create instances with custom prototype chains.
 // create an instance using entity defined prototype and innitialization functions. Used by Entity classes to create an interface for their class.
@@ -19,10 +20,10 @@ function stateInstance({ constructorImplementation } = {}, previousClientInterfa
       // memoization - recursive lookup for parameter key and merge to the arguments list:
       let parameterList = nestedPropertyDelegatedLookup({ target: callerClass, recursive: true, propertyPath: $.parameter })
       for (let parameter of parameterList) mergeArrayWithObjectItem({ listDefault: parameter, listTarget: argumentList }) // in case configured constructable which holds default parameter values.
-       
-      let instance = callerClass::callerClass[$.constructor.switch](constructorImplementation)(...argumentList)
 
-      return { class: instance, reference: instance[$.reference] }
+      let instance = callerClass::callerClass[Constructable.$.constructor.switch](constructorImplementation)(...argumentList)
+
+      return instance
     },
     /**
      * @return { constructable instance: of type Entity class } configured Entity metaclass
@@ -43,6 +44,6 @@ function stateInstance({ constructorImplementation } = {}, previousClientInterfa
 
 module.exports = {
   // [$.key.constructableInstance] - when called it is inherited from parent functionality.
-  
+
   [$.key.stateInstance]: stateInstance,
 }

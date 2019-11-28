@@ -106,13 +106,40 @@ suite('Constructable element', () => {
 })
 
 suite('Entity element', () => {
-  test('Should create instances successfully', () => {
+  test('Should create constructable instances successfully', () => {
     assert(
-      Entity.clientInterface()
+      Entity.clientInterface
+        .constructableInstance()
         .clientInterface()
         .clientInterface(),
       '• Entity class must return a configured instance when apply is envoked.',
     )
-    assert(new Entity.clientInterface(), '• Entity class must return an instance object when new constructor is envoked.')
+    assert(new Entity.clientInterface.constructableInstance(), '• Entity class must return an instance object when new constructor is envoked.')
+  })
+  test('Should create state instances successfully', () => {
+    assert(
+      Entity.clientInterface
+        .stateInstance()
+        .clientInterface()
+        .clientInterface(),
+      '• Entity class must return a configured instance when apply is envoked.',
+    )
+    assert(new Entity.clientInterface.stateInstance({}), '• Entity class must return an instance object when new constructor is envoked.')
+  })
+
+  suite('state instance multiple delegation', () => {
+    let fixture = {
+      key1: 'key1',
+      key2: 'key2',
+      key3: 'key3',
+    }
+    let instance = new Entity.clientInterface.stateInstance({ delegationList: [{ [fixture.key1]: fixture.key1 }, { [fixture.key3]: fixture.key3, [fixture.key2]: fixture.key2 }] })
+
+    test('Should create an instance with multiple delegation', () => {
+      assert(
+        instance[fixture.key1] == fixture.key1 && instance[fixture.key2] == fixture.key2 && instance[fixture.key3] == fixture.key3,
+        '• The property does not exist in the hierarchy delegaiton chain.',
+      )
+    })
   })
 })

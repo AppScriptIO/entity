@@ -39,6 +39,9 @@ Class::Class[$.prototypeDelegation.getter](Constructable.$.key.constructableInst
     prototype::Class[Constructable.$.clientInterface.setter](require('./property/clientInterface'))
   })
 
-const clientInterface = Class::Class[Constructable.$.clientInterface.switch](Constructable.$.key.constructableInstance)({ constructorImplementation: Constructable.$.key.constructableInstance }) // client interface for creating sub class instance delegating to the `Entity` & `Constructable` functionality chain.
+const clientInterface = {
+  constructableInstance: Class::Class[Constructable.$.clientInterface.switch](Constructable.$.key.constructableInstance)({ constructorImplementation: Constructable.$.key.constructableInstance }), // client interface for creating sub class instance delegating to the `Entity` & `Constructable` functionality chain.
+  stateInstance: Class::Class[Constructable.$.clientInterface.switch]($.key.stateInstance)({ constructorImplementation: $.key.stateInstance }),
+}
 
 export { $, Class, clientInterface }
