@@ -1,6 +1,6 @@
 import { deepFreeze } from '../../../utility/deepObjectFreeze.js'
 import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
+import { createSwitch, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
 import * as symbol from '../../sharedSymbol.js'
 
 /**
@@ -22,7 +22,7 @@ export const $ = {
 const f = {
   // [symbol.metadata]: { type: Symbol('Constructor functionality') },
   // function that redirects to an implementation
-  switch: createSwitchGeneratorFunction({ fallbackPropertyPath: [$.constructor.fallback], implementationGetterPropertyPath: [$.constructor.getter] }),
+  switch: createSwitch({ fallbackPropertyPath: [$.constructor.fallback], implementationGetterPropertyPath: [$.constructor.getter] }),
   // getter/setter - functions for implementation lookup and addition.
   setter: mergeOwnNestedPropertyCurried({ property: [$.constructor.list] }),
   getter: nestedPropertyDelegatedLookupCurried({ baseProperty: [$.constructor.list] }),

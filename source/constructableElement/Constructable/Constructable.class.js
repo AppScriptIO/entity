@@ -13,7 +13,7 @@ Object.assign($, {
   // key - built-in implementations keys.
   key: {
     classInstance: Symbol('classInstance'), // class instance related
-    constructableClass: Symbol('constructableClass'), // Constructable related
+    constructableInstance: Symbol('constructableInstance'), // Constructable related
   },
 })
 
@@ -23,19 +23,19 @@ Another way could be - using the imported functionalities as their own separate 
 */
 functionality::functionality[$.prototypeDelegation.setter]({
   // objects that will be used in creation of the main Contructable class.
-  [$.key.constructableClass]: { prototype: functionality, reference: $ },
+  [$.key.constructableInstance]: { instancePrototype: functionality, referencePrototype: $ },
 })
 functionality::functionality[$.instantiate.setter](require('./property/instantiate'))
 functionality::functionality[$.initialize.setter](require('./property/initialize'))
 functionality::functionality[$.constructor.setter](require('./property/constructor'))
 functionality::functionality[$.clientInterface.setter](require('./property/clientInterface'))
 
-/* Passing prototype & reference will prevent creation of another prototype chain level. i.e. 
-  • Class.__proto__ === functionality 
-  • Class.constructor == functionality
+/* 
+  Running `constructableInstance` constructor will create an instance using the `constructableInstance` delegationPrototype settings set on the caller (functionality).
+  And will also set a new delegationPrototype setting for the created instance. i.e. the new delegation setting will point to objects delegating to the previous one.
 */
-const Class = functionality::functionality[$.constructor.switch]($.key.constructableClass)({ label: 'Constructable' })
+const Class = functionality::functionality[$.constructor.switch]($.key.constructableInstance)({ label: 'Constructable' })
 
-const clientInterface = Class::Class[$.clientInterface.switch]($.key.constructableClass)({ constructorImplementation: $.key.constructableClass })
+const clientInterface = Class::Class[$.clientInterface.switch]($.key.constructableInstance)({ constructorImplementation: $.key.constructableInstance })
 
 export { $, Class as class, clientInterface }

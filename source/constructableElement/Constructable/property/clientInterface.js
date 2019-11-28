@@ -4,7 +4,7 @@ import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.
 import { $, Class as Constructable } from '../Constructable.class.js'
 import { createObjectWithDelegation } from './instantiate.js'
 
-function constructableClass({ constructorImplementation } = {}, previousConstructorResult) {
+function constructableInstance({ constructorImplementation } = {}, previousConstructorResult) {
   const callerClass = this,
     _arguments = arguments
   assert(constructorImplementation, `• "constructorImplementation" parameter must be passed`)
@@ -32,7 +32,7 @@ function constructableClass({ constructorImplementation } = {}, previousConstruc
       instance.constructor = callerClass // to preserve functionality of native JS functions integration.
 
       instance[$.parameter] = parameter
-      instance.clientInterface = instance::constructableClass(..._arguments)
+      instance.clientInterface = instance::constructableInstance(..._arguments)
 
       return { class: instance, clientInterface: instance.clientInterface }
     },
@@ -40,5 +40,5 @@ function constructableClass({ constructorImplementation } = {}, previousConstruc
 }
 
 module.exports = {
-  [$.key.constructableClass]: constructableClass,
+  [$.key.constructableInstance]: constructableInstance,
 }

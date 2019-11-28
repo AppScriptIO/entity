@@ -3,19 +3,21 @@ import { $ } from '../Constructable.class.js'
 
 module.exports = {
   // set the properties necessary for Constructable pattern usage.   Initialize Constructable pattern properties.
-  [$.key.constructableClass]: function({ instance, label } = {}, previousInitializationResult) {
-    let reference = this::this[$.prototypeDelegation.getter]($.key.constructableClass).reference
-    let prototype = this::this[$.prototypeDelegation.getter]($.key.constructableClass).prototype // Constructor prototypes delegate to each other
+  [$.key.constructableInstance]: function({ instance, label } = {}, previousInitializationResult) {
+    // Constructor prototypes delegate to each other
+    let constructableInstanceDelegationSetting = this::this[$.prototypeDelegation.getter]($.key.constructableInstance)
+    Object.setPrototypeOf(instance, constructableInstanceDelegationSetting.instancePrototype) // inherit own and delegated functionalities.
+    instance[$.reference] = Object.create(constructableInstanceDelegationSetting.referencePrototype)
 
-    Object.setPrototypeOf(instance, prototype) // inherit own and delegated functionalities.
-    instance[$.reference] = reference
-
-    // create new prototype and reference for constructableClass delegation
-    // set constructable prototypeDelegation properties - values which will be used in instance creation
+    /* 
+      set delegation setting for next nested instances that will be created - create new prototype and reference for constructableInstance delegation
+      i.e. new delegation setting objects will inherit from the previous delegation settings objects.
+      set constructable prototypeDelegation properties - values which will be used in instance creation
+    */
     instance::instance[$.prototypeDelegation.setter]({
-      [$.key.constructableClass]: {
-        prototype: instance, // Constructor prototypes delegate to each other
-        reference: instance.$,
+      [$.key.constructableInstance]: {
+        instancePrototype: instance, // Constructor prototypes delegate to each other
+        referencePrototype: instance[$.reference], // create a new object for the instance reference
       },
     })
 

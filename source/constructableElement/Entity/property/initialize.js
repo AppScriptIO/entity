@@ -1,27 +1,23 @@
 import { $ } from '../Entity.class.js'
 import * as Constructable from '../../Constructable/Constructable.class.js'
 
-// Example: Trying to override a symbol of a parent class in the child class properties, when called with recursive option (e.g. in Constructable.$.construct) will execute all functions with the same key throughout the prototype chain.
-// export [Constructable.$.initialize.key.constructableClass]() {
-//   console.log(`Executed together with other Constructable.$.initialize.key.constructableClass in the prototype chain`)
-// }
 module.exports = {
-  // initialize instance with entity delegation values.
-  [$.key.entityInstance]: function({ targetInstance, prototype, construtorProperty }, previousResult /* in case multiple constructor function found and executed. */) {
-    if (!prototype) {
-      let prototypeDelegationSetting = construtorProperty::Constructable.Class[Constructable.$.prototypeDelegation.getter]($.key.entityInstance)
-      prototype = prototypeDelegationSetting.prototype // Entities prototypes delegate to each other.
-    }
-    Object.setPrototypeOf(targetInstance, prototype) // inherit own and delegated functionalities.
-  },
+  // creates an entity class (a Constructable with speicific Entity related properties)
+  // Important: this function relies on the parent functions of the same key in the delegation chain (similar to `super` in native JS).
+  [Constructable.$.key.constructableInstance]: function*({ instance, callerClass = this } = {}) {
+    let { superCallback } = function.sent
+    if (superCallback) instance = callerClass::superCallback(...arguments) // call implementation higher in the hierarchy.
 
-  [$.key.entityClass]: function({ targetInstance, callerClass = this } = {}) {
-    let entityPrototypeDelegation = callerClass::Constructable.Class[Constructable.$.constructor.switch]($.key.prototypeForInstance)({ description: 'Prototype for entity instances' })
-    // set prototypeDelegation on the target class's Constructable Prototype, because it is used for subclasses entityPrototype delegation.
-    let targetConstructablePrototype = targetInstance::Constructable.Class[Constructable.$.prototypeDelegation.getter](Constructable.$.key.constructableClass).prototype
-    targetConstructablePrototype::Constructable.Class[Constructable.$.prototypeDelegation.setter]({
-      [$.key.entityInstance]: { prototype: entityPrototypeDelegation },
+    let constructableDelegationSetting = callerClass::callerClass[Constructable.$.prototypeDelegation.getter](Constructable.$.key.constructableInstance),
+      stateDelegationSetting = callerClass::callerClass[Constructable.$.prototypeDelegation.getter]($.key.stateInstance)
+
+    // set the delegation setting for stateInstance that will be created using the new class instance (contructable)
+    constructableDelegationSetting.instancePrototype::callerClass[Constructable.$.prototypeDelegation.setter]({
+      [$.key.stateInstance]: {
+        instancePrototype: Object.create(stateDelegationSetting.instancePrototype),
+      },
     })
-    return targetInstance
+
+    return instance
   },
 }

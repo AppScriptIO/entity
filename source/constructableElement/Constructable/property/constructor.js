@@ -5,9 +5,15 @@ import { createObjectWithDelegation } from './instantiate.js'
 
 module.exports = {
   // Constructable pattern instance - follows the Constructable specification (this module).
-  [$.key.constructableClass]: function({ label } = {}, previousConstructorResult) {
+  [$.key.constructableInstance]: function({ label } = {}, previousConstructorResult) {
     let instance = createObjectWithDelegation()
-    this::this[$.initialize.switch]($.key.constructableClass, { recursiveDelegationChainExecution: true })({ instance, label })
+    /**
+     * behind the switch function interface, a generator is executed:
+     * 1st call - for initializing generator
+     * 2nd call - talks to the implemnetation through the switch interface
+     */ 
+    this::this[$.initialize.switch]($.key.constructableInstance, { recursiveDelegationChainExecution: true })({ instance, label })
+
     return instance
   },
 }

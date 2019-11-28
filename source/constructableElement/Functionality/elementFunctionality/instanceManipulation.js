@@ -1,5 +1,5 @@
 import { deepFreeze } from '../../../utility/deepObjectFreeze.js'
-import { applyFunctionalityContainerFunction, createSwitchGeneratorFunction, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
+import { applyFunctionalityContainerFunction, createSwitch, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
 import * as symbol from '../../sharedSymbol.js'
 
 export const $ = {
@@ -7,7 +7,7 @@ export const $ = {
   prototypeDelegation: {
     getter: Symbol('prototypeDelegation.getter'),
     setter: Symbol('prototypeDelegation.setter'),
-    list: Symbol('prototypeDelegation.list')
+    list: Symbol('prototypeDelegation.list'),
   },
   // Responsible for the creation of instances with setting prototype delegation - e.g. instance could be a JS Object or a JS Function.
   instantiate: {
@@ -36,12 +36,12 @@ export const f = {
     getter: nestedPropertyDelegatedLookupCurried({ baseProperty: [$.prototypeDelegation.list] }),
   },
   instantiate: {
-    switch: createSwitchGeneratorFunction({ fallbackPropertyPath: [$.instantiate.fallback], implementationGetterPropertyPath: [$.instantiate.getter] }),
+    switch: createSwitch({ fallbackPropertyPath: [$.instantiate.fallback], implementationGetterPropertyPath: [$.instantiate.getter] }),
     setter: mergeOwnNestedPropertyCurried({ property: [$.instantiate.list] }),
     getter: nestedPropertyDelegatedLookupCurried({ baseProperty: [$.instantiate.list] }),
   },
   initialize: {
-    switch: createSwitchGeneratorFunction({ fallbackPropertyPath: [$.initialize.fallback], implementationGetterPropertyPath: [$.initialize.getter] }),
+    switch: createSwitch({ fallbackPropertyPath: [$.initialize.fallback], implementationGetterPropertyPath: [$.initialize.getter] }),
     setter: mergeOwnNestedPropertyCurried({ property: [$.initialize.list] }),
     getter: nestedPropertyDelegatedLookupCurried({ baseProperty: [$.initialize.list] }),
   },
@@ -49,25 +49,25 @@ export const f = {
 
 // apply functionality
 export function apply(targetObject) {
-    // [symbol.metadata]: { type: Symbol('Client interface functionality') },
-    Object.assign(targetObject, {
-      [$.prototypeDelegation.getter]:  f.prototypeDelegation.getter,
-      [$.prototypeDelegation.setter]:  f.prototypeDelegation.setter,
-      [$.prototypeDelegation.list]:  {},
-    })
-    Object.assign(targetObject, {
-      [$.instantiate.switch]:  f.instantiate.switch,
-      [$.instantiate.getter]:  f.instantiate.getter,
-      [$.instantiate.setter]:  f.instantiate.setter,
-      [$.instantiate.list]:  {},
-      [$.instantiate.fallback]:  undefined,
-    })
-    Object.assign(targetObject, {
-      [$.initialize.switch]:  f.initialize.switch,
-      [$.initialize.getter]:  f.initialize.getter,
-      [$.initialize.setter]:  f.initialize.setter,
-      [$.initialize.list]:  {},
-      [$.initialize.fallback]:  undefined,
-    })
+  // [symbol.metadata]: { type: Symbol('Client interface functionality') },
+  Object.assign(targetObject, {
+    [$.prototypeDelegation.getter]: f.prototypeDelegation.getter,
+    [$.prototypeDelegation.setter]: f.prototypeDelegation.setter,
+    [$.prototypeDelegation.list]: {},
+  })
+  Object.assign(targetObject, {
+    [$.instantiate.switch]: f.instantiate.switch,
+    [$.instantiate.getter]: f.instantiate.getter,
+    [$.instantiate.setter]: f.instantiate.setter,
+    [$.instantiate.list]: {},
+    [$.instantiate.fallback]: undefined,
+  })
+  Object.assign(targetObject, {
+    [$.initialize.switch]: f.initialize.switch,
+    [$.initialize.getter]: f.initialize.getter,
+    [$.initialize.setter]: f.initialize.setter,
+    [$.initialize.list]: {},
+    [$.initialize.fallback]: undefined,
+  })
   return targetObject
 }

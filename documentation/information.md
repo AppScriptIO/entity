@@ -31,6 +31,9 @@ Constructable alternative to JS `class` or `function` with feature rich capabili
     - Techniques for achieving such design are: 
         - Symbols usage to implement a hidden api on the `entity`/object. Meta-level keys are used to prevent clashes and separate  normal keys from the meta-level ones implemented.
         - inheritance specially used to share `entitiy` pattern methods.
+- 2 types of instances: 
+    - Data instance: regular objects that are meant to be used in the program as storage of state.
+    - Contructable instance: objects that themselves are used to create other objects (metaclasses).
 
 Reference = programmatic api reference keys.
 

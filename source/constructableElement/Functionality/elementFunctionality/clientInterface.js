@@ -1,5 +1,5 @@
 import { deepFreeze } from '../../../utility/deepObjectFreeze.js'
-import { createSwitchGeneratorFunction, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
+import { createSwitch, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
 import * as symbol from '../../sharedSymbol.js'
 
 // reference to symbol keys.
@@ -17,7 +17,7 @@ export const $ = {
 // functionality
 const f = {
   // switch function
-  switch: createSwitchGeneratorFunction({ fallbackPropertyPath: [$.clientInterface.fallback], implementationGetterPropertyPath: [$.clientInterface.getter] }),
+  switch: createSwitch({ fallbackPropertyPath: [$.clientInterface.fallback], implementationGetterPropertyPath: [$.clientInterface.getter] }),
   setter: mergeOwnNestedPropertyCurried({ property: [$.clientInterface.list] }),
   getter: nestedPropertyDelegatedLookupCurried({ baseProperty: [$.clientInterface.list] }),
 }

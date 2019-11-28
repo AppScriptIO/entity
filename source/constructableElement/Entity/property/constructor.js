@@ -1,25 +1,27 @@
 import { $ } from '../Entity.class.js'
 import * as Constructable from '../../Constructable/Constructable.class.js'
+import { createObjectWithDelegation } from '../../Constructable/property/instantiate.js'
 
 export function multipleDelegation({ delegationList, callerClass = this } = {}) {
-  let instance = callerClass::Constructable.Class[Constructable.$.instantiate.switch]('createObjectWithDelegation')({ instanceType: 'object' })
+  let instance = createObjectWithDelegation({ instanceType: 'object' })
   // delegate to the Entity constructable class
-  callerClass::Constructable.Class[Constructable.$.initialize.switch]($.key.entityInstance, { recursiveDelegationChainExecution: true })({
-    targetInstance: instance,
-    construtorProperty: callerClass,
-  })
+  // initialize instance with entity delegation values.
+  if (!prototype) {
+    let prototypeDelegationSetting = callerClass::Constructable.Class[Constructable.$.prototypeDelegation.getter]($.key.stateInstance)
+    prototype = prototypeDelegationSetting.instancePrototype // Entities prototypes delegate to each other.
+  }
+  Object.setPrototypeOf(instance, prototype) // inherit own and delegated functionalities.
   // add additional delegation prototypes
   if (delegationList.length > 0) MultipleDelegation.addDelegation({ targetObject: instance, delegationList })
   return instance
 }
 
+// Example: Trying to override a symbol of a parent class in the child class properties, when called with recursive option (e.g. in Constructable.$.construct) will execute all functions with the same key throughout the prototype chain.
+// export [Constructable.$.initialize.key.constructableInstance]() {
+//   console.log(`Executed together with other Constructable.$.initialize.key.constructableInstance in the prototype chain`)
+// }
 module.exports = {
-  // creates an entity class (a Constructable with speicific Entity related properties)
-  [$.key.entityClass]({ description, callerClass = this } = {}) {
-    let entityClass = callerClass::Constructable.Class[Constructable.$.constructor.switch](Constructable.$.key.constructableClass)({ description })
-    entityClass::Constructable.Class[Constructable.$.initialize.switch]($.key.entityClass)({ targetInstance: entityClass })
-    return entityClass
-  },
+  // [$.key.constructableInstance] - when called it is inherited from parent functionality.
 
   // initialize target instance using concerete bahviors that extend it. Each concrete behavior taps into the construction phase of the instance, adds itself as delegation and processes the instance.
   [$.key.concereteBehavior]({
@@ -50,13 +52,4 @@ module.exports = {
     return instance
   },
 
-  // prototype - creates a prototype that belongs to the caller class (sets constructor to class)
-  [$.key.prototypeForInstance]({ propertyObject /* The prototype initial value */, callerClass = this, description } = {}, previousResult) {
-    // get the parent entity pattern related prototype.
-    let parentEntityPrototypeDelegation = callerClass::Constructable.Class[Constructable.$.prototypeDelegation.getter]($.key.entityInstance).prototype || null
-    let instance = callerClass::Constructable.Class[Constructable.$.instantiate.switch]('createObjectWithDelegation')({ description, prototype: parentEntityPrototypeDelegation })
-    callerClass::Constructable.Class[Constructable.$.initialize.switch](Constructable.$.key.classInstance)({ targetInstance: instance, description: description })
-    if (propertyObject) Object.assign(instance, propertyObject)
-    return instance
-  },
 }

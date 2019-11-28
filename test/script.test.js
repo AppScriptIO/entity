@@ -83,8 +83,8 @@ suite('Constructable element', () => {
 
   suite('Constructable instances (metaclasses):', () => {
     const { class: constructable1, reference: $ } = new Constructable.clientInterface({ label: 'Constructable 1' })
-    const constructable2 = constructable1::constructable1[$.constructor.switch]($.key.constructableClass)({ label: 'Constructable 2' })
-    const constructable3 = constructable2::constructable2[$.constructor.switch]($.key.constructableClass)({ label: 'Constructable 3' })
+    const constructable2 = constructable1::constructable1[$.constructor.switch]($.key.constructableInstance)({ label: 'Constructable 2' })
+    const constructable3 = constructable2::constructable2[$.constructor.switch]($.key.constructableInstance)({ label: 'Constructable 3' })
     test('Should inherit their constructable class', () => {
       assert(Object.getPrototypeOf(constructable2) === constructable1, '• constructable instance must inhirit from constructable class.')
       assert(Object.getPrototypeOf(constructable3) === constructable2, '• constructable instance must inhirit from constructable class.')
@@ -106,8 +106,13 @@ suite('Constructable element', () => {
 })
 
 suite('Entity element', () => {
-  // test('Should create instances successfully', () => {
-  //   assert(Entity.clientInterface()()()(), '• Entity class must return a configured instance when apply is envoked.')
-  //   assert(new Entity.clientInterface(), '• Entity class must return an instance object when new constructor is envoked.')
-  // })
+  test('Should create instances successfully', () => {
+    assert(
+      Entity.clientInterface()
+        .clientInterface()
+        .clientInterface(),
+      '• Entity class must return a configured instance when apply is envoked.',
+    )
+    assert(new Entity.clientInterface(), '• Entity class must return an instance object when new constructor is envoked.')
+  })
 })
