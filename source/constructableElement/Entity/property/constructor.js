@@ -30,21 +30,30 @@ module.exports = {
   // state instance: subclasses will provide an initialization implementation with key 'handleDataInstance'
   [$.key.handleDataInstance]({ data, delegationList, callerClass = this } = {}) {
     let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList })
+    // allows the subclasses to add additional initialization steps to deal with the data parameter provided.
     callerClass::callerClass[Constructable.$.initialize.switch]($.key.handleDataInstance, { recursiveDelegationChainExecution: true })({ targetInstance: instance, data })
     return instance
   },
 
-  // state instance: initialize target instance using concerete bahviors that extend it. Each concrete behavior taps into the construction phase of the instance, adds itself as delegation and processes the instance.
+  /* state instance: initialize target instance using concerete bahviors that extend it. Each concrete behavior taps into the construction phase of the instance, adds itself as delegation and processes the instance.
+    The name `concreteBehavior` comes from the pattern used for multiple behaviors/delegation on objects.
+    concreteBehavior = state instance that has `Entity.$.key.concereteBehavior` in it's chain, to be executed during the initialization phase of another instance that uses it.
+  */
   [$.key.concereteBehavior]({ concreteBehaviorList = [], callerClass = this }) {
-    // intercept constructor callback using concrete behaviors
-    for (let concereteBehavior of concreteBehaviorList)
-      if (concereteBehavior[$.key.concereteBehavior]) constructorCallback = concereteBehavior[$.key.concereteBehavior]({ constructorCallback, currentConcereteBehavior: concereteBehavior })
-
     // merge data into instance properties with multiple delegation.
     let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList: concreteBehaviorList })
-    Object.assign(targetInstance, data) // apply data to instance
+    // related to class implementation (different than the state instance attached implmenetation below)
+    callerClass::callerClass[Constructable.$.initialize.switch]($.key.concereteBehavior, { recursiveDelegationChainExecution: true })({ targetInstance: instance, concreteBehaviorList }) // allow classes to hook over the initializaiion process.
 
-    callerClass::Constructable.Class[Constructable.$.initialize.switch]($.key.concereteBehavior, { recursiveDelegationChainExecution: true })({ targetInstance, concreteBehaviorList }) // allow classes to hook over the initializaiion process.
+    /**  initialize instance using concrete behaviors instance themselves - i.e. prototypes to add must have a concereteBehavior implementation registered on them.
+     * Each concerete behavior must implement an initialization function registered in it's protype chain: 
+     * In this example they will add themselves to the delegation chain of the instance:
+         [Entity.$.key.concereteBehavior]({ targetInstance, concereteBehavior }) {
+            MultipleDelegation.addDelegation({ targetObject: targetInstance, delegationList: [concereteBehavior] })
+            return targetInstance
+          }
+       */
+    for (let concereteBehavior of concreteBehaviorList) if (concereteBehavior[$.key.concereteBehavior]) concereteBehavior[$.key.concereteBehavior]({ targetInstance: instance, concereteBehavior })
 
     return instance
   },

@@ -21,4 +21,14 @@ module.exports = {
 
     return instance
   },
+
+  // default implementation - prevent throwing when no implementation found in child classes
+  [$.key.handleDataInstance]({ targetInstance, data }) {
+    return targetInstance
+  },
+
+  // default implementation - prevent throwing when no implementation found in child classes
+  [$.key.concereteBehavior]({ targetInstance, concreteBehaviorList }) {
+    return targetInstance
+  },
 }

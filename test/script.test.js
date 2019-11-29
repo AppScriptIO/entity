@@ -128,12 +128,42 @@ suite('Entity element', () => {
   })
 
   suite('state instance multiple delegation', () => {
-    let fixture = {
-      key1: 'key1',
-      key2: 'key2',
-      key3: 'key3',
-    }
+    let fixture = { key1: 'key1', key2: 'key2', key3: 'key3' }
     let instance = new Entity.clientInterface.stateInstance({ delegationList: [{ [fixture.key1]: fixture.key1 }, { [fixture.key3]: fixture.key3, [fixture.key2]: fixture.key2 }] })
+
+    test('Should create an instance with multiple delegation', () => {
+      assert(
+        instance[fixture.key1] == fixture.key1 && instance[fixture.key2] == fixture.key2 && instance[fixture.key3] == fixture.key3,
+        '• The property does not exist in the hierarchy delegaiton chain.',
+      )
+    })
+  })
+
+  suite('state instance concereteBehavior pattern', () => {
+    let fixture = { key1: 'key1', key2: 'key2', key3: 'key3' }
+
+    let configuredEntity = Entity.clientInterface.stateInstance()
+    // set concrete behavior function in the state instance prototype chain.
+    configuredEntity.class::configuredEntity.class[Entity.$.prototypeDelegation.getter](Entity.$.key.stateInstance).instancePrototype
+      |> (prototype =>
+        Object.assign(prototype, {
+          //  concerete behavior initialization on the target instance.
+          [Entity.$.key.concereteBehavior]({ targetInstance, concereteBehavior /** state instance */ }) {
+            const { MultipleDelegation } = require('@dependency/multiplePrototypeDelegation')
+            MultipleDelegation.addDelegation({ targetObject: targetInstance, delegationList: [concereteBehavior] })
+            return targetInstance
+          },
+        }))
+    // behavior instance that will be added to the below instance during initialization.
+    let instanceParent = new configuredEntity.clientInterface({
+      // add delegation for testing weather the below instance have access to it's parent
+      delegationList: [{ [fixture.key1]: fixture.key1 }, { [fixture.key3]: fixture.key3, [fixture.key2]: fixture.key2 }],
+    })
+
+    let clientInterface = {
+      stateInstanceConcreteBehavior: Entity.class::Entity.class[Constructable.$.clientInterface.switch](Entity.$.key.stateInstance)({ constructorImplementation: Entity.$.key.concereteBehavior }),
+    }
+    let instance = new clientInterface.stateInstanceConcreteBehavior({ concreteBehaviorList: [instanceParent] })
 
     test('Should create an instance with multiple delegation', () => {
       assert(

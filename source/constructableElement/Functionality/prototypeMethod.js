@@ -63,30 +63,30 @@ export const createSwitch = ({ fallbackPropertyPath, implementationGetterPropert
   ) {
     // lookup implementation functions:
     let implementationArray = callerClass::lookupImplementation({ implementationKey, fallbackPropertyPath, implementationGetterPropertyPath, recursiveDelegationChainExecution })
-
+    if (implementationArray.length == 0) return function() {} // return empty dummy function to keep the flow of the client code.
     // execution algorithm switch
     {
       /** Send the parent implementation as callback to the child implementation function using Generators `function.sent` */
       function provideAsCallbackInFunctionChain() {
-          function createCallbackFunc(targetFunction, superCallback) {
-            let funcCallback
-            /* Deal with different function types - redirect construct to particular implementation using specific execution depending of function type.        
+        function createCallbackFunc(targetFunction, superCallback) {
+          let funcCallback
+          /* Deal with different function types - redirect construct to particular implementation using specific execution depending of function type.        
                Usage: ```function* implementation() {
                   let { superCallback } = function.sent
                   if (superCallback) instance = callerClass::superCallback(...arguments)
                 }```
             */
-            if (isGeneratorFunction(targetFunction))
-              funcCallback = function() {
-                let iterator = this::targetFunction(...arguments)
-                let iteratorObject = iterator.next({ superCallback })
-                assert(iteratorObject.done, `• Generator implementation function must not yield results, only recieve the superCallback and return a value.`)
-                return iteratorObject.value
-              }
-            else funcCallback = targetFunction // in case a regular function, then the superCallback will not be passed and so the execution chain will break.
-    
-            return funcCallback
-          }
+          if (isGeneratorFunction(targetFunction))
+            funcCallback = function() {
+              let iterator = this::targetFunction(...arguments)
+              let iteratorObject = iterator.next({ superCallback })
+              assert(iteratorObject.done, `• Generator implementation function must not yield results, only recieve the superCallback and return a value.`)
+              return iteratorObject.value
+            }
+          else funcCallback = targetFunction // in case a regular function, then the superCallback will not be passed and so the execution chain will break.
+
+          return funcCallback
+        }
 
         implementationArray.reverse() // start from parent implementations - will result in the following order: [<parent>, ... , <child>] in hierarchy of implementations
         let previousLoopCallback = null

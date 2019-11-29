@@ -44,4 +44,4 @@ const clientInterface = {
   stateInstance: Class::Class[Constructable.$.clientInterface.switch]($.key.stateInstance)({ constructorImplementation: $.key.stateInstance }),
 }
 
-export { $, Class, clientInterface }
+export { $, Class as class, clientInterface }
