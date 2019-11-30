@@ -1,38 +1,38 @@
-import { mergeNonexistentProperties, mergeArrayWithObjectItem } from '../../../utility/mergeProperty.js'
-import { $ } from '../Constructable.class.js'
+"use strict";var _mergeProperty = require("../../../utility/mergeProperty.js");
+var _ConstructableClass = require("../Constructable.class.js");
 
 module.exports = {
-  // set the properties necessary for Constructable pattern usage.   Initialize Constructable pattern properties.
-  [$.key.constructableInstance]: function({ instance } = {}, { label } = {}) {
-    // Constructor prototypes delegate to each other
-    let constructableInstanceDelegationSetting = this::this[$.prototypeDelegation.getter]($.key.constructableInstance)
-    Object.setPrototypeOf(instance, constructableInstanceDelegationSetting.instancePrototype) // inherit own and delegated functionalities.
-    instance[$.reference] = Object.create(constructableInstanceDelegationSetting.referencePrototype)
 
-    /* 
-      set delegation setting for next nested instances that will be created - create new prototype and reference for constructableInstance delegation
-      i.e. new delegation setting objects will inherit from the previous delegation settings objects.
-      set constructable prototypeDelegation properties - values which will be used in instance creation
-    */
-    instance::instance[$.prototypeDelegation.setter]({
-      [$.key.constructableInstance]: {
-        instancePrototype: instance, // Constructor prototypes delegate to each other
-        referencePrototype: instance[$.reference], // create a new object for the instance reference
-      },
-    })
+  [_ConstructableClass.$.key.constructableInstance]: function ({ instance } = {}, { label } = {}) {
 
-    mergeNonexistentProperties(instance, {
-      constructor: this, // the class used to construct the instance. - // to preserve functionality of native JS functions integration.
-      [$.label]: label,
+    let constructableInstanceDelegationSetting = this[_ConstructableClass.$.prototypeDelegation.getter].call(this, _ConstructableClass.$.key.constructableInstance);
+    Object.setPrototypeOf(instance, constructableInstanceDelegationSetting.instancePrototype);
+    instance[_ConstructableClass.$.reference] = Object.create(constructableInstanceDelegationSetting.referencePrototype);
 
-      // in usage through `instanceof` JS api: //! Doesn't work as it must return a constructor.
-      // get [Symbol.species]() {
-      //   return instance[$.class]
-      // },
-    })
 
-    // Object.defineProperty(instance, $.metadata, { writable: false, enumerable: false, value: description }) // set metadata information for debugging.
 
-    return instance
-  },
-}
+
+
+
+    instance[_ConstructableClass.$.prototypeDelegation.setter].call(instance, {
+      [_ConstructableClass.$.key.constructableInstance]: {
+        instancePrototype: instance,
+        referencePrototype: instance[_ConstructableClass.$.reference] } });
+
+
+
+    (0, _mergeProperty.mergeNonexistentProperties)(instance, {
+      constructor: this,
+      [_ConstructableClass.$.label]: label });
+
+
+
+
+
+
+
+
+
+    return instance;
+  } };
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9Db25zdHJ1Y3RhYmxlL3Byb3BlcnR5L2luaXRpYWxpemUuanMiXSwibmFtZXMiOlsibW9kdWxlIiwiZXhwb3J0cyIsIiQiLCJrZXkiLCJjb25zdHJ1Y3RhYmxlSW5zdGFuY2UiLCJpbnN0YW5jZSIsImxhYmVsIiwiY29uc3RydWN0YWJsZUluc3RhbmNlRGVsZWdhdGlvblNldHRpbmciLCJwcm90b3R5cGVEZWxlZ2F0aW9uIiwiZ2V0dGVyIiwiT2JqZWN0Iiwic2V0UHJvdG90eXBlT2YiLCJpbnN0YW5jZVByb3RvdHlwZSIsInJlZmVyZW5jZSIsImNyZWF0ZSIsInJlZmVyZW5jZVByb3RvdHlwZSIsInNldHRlciIsImNvbnN0cnVjdG9yIl0sIm1hcHBpbmdzIjoiYUFBQTtBQUNBOztBQUVBQSxNQUFNLENBQUNDLE9BQVAsR0FBaUI7O0FBRWYsR0FBQ0Msc0JBQUVDLEdBQUYsQ0FBTUMscUJBQVAsR0FBK0IsVUFBUyxFQUFFQyxRQUFGLEtBQWUsRUFBeEIsRUFBNEIsRUFBRUMsS0FBRixLQUFZLEVBQXhDLEVBQTRDOztBQUV6RSxRQUFJQyxzQ0FBc0MsR0FBUyxLQUFLTCxzQkFBRU0sbUJBQUYsQ0FBc0JDLE1BQTNCLENBQU4sWUFBeUNQLHNCQUFFQyxHQUFGLENBQU1DLHFCQUEvQyxDQUE3QztBQUNBTSxJQUFBQSxNQUFNLENBQUNDLGNBQVAsQ0FBc0JOLFFBQXRCLEVBQWdDRSxzQ0FBc0MsQ0FBQ0ssaUJBQXZFO0FBQ0FQLElBQUFBLFFBQVEsQ0FBQ0gsc0JBQUVXLFNBQUgsQ0FBUixHQUF3QkgsTUFBTSxDQUFDSSxNQUFQLENBQWNQLHNDQUFzQyxDQUFDUSxrQkFBckQsQ0FBeEI7Ozs7Ozs7QUFPVVYsSUFBQUEsUUFBUSxDQUFDSCxzQkFBRU0sbUJBQUYsQ0FBc0JRLE1BQXZCLENBQWxCLE1BQUFYLFFBQVEsRUFBeUM7QUFDL0MsT0FBQ0gsc0JBQUVDLEdBQUYsQ0FBTUMscUJBQVAsR0FBK0I7QUFDN0JRLFFBQUFBLGlCQUFpQixFQUFFUCxRQURVO0FBRTdCVSxRQUFBQSxrQkFBa0IsRUFBRVYsUUFBUSxDQUFDSCxzQkFBRVcsU0FBSCxDQUZDLEVBRGdCLEVBQXpDLENBQVI7Ozs7QUFPQSxtREFBMkJSLFFBQTNCLEVBQXFDO0FBQ25DWSxNQUFBQSxXQUFXLEVBQUUsSUFEc0I7QUFFbkMsT0FBQ2Ysc0JBQUVJLEtBQUgsR0FBV0EsS0FGd0IsRUFBckM7Ozs7Ozs7Ozs7QUFZQSxXQUFPRCxRQUFQO0FBQ0QsR0FqQ2MsRUFBakIiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBtZXJnZU5vbmV4aXN0ZW50UHJvcGVydGllcywgbWVyZ2VBcnJheVdpdGhPYmplY3RJdGVtIH0gZnJvbSAnLi4vLi4vLi4vdXRpbGl0eS9tZXJnZVByb3BlcnR5LmpzJ1xuaW1wb3J0IHsgJCB9IGZyb20gJy4uL0NvbnN0cnVjdGFibGUuY2xhc3MuanMnXG5cbm1vZHVsZS5leHBvcnRzID0ge1xuICAvLyBzZXQgdGhlIHByb3BlcnRpZXMgbmVjZXNzYXJ5IGZvciBDb25zdHJ1Y3RhYmxlIHBhdHRlcm4gdXNhZ2UuICAgSW5pdGlhbGl6ZSBDb25zdHJ1Y3RhYmxlIHBhdHRlcm4gcHJvcGVydGllcy5cbiAgWyQua2V5LmNvbnN0cnVjdGFibGVJbnN0YW5jZV06IGZ1bmN0aW9uKHsgaW5zdGFuY2UgfSA9IHt9LCB7IGxhYmVsIH0gPSB7fSkge1xuICAgIC8vIENvbnN0cnVjdG9yIHByb3RvdHlwZXMgZGVsZWdhdGUgdG8gZWFjaCBvdGhlclxuICAgIGxldCBjb25zdHJ1Y3RhYmxlSW5zdGFuY2VEZWxlZ2F0aW9uU2V0dGluZyA9IHRoaXM6OnRoaXNbJC5wcm90b3R5cGVEZWxlZ2F0aW9uLmdldHRlcl0oJC5rZXkuY29uc3RydWN0YWJsZUluc3RhbmNlKVxuICAgIE9iamVjdC5zZXRQcm90b3R5cGVPZihpbnN0YW5jZSwgY29uc3RydWN0YWJsZUluc3RhbmNlRGVsZWdhdGlvblNldHRpbmcuaW5zdGFuY2VQcm90b3R5cGUpIC8vIGluaGVyaXQgb3duIGFuZCBkZWxlZ2F0ZWQgZnVuY3Rpb25hbGl0aWVzLlxuICAgIGluc3RhbmNlWyQucmVmZXJlbmNlXSA9IE9iamVjdC5jcmVhdGUoY29uc3RydWN0YWJsZUluc3RhbmNlRGVsZWdhdGlvblNldHRpbmcucmVmZXJlbmNlUHJvdG90eXBlKVxuXG4gICAgLyogXG4gICAgICBzZXQgZGVsZWdhdGlvbiBzZXR0aW5nIGZvciBuZXh0IG5lc3RlZCBpbnN0YW5jZXMgdGhhdCB3aWxsIGJlIGNyZWF0ZWQgLSBjcmVhdGUgbmV3IHByb3RvdHlwZSBhbmQgcmVmZXJlbmNlIGZvciBjb25zdHJ1Y3RhYmxlSW5zdGFuY2UgZGVsZWdhdGlvblxuICAgICAgaS5lLiBuZXcgZGVsZWdhdGlvbiBzZXR0aW5nIG9iamVjdHMgd2lsbCBpbmhlcml0IGZyb20gdGhlIHByZXZpb3VzIGRlbGVnYXRpb24gc2V0dGluZ3Mgb2JqZWN0cy5cbiAgICAgIHNldCBjb25zdHJ1Y3RhYmxlIHByb3RvdHlwZURlbGVnYXRpb24gcHJvcGVydGllcyAtIHZhbHVlcyB3aGljaCB3aWxsIGJlIHVzZWQgaW4gaW5zdGFuY2UgY3JlYXRpb25cbiAgICAqL1xuICAgIGluc3RhbmNlOjppbnN0YW5jZVskLnByb3RvdHlwZURlbGVnYXRpb24uc2V0dGVyXSh7XG4gICAgICBbJC5rZXkuY29uc3RydWN0YWJsZUluc3RhbmNlXToge1xuICAgICAgICBpbnN0YW5jZVByb3RvdHlwZTogaW5zdGFuY2UsIC8vIENvbnN0cnVjdG9yIHByb3RvdHlwZXMgZGVsZWdhdGUgdG8gZWFjaCBvdGhlclxuICAgICAgICByZWZlcmVuY2VQcm90b3R5cGU6IGluc3RhbmNlWyQucmVmZXJlbmNlXSwgLy8gY3JlYXRlIGEgbmV3IG9iamVjdCBmb3IgdGhlIGluc3RhbmNlIHJlZmVyZW5jZVxuICAgICAgfSxcbiAgICB9KVxuXG4gICAgbWVyZ2VOb25leGlzdGVudFByb3BlcnRpZXMoaW5zdGFuY2UsIHtcbiAgICAgIGNvbnN0cnVjdG9yOiB0aGlzLCAvLyB0aGUgY2xhc3MgdXNlZCB0byBjb25zdHJ1Y3QgdGhlIGluc3RhbmNlLiAtIC8vIHRvIHByZXNlcnZlIGZ1bmN0aW9uYWxpdHkgb2YgbmF0aXZlIEpTIGZ1bmN0aW9ucyBpbnRlZ3JhdGlvbi5cbiAgICAgIFskLmxhYmVsXTogbGFiZWwsXG5cbiAgICAgIC8vIGluIHVzYWdlIHRocm91Z2ggYGluc3RhbmNlb2ZgIEpTIGFwaTogLy8hIERvZXNuJ3Qgd29yayBhcyBpdCBtdXN0IHJldHVybiBhIGNvbnN0cnVjdG9yLlxuICAgICAgLy8gZ2V0IFtTeW1ib2wuc3BlY2llc10oKSB7XG4gICAgICAvLyAgIHJldHVybiBpbnN0YW5jZVskLmNsYXNzXVxuICAgICAgLy8gfSxcbiAgICB9KVxuXG4gICAgLy8gT2JqZWN0LmRlZmluZVByb3BlcnR5KGluc3RhbmNlLCAkLm1ldGFkYXRhLCB7IHdyaXRhYmxlOiBmYWxzZSwgZW51bWVyYWJsZTogZmFsc2UsIHZhbHVlOiBkZXNjcmlwdGlvbiB9KSAvLyBzZXQgbWV0YWRhdGEgaW5mb3JtYXRpb24gZm9yIGRlYnVnZ2luZy5cblxuICAgIHJldHVybiBpbnN0YW5jZVxuICB9LFxufVxuIl19

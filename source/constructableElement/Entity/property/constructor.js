@@ -1,61 +1,61 @@
-import { $ } from '../Entity.class.js'
-import * as Constructable from '../../Constructable/Constructable.class.js'
-import { createObjectWithDelegation } from '../../Constructable/property/instantiate.js'
-import { MultipleDelegation } from '@dependency/multiplePrototypeDelegation'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");var _EntityClass = require("../Entity.class.js");
+var Constructable = _interopRequireWildcard(require("../../Constructable/Constructable.class.js"));
+var _instantiate = require("../../Constructable/property/instantiate.js");
+var _multiplePrototypeDelegation = require("@dependency/multiplePrototypeDelegation");
 
 function createStateInstanceWithMultipleDelegation({ delegationList = [] } = {}) {
-  const callerClass = this
-  let stateDelegationSetting = callerClass::callerClass[Constructable.$.prototypeDelegation.getter]($.key.stateInstance)
+  const callerClass = this;
+  let stateDelegationSetting = callerClass[Constructable.$.prototypeDelegation.getter].call(callerClass, _EntityClass.$.key.stateInstance);
 
-  let instance = createObjectWithDelegation({ instanceType: 'object' })
-  Object.setPrototypeOf(instance, stateDelegationSetting.instancePrototype) // initialize instance with entity delegation values, inherit own and delegated functionalities related to state instance from Entity class.
+  let instance = (0, _instantiate.createObjectWithDelegation)({ instanceType: 'object' });
+  Object.setPrototypeOf(instance, stateDelegationSetting.instancePrototype);
 
-  // add additional delegation prototypes
-  if (delegationList.length > 0) MultipleDelegation.addDelegation({ targetObject: instance, delegationList })
-  return instance
+
+  if (delegationList.length > 0) _multiplePrototypeDelegation.MultipleDelegation.addDelegation({ targetObject: instance, delegationList });
+  return instance;
 }
 
-// Example: Trying to override a symbol of a parent class in the child class properties, when called with recursive option (e.g. in Constructable.$.construct) will execute all functions with the same key throughout the prototype chain.
-// export [Constructable.$.initialize.key.constructableInstance]() {
-//   console.log(`Executed together with other Constructable.$.initialize.key.constructableInstance in the prototype chain`)
-// }
+
+
+
+
 module.exports = {
-  // [$.key.constructableInstance] - when called it is inherited from parent functionality.
 
-  // Example state instance constructor, used in unit tests.
-  [$.key.stateInstance]({ callerClass = this } = {}, { delegationList } = {}) {
-    let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList })
-    return instance
+
+
+  [_EntityClass.$.key.stateInstance]({ callerClass = this } = {}, { delegationList } = {}) {
+    let instance = createStateInstanceWithMultipleDelegation.call(callerClass, { delegationList });
+    return instance;
   },
 
-  // state instance: subclasses will provide an initialization implementation with key 'handleDataInstance'
-  [$.key.handleDataInstance]({ callerClass = this } = {}, ...args) {
-    let instance = callerClass::createStateInstanceWithMultipleDelegation()
-    // allows the subclasses to add additional initialization steps to deal with the data parameter provided.
-    callerClass::callerClass[Constructable.$.initialize.switch]($.key.handleDataInstance, { recursiveDelegationChainExecution: true })({ targetInstance: instance }, ...args)
-    return instance
+
+  [_EntityClass.$.key.handleDataInstance]({ callerClass = this } = {}, ...args) {
+    let instance = createStateInstanceWithMultipleDelegation.call(callerClass);
+
+    callerClass[Constructable.$.initialize.switch].call(callerClass, _EntityClass.$.key.handleDataInstance, { recursiveDelegationChainExecution: true })({ targetInstance: instance }, ...args);
+    return instance;
   },
 
-  /* state instance: initialize target instance using concerete bahviors that extend it. Each concrete behavior taps into the construction phase of the instance, adds itself as delegation and processes the instance.
-    The name `concreteBehavior` comes from the pattern used for multiple behaviors/delegation on objects.
-    concreteBehavior = state instance that has `Entity.$.key.concereteBehavior` in it's chain, to be executed during the initialization phase of another instance that uses it.
-  */
-  [$.key.concereteBehavior]({ callerClass = this } = {}, { concreteBehaviorList = [] }) {
-    // merge data into instance properties with multiple delegation.
-    let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList: concreteBehaviorList })
-    // related to class implementation (different than the state instance attached implmenetation below)
-    callerClass::callerClass[Constructable.$.initialize.switch]($.key.concereteBehavior, { recursiveDelegationChainExecution: true })({ targetInstance: instance }, { concreteBehaviorList }) // allow classes to hook over the initializaiion process.
 
-    /**  initialize instance using concrete behaviors instance themselves - i.e. prototypes to add must have a concereteBehavior implementation registered on them.
-     * Each concerete behavior must implement an initialization function registered in it's protype chain: 
-     * In this example they will add themselves to the delegation chain of the instance:
-         [Entity.$.key.concereteBehavior]({ targetInstance, concereteBehavior }) {
-            MultipleDelegation.addDelegation({ targetObject: targetInstance, delegationList: [concereteBehavior] })
-            return targetInstance
-          }
-       */
-    for (let concereteBehavior of concreteBehaviorList) if (concereteBehavior[$.key.concereteBehavior]) concereteBehavior[$.key.concereteBehavior]({ targetInstance: instance }, { concereteBehavior })
 
-    return instance
-  },
-}
+
+
+  [_EntityClass.$.key.concereteBehavior]({ callerClass = this } = {}, { concreteBehaviorList = [] }) {
+
+    let instance = createStateInstanceWithMultipleDelegation.call(callerClass, { delegationList: concreteBehaviorList });
+
+    callerClass[Constructable.$.initialize.switch].call(callerClass, _EntityClass.$.key.concereteBehavior, { recursiveDelegationChainExecution: true })({ targetInstance: instance }, { concreteBehaviorList });
+
+
+
+
+
+
+
+
+
+    for (let concereteBehavior of concreteBehaviorList) if (concereteBehavior[_EntityClass.$.key.concereteBehavior]) concereteBehavior[_EntityClass.$.key.concereteBehavior]({ targetInstance: instance }, { concereteBehavior });
+
+    return instance;
+  } };
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9FbnRpdHkvcHJvcGVydHkvY29uc3RydWN0b3IuanMiXSwibmFtZXMiOlsiY3JlYXRlU3RhdGVJbnN0YW5jZVdpdGhNdWx0aXBsZURlbGVnYXRpb24iLCJkZWxlZ2F0aW9uTGlzdCIsImNhbGxlckNsYXNzIiwic3RhdGVEZWxlZ2F0aW9uU2V0dGluZyIsIkNvbnN0cnVjdGFibGUiLCIkIiwicHJvdG90eXBlRGVsZWdhdGlvbiIsImdldHRlciIsImtleSIsInN0YXRlSW5zdGFuY2UiLCJpbnN0YW5jZSIsImluc3RhbmNlVHlwZSIsIk9iamVjdCIsInNldFByb3RvdHlwZU9mIiwiaW5zdGFuY2VQcm90b3R5cGUiLCJsZW5ndGgiLCJNdWx0aXBsZURlbGVnYXRpb24iLCJhZGREZWxlZ2F0aW9uIiwidGFyZ2V0T2JqZWN0IiwibW9kdWxlIiwiZXhwb3J0cyIsImhhbmRsZURhdGFJbnN0YW5jZSIsImFyZ3MiLCJpbml0aWFsaXplIiwic3dpdGNoIiwicmVjdXJzaXZlRGVsZWdhdGlvbkNoYWluRXhlY3V0aW9uIiwidGFyZ2V0SW5zdGFuY2UiLCJjb25jZXJldGVCZWhhdmlvciIsImNvbmNyZXRlQmVoYXZpb3JMaXN0Il0sIm1hcHBpbmdzIjoib0dBQUE7QUFDQTtBQUNBO0FBQ0E7O0FBRUEsU0FBU0EseUNBQVQsQ0FBbUQsRUFBRUMsY0FBYyxHQUFHLEVBQW5CLEtBQTBCLEVBQTdFLEVBQWlGO0FBQy9FLFFBQU1DLFdBQVcsR0FBRyxJQUFwQjtBQUNBLE1BQUlDLHNCQUFzQixHQUFnQkQsV0FBVyxDQUFDRSxhQUFhLENBQUNDLENBQWQsQ0FBZ0JDLG1CQUFoQixDQUFvQ0MsTUFBckMsQ0FBeEIsTUFBQUwsV0FBVyxFQUEwREcsZUFBRUcsR0FBRixDQUFNQyxhQUFoRSxDQUF4Qzs7QUFFQSxNQUFJQyxRQUFRLEdBQUcsNkNBQTJCLEVBQUVDLFlBQVksRUFBRSxRQUFoQixFQUEzQixDQUFmO0FBQ0FDLEVBQUFBLE1BQU0sQ0FBQ0MsY0FBUCxDQUFzQkgsUUFBdEIsRUFBZ0NQLHNCQUFzQixDQUFDVyxpQkFBdkQ7OztBQUdBLE1BQUliLGNBQWMsQ0FBQ2MsTUFBZixHQUF3QixDQUE1QixFQUErQkMsZ0RBQW1CQyxhQUFuQixDQUFpQyxFQUFFQyxZQUFZLEVBQUVSLFFBQWhCLEVBQTBCVCxjQUExQixFQUFqQztBQUMvQixTQUFPUyxRQUFQO0FBQ0Q7Ozs7OztBQU1EUyxNQUFNLENBQUNDLE9BQVAsR0FBaUI7Ozs7QUFJZixHQUFDZixlQUFFRyxHQUFGLENBQU1DLGFBQVAsRUFBc0IsRUFBRVAsV0FBVyxHQUFHLElBQWhCLEtBQXlCLEVBQS9DLEVBQW1ELEVBQUVELGNBQUYsS0FBcUIsRUFBeEUsRUFBNEU7QUFDMUUsUUFBSVMsUUFBUSxHQUFnQlYseUNBQWIsTUFBQUUsV0FBVyxFQUE0QyxFQUFFRCxjQUFGLEVBQTVDLENBQTFCO0FBQ0EsV0FBT1MsUUFBUDtBQUNELEdBUGM7OztBQVVmLEdBQUNMLGVBQUVHLEdBQUYsQ0FBTWEsa0JBQVAsRUFBMkIsRUFBRW5CLFdBQVcsR0FBRyxJQUFoQixLQUF5QixFQUFwRCxFQUF3RCxHQUFHb0IsSUFBM0QsRUFBaUU7QUFDL0QsUUFBSVosUUFBUSxHQUFnQlYseUNBQWIsTUFBQUUsV0FBVyxDQUExQjs7QUFFYUEsSUFBQUEsV0FBVyxDQUFDRSxhQUFhLENBQUNDLENBQWQsQ0FBZ0JrQixVQUFoQixDQUEyQkMsTUFBNUIsQ0FBeEIsTUFBQXRCLFdBQVcsRUFBaURHLGVBQUVHLEdBQUYsQ0FBTWEsa0JBQXZELEVBQTJFLEVBQUVJLGlDQUFpQyxFQUFFLElBQXJDLEVBQTNFLENBQVgsQ0FBbUksRUFBRUMsY0FBYyxFQUFFaEIsUUFBbEIsRUFBbkksRUFBaUssR0FBR1ksSUFBcEs7QUFDQSxXQUFPWixRQUFQO0FBQ0QsR0FmYzs7Ozs7O0FBcUJmLEdBQUNMLGVBQUVHLEdBQUYsQ0FBTW1CLGlCQUFQLEVBQTBCLEVBQUV6QixXQUFXLEdBQUcsSUFBaEIsS0FBeUIsRUFBbkQsRUFBdUQsRUFBRTBCLG9CQUFvQixHQUFHLEVBQXpCLEVBQXZELEVBQXNGOztBQUVwRixRQUFJbEIsUUFBUSxHQUFnQlYseUNBQWIsTUFBQUUsV0FBVyxFQUE0QyxFQUFFRCxjQUFjLEVBQUUyQixvQkFBbEIsRUFBNUMsQ0FBMUI7O0FBRWExQixJQUFBQSxXQUFXLENBQUNFLGFBQWEsQ0FBQ0MsQ0FBZCxDQUFnQmtCLFVBQWhCLENBQTJCQyxNQUE1QixDQUF4QixNQUFBdEIsV0FBVyxFQUFpREcsZUFBRUcsR0FBRixDQUFNbUIsaUJBQXZELEVBQTBFLEVBQUVGLGlDQUFpQyxFQUFFLElBQXJDLEVBQTFFLENBQVgsQ0FBa0ksRUFBRUMsY0FBYyxFQUFFaEIsUUFBbEIsRUFBbEksRUFBZ0ssRUFBRWtCLG9CQUFGLEVBQWhLOzs7Ozs7Ozs7O0FBVUEsU0FBSyxJQUFJRCxpQkFBVCxJQUE4QkMsb0JBQTlCLEVBQW9ELElBQUlELGlCQUFpQixDQUFDdEIsZUFBRUcsR0FBRixDQUFNbUIsaUJBQVAsQ0FBckIsRUFBZ0RBLGlCQUFpQixDQUFDdEIsZUFBRUcsR0FBRixDQUFNbUIsaUJBQVAsQ0FBakIsQ0FBMkMsRUFBRUQsY0FBYyxFQUFFaEIsUUFBbEIsRUFBM0MsRUFBeUUsRUFBRWlCLGlCQUFGLEVBQXpFOztBQUVwRyxXQUFPakIsUUFBUDtBQUNELEdBdENjLEVBQWpCIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgJCB9IGZyb20gJy4uL0VudGl0eS5jbGFzcy5qcydcbmltcG9ydCAqIGFzIENvbnN0cnVjdGFibGUgZnJvbSAnLi4vLi4vQ29uc3RydWN0YWJsZS9Db25zdHJ1Y3RhYmxlLmNsYXNzLmpzJ1xuaW1wb3J0IHsgY3JlYXRlT2JqZWN0V2l0aERlbGVnYXRpb24gfSBmcm9tICcuLi8uLi9Db25zdHJ1Y3RhYmxlL3Byb3BlcnR5L2luc3RhbnRpYXRlLmpzJ1xuaW1wb3J0IHsgTXVsdGlwbGVEZWxlZ2F0aW9uIH0gZnJvbSAnQGRlcGVuZGVuY3kvbXVsdGlwbGVQcm90b3R5cGVEZWxlZ2F0aW9uJ1xuXG5mdW5jdGlvbiBjcmVhdGVTdGF0ZUluc3RhbmNlV2l0aE11bHRpcGxlRGVsZWdhdGlvbih7IGRlbGVnYXRpb25MaXN0ID0gW10gfSA9IHt9KSB7XG4gIGNvbnN0IGNhbGxlckNsYXNzID0gdGhpc1xuICBsZXQgc3RhdGVEZWxlZ2F0aW9uU2V0dGluZyA9IGNhbGxlckNsYXNzOjpjYWxsZXJDbGFzc1tDb25zdHJ1Y3RhYmxlLiQucHJvdG90eXBlRGVsZWdhdGlvbi5nZXR0ZXJdKCQua2V5LnN0YXRlSW5zdGFuY2UpXG5cbiAgbGV0IGluc3RhbmNlID0gY3JlYXRlT2JqZWN0V2l0aERlbGVnYXRpb24oeyBpbnN0YW5jZVR5cGU6ICdvYmplY3QnIH0pXG4gIE9iamVjdC5zZXRQcm90b3R5cGVPZihpbnN0YW5jZSwgc3RhdGVEZWxlZ2F0aW9uU2V0dGluZy5pbnN0YW5jZVByb3RvdHlwZSkgLy8gaW5pdGlhbGl6ZSBpbnN0YW5jZSB3aXRoIGVudGl0eSBkZWxlZ2F0aW9uIHZhbHVlcywgaW5oZXJpdCBvd24gYW5kIGRlbGVnYXRlZCBmdW5jdGlvbmFsaXRpZXMgcmVsYXRlZCB0byBzdGF0ZSBpbnN0YW5jZSBmcm9tIEVudGl0eSBjbGFzcy5cblxuICAvLyBhZGQgYWRkaXRpb25hbCBkZWxlZ2F0aW9uIHByb3RvdHlwZXNcbiAgaWYgKGRlbGVnYXRpb25MaXN0Lmxlbmd0aCA+IDApIE11bHRpcGxlRGVsZWdhdGlvbi5hZGREZWxlZ2F0aW9uKHsgdGFyZ2V0T2JqZWN0OiBpbnN0YW5jZSwgZGVsZWdhdGlvbkxpc3QgfSlcbiAgcmV0dXJuIGluc3RhbmNlXG59XG5cbi8vIEV4YW1wbGU6IFRyeWluZyB0byBvdmVycmlkZSBhIHN5bWJvbCBvZiBhIHBhcmVudCBjbGFzcyBpbiB0aGUgY2hpbGQgY2xhc3MgcHJvcGVydGllcywgd2hlbiBjYWxsZWQgd2l0aCByZWN1cnNpdmUgb3B0aW9uIChlLmcuIGluIENvbnN0cnVjdGFibGUuJC5jb25zdHJ1Y3QpIHdpbGwgZXhlY3V0ZSBhbGwgZnVuY3Rpb25zIHdpdGggdGhlIHNhbWUga2V5IHRocm91Z2hvdXQgdGhlIHByb3RvdHlwZSBjaGFpbi5cbi8vIGV4cG9ydCBbQ29uc3RydWN0YWJsZS4kLmluaXRpYWxpemUua2V5LmNvbnN0cnVjdGFibGVJbnN0YW5jZV0oKSB7XG4vLyAgIGNvbnNvbGUubG9nKGBFeGVjdXRlZCB0b2dldGhlciB3aXRoIG90aGVyIENvbnN0cnVjdGFibGUuJC5pbml0aWFsaXplLmtleS5jb25zdHJ1Y3RhYmxlSW5zdGFuY2UgaW4gdGhlIHByb3RvdHlwZSBjaGFpbmApXG4vLyB9XG5tb2R1bGUuZXhwb3J0cyA9IHtcbiAgLy8gWyQua2V5LmNvbnN0cnVjdGFibGVJbnN0YW5jZV0gLSB3aGVuIGNhbGxlZCBpdCBpcyBpbmhlcml0ZWQgZnJvbSBwYXJlbnQgZnVuY3Rpb25hbGl0eS5cblxuICAvLyBFeGFtcGxlIHN0YXRlIGluc3RhbmNlIGNvbnN0cnVjdG9yLCB1c2VkIGluIHVuaXQgdGVzdHMuXG4gIFskLmtleS5zdGF0ZUluc3RhbmNlXSh7IGNhbGxlckNsYXNzID0gdGhpcyB9ID0ge30sIHsgZGVsZWdhdGlvbkxpc3QgfSA9IHt9KSB7XG4gICAgbGV0IGluc3RhbmNlID0gY2FsbGVyQ2xhc3M6OmNyZWF0ZVN0YXRlSW5zdGFuY2VXaXRoTXVsdGlwbGVEZWxlZ2F0aW9uKHsgZGVsZWdhdGlvbkxpc3QgfSlcbiAgICByZXR1cm4gaW5zdGFuY2VcbiAgfSxcblxuICAvLyBzdGF0ZSBpbnN0YW5jZTogc3ViY2xhc3NlcyB3aWxsIHByb3ZpZGUgYW4gaW5pdGlhbGl6YXRpb24gaW1wbGVtZW50YXRpb24gd2l0aCBrZXkgJ2hhbmRsZURhdGFJbnN0YW5jZSdcbiAgWyQua2V5LmhhbmRsZURhdGFJbnN0YW5jZV0oeyBjYWxsZXJDbGFzcyA9IHRoaXMgfSA9IHt9LCAuLi5hcmdzKSB7XG4gICAgbGV0IGluc3RhbmNlID0gY2FsbGVyQ2xhc3M6OmNyZWF0ZVN0YXRlSW5zdGFuY2VXaXRoTXVsdGlwbGVEZWxlZ2F0aW9uKClcbiAgICAvLyBhbGxvd3MgdGhlIHN1YmNsYXNzZXMgdG8gYWRkIGFkZGl0aW9uYWwgaW5pdGlhbGl6YXRpb24gc3RlcHMgdG8gZGVhbCB3aXRoIHRoZSBkYXRhIHBhcmFtZXRlciBwcm92aWRlZC5cbiAgICBjYWxsZXJDbGFzczo6Y2FsbGVyQ2xhc3NbQ29uc3RydWN0YWJsZS4kLmluaXRpYWxpemUuc3dpdGNoXSgkLmtleS5oYW5kbGVEYXRhSW5zdGFuY2UsIHsgcmVjdXJzaXZlRGVsZWdhdGlvbkNoYWluRXhlY3V0aW9uOiB0cnVlIH0pKHsgdGFyZ2V0SW5zdGFuY2U6IGluc3RhbmNlIH0sIC4uLmFyZ3MpXG4gICAgcmV0dXJuIGluc3RhbmNlXG4gIH0sXG5cbiAgLyogc3RhdGUgaW5zdGFuY2U6IGluaXRpYWxpemUgdGFyZ2V0IGluc3RhbmNlIHVzaW5nIGNvbmNlcmV0ZSBiYWh2aW9ycyB0aGF0IGV4dGVuZCBpdC4gRWFjaCBjb25jcmV0ZSBiZWhhdmlvciB0YXBzIGludG8gdGhlIGNvbnN0cnVjdGlvbiBwaGFzZSBvZiB0aGUgaW5zdGFuY2UsIGFkZHMgaXRzZWxmIGFzIGRlbGVnYXRpb24gYW5kIHByb2Nlc3NlcyB0aGUgaW5zdGFuY2UuXG4gICAgVGhlIG5hbWUgYGNvbmNyZXRlQmVoYXZpb3JgIGNvbWVzIGZyb20gdGhlIHBhdHRlcm4gdXNlZCBmb3IgbXVsdGlwbGUgYmVoYXZpb3JzL2RlbGVnYXRpb24gb24gb2JqZWN0cy5cbiAgICBjb25jcmV0ZUJlaGF2aW9yID0gc3RhdGUgaW5zdGFuY2UgdGhhdCBoYXMgYEVudGl0eS4kLmtleS5jb25jZXJldGVCZWhhdmlvcmAgaW4gaXQncyBjaGFpbiwgdG8gYmUgZXhlY3V0ZWQgZHVyaW5nIHRoZSBpbml0aWFsaXphdGlvbiBwaGFzZSBvZiBhbm90aGVyIGluc3RhbmNlIHRoYXQgdXNlcyBpdC5cbiAgKi9cbiAgWyQua2V5LmNvbmNlcmV0ZUJlaGF2aW9yXSh7IGNhbGxlckNsYXNzID0gdGhpcyB9ID0ge30sIHsgY29uY3JldGVCZWhhdmlvckxpc3QgPSBbXSB9KSB7XG4gICAgLy8gbWVyZ2UgZGF0YSBpbnRvIGluc3RhbmNlIHByb3BlcnRpZXMgd2l0aCBtdWx0aXBsZSBkZWxlZ2F0aW9uLlxuICAgIGxldCBpbnN0YW5jZSA9IGNhbGxlckNsYXNzOjpjcmVhdGVTdGF0ZUluc3RhbmNlV2l0aE11bHRpcGxlRGVsZWdhdGlvbih7IGRlbGVnYXRpb25MaXN0OiBjb25jcmV0ZUJlaGF2aW9yTGlzdCB9KVxuICAgIC8vIHJlbGF0ZWQgdG8gY2xhc3MgaW1wbGVtZW50YXRpb24gKGRpZmZlcmVudCB0aGFuIHRoZSBzdGF0ZSBpbnN0YW5jZSBhdHRhY2hlZCBpbXBsbWVuZXRhdGlvbiBiZWxvdylcbiAgICBjYWxsZXJDbGFzczo6Y2FsbGVyQ2xhc3NbQ29uc3RydWN0YWJsZS4kLmluaXRpYWxpemUuc3dpdGNoXSgkLmtleS5jb25jZXJldGVCZWhhdmlvciwgeyByZWN1cnNpdmVEZWxlZ2F0aW9uQ2hhaW5FeGVjdXRpb246IHRydWUgfSkoeyB0YXJnZXRJbnN0YW5jZTogaW5zdGFuY2UgfSwgeyBjb25jcmV0ZUJlaGF2aW9yTGlzdCB9KSAvLyBhbGxvdyBjbGFzc2VzIHRvIGhvb2sgb3ZlciB0aGUgaW5pdGlhbGl6YWlpb24gcHJvY2Vzcy5cblxuICAgIC8qKiAgaW5pdGlhbGl6ZSBpbnN0YW5jZSB1c2luZyBjb25jcmV0ZSBiZWhhdmlvcnMgaW5zdGFuY2UgdGhlbXNlbHZlcyAtIGkuZS4gcHJvdG90eXBlcyB0byBhZGQgbXVzdCBoYXZlIGEgY29uY2VyZXRlQmVoYXZpb3IgaW1wbGVtZW50YXRpb24gcmVnaXN0ZXJlZCBvbiB0aGVtLlxuICAgICAqIEVhY2ggY29uY2VyZXRlIGJlaGF2aW9yIG11c3QgaW1wbGVtZW50IGFuIGluaXRpYWxpemF0aW9uIGZ1bmN0aW9uIHJlZ2lzdGVyZWQgaW4gaXQncyBwcm90eXBlIGNoYWluOiBcbiAgICAgKiBJbiB0aGlzIGV4YW1wbGUgdGhleSB3aWxsIGFkZCB0aGVtc2VsdmVzIHRvIHRoZSBkZWxlZ2F0aW9uIGNoYWluIG9mIHRoZSBpbnN0YW5jZTpcbiAgICAgICAgIFtFbnRpdHkuJC5rZXkuY29uY2VyZXRlQmVoYXZpb3JdKHsgdGFyZ2V0SW5zdGFuY2UsIGNvbmNlcmV0ZUJlaGF2aW9yIH0pIHtcbiAgICAgICAgICAgIE11bHRpcGxlRGVsZWdhdGlvbi5hZGREZWxlZ2F0aW9uKHsgdGFyZ2V0T2JqZWN0OiB0YXJnZXRJbnN0YW5jZSwgZGVsZWdhdGlvbkxpc3Q6IFtjb25jZXJldGVCZWhhdmlvcl0gfSlcbiAgICAgICAgICAgIHJldHVybiB0YXJnZXRJbnN0YW5jZVxuICAgICAgICAgIH1cbiAgICAgICAqL1xuICAgIGZvciAobGV0IGNvbmNlcmV0ZUJlaGF2aW9yIG9mIGNvbmNyZXRlQmVoYXZpb3JMaXN0KSBpZiAoY29uY2VyZXRlQmVoYXZpb3JbJC5rZXkuY29uY2VyZXRlQmVoYXZpb3JdKSBjb25jZXJldGVCZWhhdmlvclskLmtleS5jb25jZXJldGVCZWhhdmlvcl0oeyB0YXJnZXRJbnN0YW5jZTogaW5zdGFuY2UgfSwgeyBjb25jZXJldGVCZWhhdmlvciB9KVxuXG4gICAgcmV0dXJuIGluc3RhbmNlXG4gIH0sXG59XG4iXX0=

@@ -1,83 +1,84 @@
-import assert from 'assert'
-import { MultipleDelegation } from '@dependency/multiplePrototypeDelegation'
-import { metadata } from '../constructableElement/Functionality/sharedSymbol.js'
-const hasOwnProperty = Object.prototype.hasOwnProperty // allows supporting objects delefating null.
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.delegatedLookup = exports.conditionDelegatedLookup = exports.nestedPropertyDelegatedLookup = void 0;var _assert = _interopRequireDefault(require("assert"));
+var _multiplePrototypeDelegation = require("@dependency/multiplePrototypeDelegation");
 
-/** Lookup algorithm used by 'functionality prototype'.
- * In case multiple matching properties the array produces is ordered from the target object property to the delegated (parent) objects` properties. // property is nested in multiple levels e.g. target[symbol][key][property]
- */
-export const nestedPropertyDelegatedLookup = ({
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
+
+
+
+const nestedPropertyDelegatedLookup = ({
   target,
   recursive = false,
-  propertyPath, // direct property / base property to check in.
-}: {
-  propertyPath: Array | String,
-}) => {
+  propertyPath }) =>
+
+
+{
   return delegatedLookup({
     target,
     recursive,
-    // multiple nested properties lookup
+
     retrieveValueFromPrototype: targetObject => {
-      if (!Array.isArray(propertyPath)) propertyPath = [propertyPath] // use same implementation for all cases.
+      if (!Array.isArray(propertyPath)) propertyPath = [propertyPath];
       for (let property of propertyPath) {
-        let targetPropertyArray = [...Object.keys(Object.getOwnPropertyDescriptors(targetObject)), ...Object.getOwnPropertySymbols(targetObject)]
-        if (targetPropertyArray.includes(property)) targetObject = targetObject[property]
-        else return undefined
+        let targetPropertyArray = [...Object.keys(Object.getOwnPropertyDescriptors(targetObject)), ...Object.getOwnPropertySymbols(targetObject)];
+        if (targetPropertyArray.includes(property)) targetObject = targetObject[property];else
+        return undefined;
       }
-      let propertyValue = targetObject
-      return propertyValue
-    },
-  })
-}
+      let propertyValue = targetObject;
+      return propertyValue;
+    } });
 
-// Return the prototype/prototypes that matches the condition check.
-export const conditionDelegatedLookup = ({
-  target /*Target object with delegation chain to lookup in.*/,
+};exports.nestedPropertyDelegatedLookup = nestedPropertyDelegatedLookup;
+
+
+const conditionDelegatedLookup = ({
+  target,
   recursive = false,
-  conditionCheck = false || (prototypeTarget => prototypeTarget.constructor == Object) /*The condition that should be met on the prototype object*/,
-}) => {
-  assert(conditionCheck, '• conditionCheck callback should be passed parameter.')
+  conditionCheck = false || (prototypeTarget => prototypeTarget.constructor == Object) }) =>
+{
+  (0, _assert.default)(conditionCheck, '• conditionCheck callback should be passed parameter.');
   return delegatedLookup({
     target,
     recursive,
-    // multiple nested properties lookup
+
     retrieveValueFromPrototype: targetObject => {
-      return conditionCheck(targetObject) ? targetObject : undefined
-    },
-  })
-}
+      return conditionCheck(targetObject) ? targetObject : undefined;
+    } });
 
-// lookup recursively for property on target
-export const delegatedLookup = ({
-  target, // the object to lookup property on.
-  recursive = false, // recusively lookup and allow to return multiple results.
-  property, // optional as the property key can be in the closure of the callback function.
-  // callback to hand over control to caller function.
-  retrieveValueFromPrototype = (target, property) => (target[property] ? target[property] : undefined),
-} = {}) => {
+};exports.conditionDelegatedLookup = conditionDelegatedLookup;
+
+
+const delegatedLookup = ({
+  target,
+  recursive = false,
+  property,
+
+  retrieveValueFromPrototype = (target, property) => target[property] ? target[property] : undefined } =
+{}) => {
   let valueAggregatorArray = [],
-    breakOnFirstMatch = !recursive,
-    prototypeQueue = [target] // assign intial target
+  breakOnFirstMatch = !recursive,
+  prototypeQueue = [target];
   while (
-    prototypeQueue.length != 0 &&
-    !(breakOnFirstMatch && valueAggregatorArray.length > 0) // break While Loop in case only a single match is required.
-  ) {
-    let targetAggregator = []
+  prototypeQueue.length != 0 &&
+  !(breakOnFirstMatch && valueAggregatorArray.length > 0))
+  {
+    let targetAggregator = [];
     for (let currentTarget of prototypeQueue) {
-      let retrievedValue = retrieveValueFromPrototype(currentTarget, property) // callback should decide whether to add value to the array if found.
-      if (retrievedValue != undefined) valueAggregatorArray.push(retrievedValue)
+      let retrievedValue = retrieveValueFromPrototype(currentTarget, property);
+      if (retrievedValue != undefined) valueAggregatorArray.push(retrievedValue);
 
-      if (breakOnFirstMatch && valueAggregatorArray.length > 0) break // break for loop in case only a single match is required.
+      if (breakOnFirstMatch && valueAggregatorArray.length > 0) break;
 
-      let targetPrototpye = Object.getPrototypeOf(currentTarget)
-      // check for multiple delegation return array.
-      if (Array.isArray(targetPrototpye) && currentTarget instanceof MultipleDelegation) {
-        targetAggregator = [...targetAggregator, ...targetPrototpye]
-      } else if (targetPrototpye /* not null or undefined */) {
-        targetAggregator.push(targetPrototpye)
-      }
+      let targetPrototpye = Object.getPrototypeOf(currentTarget);
+
+      if (Array.isArray(targetPrototpye) && currentTarget instanceof _multiplePrototypeDelegation.MultipleDelegation) {
+        targetAggregator = [...targetAggregator, ...targetPrototpye];
+      } else if (targetPrototpye) {
+          targetAggregator.push(targetPrototpye);
+        }
     }
-    prototypeQueue = targetAggregator
+    prototypeQueue = targetAggregator;
   }
-  return recursive ? valueAggregatorArray : valueAggregatorArray[0]
-}
+  return recursive ? valueAggregatorArray : valueAggregatorArray[0];
+};exports.delegatedLookup = delegatedLookup;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS91dGlsaXR5L2RlbGVnYXRlZExvb2t1cC5qcyJdLCJuYW1lcyI6WyJoYXNPd25Qcm9wZXJ0eSIsIk9iamVjdCIsInByb3RvdHlwZSIsIm5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwIiwidGFyZ2V0IiwicmVjdXJzaXZlIiwicHJvcGVydHlQYXRoIiwiZGVsZWdhdGVkTG9va3VwIiwicmV0cmlldmVWYWx1ZUZyb21Qcm90b3R5cGUiLCJ0YXJnZXRPYmplY3QiLCJBcnJheSIsImlzQXJyYXkiLCJwcm9wZXJ0eSIsInRhcmdldFByb3BlcnR5QXJyYXkiLCJrZXlzIiwiZ2V0T3duUHJvcGVydHlEZXNjcmlwdG9ycyIsImdldE93blByb3BlcnR5U3ltYm9scyIsImluY2x1ZGVzIiwidW5kZWZpbmVkIiwicHJvcGVydHlWYWx1ZSIsImNvbmRpdGlvbkRlbGVnYXRlZExvb2t1cCIsImNvbmRpdGlvbkNoZWNrIiwicHJvdG90eXBlVGFyZ2V0IiwiY29uc3RydWN0b3IiLCJ2YWx1ZUFnZ3JlZ2F0b3JBcnJheSIsImJyZWFrT25GaXJzdE1hdGNoIiwicHJvdG90eXBlUXVldWUiLCJsZW5ndGgiLCJ0YXJnZXRBZ2dyZWdhdG9yIiwiY3VycmVudFRhcmdldCIsInJldHJpZXZlZFZhbHVlIiwicHVzaCIsInRhcmdldFByb3RvdHB5ZSIsImdldFByb3RvdHlwZU9mIiwiTXVsdGlwbGVEZWxlZ2F0aW9uIl0sIm1hcHBpbmdzIjoiNFFBQUE7QUFDQTs7QUFFQSxNQUFNQSxjQUFjLEdBQUdDLE1BQU0sQ0FBQ0MsU0FBUCxDQUFpQkYsY0FBeEM7Ozs7O0FBS08sTUFBTUcsNkJBQTZCLEdBQUcsQ0FBQztBQUM1Q0MsRUFBQUEsTUFENEM7QUFFNUNDLEVBQUFBLFNBQVMsR0FBRyxLQUZnQztBQUc1Q0MsRUFBQUEsWUFINEMsRUFBRDs7O0FBTXZDO0FBQ0osU0FBT0MsZUFBZSxDQUFDO0FBQ3JCSCxJQUFBQSxNQURxQjtBQUVyQkMsSUFBQUEsU0FG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QUF6QixDQUFuQjtBQUNELE9BRkQsTUFFTyxJQUFJQSxlQUFKLEVBQWlEO0FBQ3RESixVQUFBQSxnQkFBZ0IsQ0FBQ0csSUFBakIsQ0FBc0JDLGVBQXRCO0FBQ0Q7QUFDRjtBQUNETixJQUFBQSxjQUFjLEdBQUdFLGdCQUFqQjtBQUNEO0FBQ0QsU0FBT3ZCLFNBQVMsR0FBR21CLG9CQUFILEdBQTBCQSxvQkFBb0IsQ0FBQyxDQUFELENBQTlEO0FBQ0QsQ0FoQ00sQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBhc3NlcnQgZnJvbSAnYXNzZXJ0J1xuaW1wb3J0IHsgTXVsdGlwbGVEZWxlZ2F0aW9uIH0gZnJvbSAnQGRlcGVuZGVuY3kvbXVsdGlwbGVQcm90b3R5cGVEZWxlZ2F0aW9uJ1xuaW1wb3J0IHsgbWV0YWRhdGEgfSBmcm9tICcuLi9jb25zdHJ1Y3RhYmxlRWxlbWVudC9GdW5jdGlvbmFsaXR5L3NoYXJlZFN5bWJvbC5qcydcbmNvbnN0IGhhc093blByb3BlcnR5ID0gT2JqZWN0LnByb3RvdHlwZS5oYXNPd25Qcm9wZXJ0eSAvLyBhbGxvd3Mgc3VwcG9ydGluZyBvYmplY3RzIGRlbGVmYXRpbmcgbnVsbC5cblxuLyoqIExvb2t1cCBhbGdvcml0aG0gdXNlZCBieSAnZnVuY3Rpb25hbGl0eSBwcm90b3R5cGUnLlxuICogSW4gY2FzZSBtdWx0aXBsZSBtYXRjaGluZyBwcm9wZXJ0aWVzIHRoZSBhcnJheSBwcm9kdWNlcyBpcyBvcmRlcmVkIGZyb20gdGhlIHRhcmdldCBvYmplY3QgcHJvcGVydHkgdG8gdGhlIGRlbGVnYXRlZCAocGFyZW50KSBvYmplY3RzYCBwcm9wZXJ0aWVzLiAvLyBwcm9wZXJ0eSBpcyBuZXN0ZWQgaW4gbXVsdGlwbGUgbGV2ZWxzIGUuZy4gdGFyZ2V0W3N5bWJvbF1ba2V5XVtwcm9wZXJ0eV1cbiAqL1xuZXhwb3J0IGNvbnN0IG5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwID0gKHtcbiAgdGFyZ2V0LFxuICByZWN1cnNpdmUgPSBmYWxzZSxcbiAgcHJvcGVydHlQYXRoLCAvLyBkaXJlY3QgcHJvcGVydHkgLyBiYXNlIHByb3BlcnR5IHRvIGNoZWNrIGluLlxufToge1xuICBwcm9wZXJ0eVBhdGg6IEFycmF5IHwgU3RyaW5nLFxufSkgPT4ge1xuICByZXR1cm4gZGVsZWdhdGVkTG9va3VwKHtcbiAgICB0YXJnZXQsXG4gICAgcmVjdXJzaXZlLFxuICAgIC8vIG11bHRpcGxlIG5lc3RlZCBwcm9wZXJ0aWVzIGxvb2t1cFxuICAgIHJldHJpZXZlVmFsdWVGcm9tUHJvdG90eXBlOiB0YXJnZXRPYmplY3QgPT4ge1xuICAgICAgaWYgKCFBcnJheS5pc0FycmF5KHByb3BlcnR5UGF0aCkpIHByb3BlcnR5UGF0aCA9IFtwcm9wZXJ0eVBhdGhdIC8vIHVzZSBzYW1lIGltcGxlbWVudGF0aW9uIGZvciBhbGwgY2FzZXMuXG4gICAgICBmb3IgKGxldCBwcm9wZXJ0eSBvZiBwcm9wZXJ0eVBhdGgpIHtcbiAgICAgICAgbGV0IHRhcmdldFByb3BlcnR5QXJyYXkgPSBbLi4uT2JqZWN0LmtleXMoT2JqZWN0LmdldE93blByb3BlcnR5RGVzY3JpcHRvcnModGFyZ2V0T2JqZWN0KSksIC4uLk9iamVjdC5nZXRPd25Qcm9wZXJ0eVN5bWJvbHModGFyZ2V0T2JqZWN0KV1cbiAgICAgICAgaWYgKHRhcmdldFByb3BlcnR5QXJyYXkuaW5jbHVkZXMocHJvcGVydHkpKSB0YXJnZXRPYmplY3QgPSB0YXJnZXRPYmplY3RbcHJvcGVydHldXG4gICAgICAgIGVsc2UgcmV0dXJuIHVuZGVmaW5lZFxuICAgICAgfVxuICAgICAgbGV0IHByb3BlcnR5VmFsdWUgPSB0YXJnZXRPYmplY3RcbiAgICAgIHJldHVybiBwcm9wZXJ0eVZhbHVlXG4gICAgfSxcbiAgfSlcbn1cblxuLy8gUmV0dXJuIHRoZSBwcm90b3R5cGUvcHJvdG90eXBlcyB0aGF0IG1hdGNoZXMgdGhlIGNvbmRpdGlvbiBjaGVjay5cbmV4cG9ydCBjb25zdCBjb25kaXRpb25EZWxlZ2F0ZWRMb29rdXAgPSAoe1xuICB0YXJnZXQgLypUYXJnZXQgb2JqZWN0IHdpdGggZGVsZWdhdGlvbiBjaGFpbiB0byBsb29rdXAgaW4uKi8sXG4gIHJlY3Vyc2l2ZSA9IGZhbHNlLFxuICBjb25kaXRpb25DaGVjayA9IGZhbHNlIHx8IChwcm90b3R5cGVUYXJnZXQgPT4gcHJvdG90eXBlVGFyZ2V0LmNvbnN0cnVjdG9yID09IE9iamVjdCkgLypUaGUgY29uZGl0aW9uIHRoYXQgc2hvdWxkIGJlIG1ldCBvbiB0aGUgcHJvdG90eXBlIG9iamVjdCovLFxufSkgPT4ge1xuICBhc3NlcnQoY29uZGl0aW9uQ2hlY2ssICfigKIgY29uZGl0aW9uQ2hlY2sgY2FsbGJhY2sgc2hvdWxkIGJlIHBhc3NlZCBwYXJhbWV0ZXIuJylcbiAgcmV0dXJuIGRlbGVnYXRlZExvb2t1cCh7XG4gICAgdGFyZ2V0LFxuICAgIHJlY3Vyc2l2ZSxcbiAgICAvLyBtdWx0aXBsZSBuZXN0ZWQgcHJvcGVydGllcyBsb29rdXBcbiAgICByZXRyaWV2ZVZhbHVlRnJvbVByb3RvdHlwZTogdGFyZ2V0T2JqZWN0ID0+IHtcbiAgICAgIHJldHVybiBjb25kaXRpb25DaGVjayh0YXJnZXRPYmplY3QpID8gdGFyZ2V0T2JqZWN0IDogdW5kZWZpbmVkXG4gICAgfSxcbiAgfSlcbn1cblxuLy8gbG9va3VwIHJlY3Vyc2l2ZWx5IGZvciBwcm9wZXJ0eSBvbiB0YXJnZXRcbmV4cG9ydCBjb25zdCBkZWxlZ2F0ZWRMb29rdXAgPSAoe1xuICB0YXJnZXQsIC8vIHRoZSBvYmplY3QgdG8gbG9va3VwIHByb3BlcnR5IG9uLlxuICByZWN1cnNpdmUgPSBmYWxzZSwgLy8gcmVjdXNpdmVseSBsb29rdXAgYW5kIGFsbG93IHRvIHJldHVybiBtdWx0aXBsZSByZXN1bHRzLlxuICBwcm9wZXJ0eSwgLy8gb3B0aW9uYWwgYXMgdGhlIHByb3BlcnR5IGtleSBjYW4gYmUgaW4gdGhlIGNsb3N1cmUgb2YgdGhlIGNhbGxiYWNrIGZ1bmN0aW9uLlxuICAvLyBjYWxsYmFjayB0byBoYW5kIG92ZXIgY29udHJvbCB0byBjYWxsZXIgZnVuY3Rpb24uXG4gIHJldHJpZXZlVmFsdWVGcm9tUHJvdG90eXBlID0gKHRhcmdldCwgcHJvcGVydHkpID0+ICh0YXJnZXRbcHJvcGVydHldID8gdGFyZ2V0W3Byb3BlcnR5XSA6IHVuZGVmaW5lZCksXG59ID0ge30pID0+IHtcbiAgbGV0IHZhbHVlQWdncmVnYXRvckFycmF5ID0gW10sXG4gICAgYnJlYWtPbkZpcnN0TWF0Y2ggPSAhcmVjdXJzaXZlLFxuICAgIHByb3RvdHlwZVF1ZXVlID0gW3RhcmdldF0gLy8gYXNzaWduIGludGlhbCB0YXJnZXRcbiAgd2hpbGUgKFxuICAgIHByb3RvdHlwZVF1ZXVlLmxlbmd0aCAhPSAwICYmXG4gICAgIShicmVha09uRmlyc3RNYXRjaCAmJiB2YWx1ZUFnZ3JlZ2F0b3JBcnJheS5sZW5ndGggPiAwKSAvLyBicmVhayBXaGlsZSBMb29wIGluIGNhc2Ugb25seSBhIHNpbmdsZSBtYXRjaCBpcyByZXF1aXJlZC5cbiAgKSB7XG4gICAgbGV0IHRhcmdldEFnZ3JlZ2F0b3IgPSBbXVxuICAgIGZvciAobGV0IGN1cnJlbnRUYXJnZXQgb2YgcHJvdG90eXBlUXVldWUpIHtcbiAgICAgIGxldCByZXRyaWV2ZWRWYWx1ZSA9IHJldHJpZXZlVmFsdWVGcm9tUHJvdG90eXBlKGN1cnJlbnRUYXJnZXQsIHByb3BlcnR5KSAvLyBjYWxsYmFjayBzaG91bGQgZGVjaWRlIHdoZXRoZXIgdG8gYWRkIHZhbHVlIHRvIHRoZSBhcnJheSBpZiBmb3VuZC5cbiAgICAgIGlmIChyZXRyaWV2ZWRWYWx1ZSAhPSB1bmRlZmluZWQpIHZhbHVlQWdncmVnYXRvckFycmF5LnB1c2gocmV0cmlldmVkVmFsdWUpXG5cbiAgICAgIGlmIChicmVha09uRmlyc3RNYXRjaCAmJiB2YWx1ZUFnZ3JlZ2F0b3JBcnJheS5sZW5ndGggPiAwKSBicmVhayAvLyBicmVhayBmb3IgbG9vcCBpbiBjYXNlIG9ubHkgYSBzaW5nbGUgbWF0Y2ggaXMgcmVxdWlyZWQuXG5cbiAgICAgIGxldCB0YXJnZXRQcm90b3RweWUgPSBPYmplY3QuZ2V0UHJvdG90eXBlT2YoY3VycmVudFRhcmdldClcbiAgICAgIC8vIGNoZWNrIGZvciBtdWx0aXBsZSBkZWxlZ2F0aW9uIHJldHVybiBhcnJheS5cbiAgICAgIGlmIChBcnJheS5pc0FycmF5KHRhcmdldFByb3RvdHB5ZSkgJiYgY3VycmVudFRhcmdldCBpbnN0YW5jZW9mIE11bHRpcGxlRGVsZWdhdGlvbikge1xuICAgICAgICB0YXJnZXRBZ2dyZWdhdG9yID0gWy4uLnRhcmdldEFnZ3JlZ2F0b3IsIC4uLnRhcmdldFByb3RvdHB5ZV1cbiAgICAgIH0gZWxzZSBpZiAodGFyZ2V0UHJvdG90cHllIC8qIG5vdCBudWxsIG9yIHVuZGVmaW5lZCAqLykge1xuICAgICAgICB0YXJnZXRBZ2dyZWdhdG9yLnB1c2godGFyZ2V0UHJvdG90cHllKVxuICAgICAgfVxuICAgIH1cbiAgICBwcm90b3R5cGVRdWV1ZSA9IHRhcmdldEFnZ3JlZ2F0b3JcbiAgfVxuICByZXR1cm4gcmVjdXJzaXZlID8gdmFsdWVBZ2dyZWdhdG9yQXJyYXkgOiB2YWx1ZUFnZ3JlZ2F0b3JBcnJheVswXVxufVxuIl19

@@ -1,36 +1,37 @@
-import { deepFreeze } from '../../../utility/deepObjectFreeze.js'
-import { createSwitch, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
-import * as symbol from '../../sharedSymbol.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.apply = apply;exports.$ = void 0;
+var _prototypeMethod = require("../prototypeMethod.js");
 
-// reference to symbol keys.
-export const $ = {
+
+
+const $ = {
   clientInterface: {
     switch: Symbol('clientInterface.switch'),
     setter: Symbol('clientInterface.setter'),
     getter: Symbol('clientInterface.getter'),
     fallback: Symbol('clientInterface.fallback'),
-    list: Symbol('clientInterface.list'),
-  },
-}
-// deepFreeze({ object: $, getPropertyImplementation: Object.getOwnPropertyNames })
+    list: Symbol('clientInterface.list') } };exports.$ = $;
 
-// functionality
+
+
+
+
 const f = {
-  // switch function
-  switch: createSwitch({ fallbackPropertyPath: [$.clientInterface.fallback], implementationGetterPropertyPath: [$.clientInterface.getter] }),
-  setter: mergeOwnNestedPropertyCurried({ property: [$.clientInterface.list] }),
-  getter: nestedPropertyDelegatedLookupCurried({ baseProperty: [$.clientInterface.list] }),
-}
 
-// apply functionality
-export function apply(targetObject) {
+  switch: (0, _prototypeMethod.createSwitch)({ fallbackPropertyPath: [$.clientInterface.fallback], implementationGetterPropertyPath: [$.clientInterface.getter] }),
+  setter: (0, _prototypeMethod.mergeOwnNestedPropertyCurried)({ property: [$.clientInterface.list] }),
+  getter: (0, _prototypeMethod.nestedPropertyDelegatedLookupCurried)({ baseProperty: [$.clientInterface.list] }) };
+
+
+
+function apply(targetObject) {
   Object.assign(targetObject, {
-    // [symbol.metadata]: { type: Symbol('Client interface functionality') },
+
     [$.clientInterface.switch]: f.switch,
     [$.clientInterface.getter]: f.getter,
     [$.clientInterface.setter]: f.setter,
     [$.clientInterface.list]: {},
-    [$.clientInterface.fallback]: undefined,
-  })
-  return targetObject
+    [$.clientInterface.fallback]: undefined });
+
+  return targetObject;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9GdW5jdGlvbmFsaXR5L2VsZW1lbnRGdW5jdGlvbmFsaXR5L2NsaWVudEludGVyZmFjZS5qcyJdLCJuYW1lcyI6WyIkIiwiY2xpZW50SW50ZXJmYWNlIiwic3dpdGNoIiwiU3ltYm9sIiwic2V0dGVyIiwiZ2V0dGVyIiwiZmFsbGJhY2siLCJsaXN0IiwiZiIsImZhbGxiYWNrUHJvcGVydHlQYXRoIiwiaW1wbGVtZW50YXRpb25HZXR0ZXJQcm9wZXJ0eVBhdGgiLCJwcm9wZXJ0eSIsImJhc2VQcm9wZXJ0eSIsImFwcGx5IiwidGFyZ2V0T2JqZWN0IiwiT2JqZWN0IiwiYXNzaWduIiwidW5kZWZpbmVkIl0sIm1hcHBpbmdzIjoiO0FBQ0E7Ozs7QUFJTyxNQUFNQSxDQUFDLEdBQUc7QUFDZkMsRUFBQUEsZUFBZSxFQUFFO0FBQ2ZDLElBQUFBLE1BQU0sRUFBRUMsTUFBTSxDQUFDLHdCQUFELENBREM7QUFFZkMsSUFBQUEsTUFBTSxFQUFFRCxNQUFNLENBQUMsd0JBQUQsQ0FGQztBQUdmRSxJQUFBQSxNQUFNLEVBQUVGLE1BQU0sQ0FBQyx3QkFBRCxDQUhDO0FBSWZHLElBQUFBLFFBQVEsRUFBRUgsTUFBTSxDQUFDLDBCQUFELENBSkQ7QUFLZkksSUFBQUEsSUFBSSxFQUFFSixNQUFNLENBQUMsc0JBQUQsQ0FMRyxFQURGLEVBQVYsQzs7Ozs7O0FBWVAsTUFBTUssQ0FBQyxHQUFHOztBQUVSTixFQUFBQSxNQUFNLEVBQUUsbUNBQWEsRUFBRU8sb0JBQW9CLEVBQUUsQ0FBQ1QsQ0FBQyxDQUFDQyxlQUFGLENBQWtCSyxRQUFuQixDQUF4QixFQUFzREksZ0NBQWdDLEVBQUUsQ0FBQ1YsQ0FBQyxDQUFDQyxlQUFGLENBQWtCSSxNQUFuQixDQUF4RixFQUFiLENBRkE7QUFHUkQsRUFBQUEsTUFBTSxFQUFFLG9EQUE4QixFQUFFTyxRQUFRLEVBQUUsQ0FBQ1gsQ0FBQyxDQUFDQyxlQUFGLENBQWtCTSxJQUFuQixDQUFaLEVBQTlCLENBSEE7QUFJUkYsRUFBQUEsTUFBTSxFQUFFLDJEQUFxQyxFQUFFTyxZQUFZLEVBQUUsQ0FBQ1osQ0FBQyxDQUFDQyxlQUFGLENBQWtCTSxJQUFuQixDQUFoQixFQUFyQyxDQUpBLEVBQVY7Ozs7QUFRTyxTQUFTTSxLQUFULENBQWVDLFlBQWYsRUFBNkI7QUFDbENDLEVBQUFBLE1BQU0sQ0FBQ0MsTUFBUCxDQUFjRixZQUFkLEVBQTRCOztBQUUxQixLQUFDZCxDQUFDLENBQUNDLGVBQUYsQ0FBa0JDLE1BQW5CLEdBQTRCTSxDQUFDLENBQUNOLE1BRko7QUFHMUIsS0FBQ0YsQ0FBQyxDQUFDQyxlQUFGLENBQWtCSSxNQUFuQixHQUE0QkcsQ0FBQyxDQUFDSCxNQUhKO0FBSTFCLEtBQUNMLENBQUMsQ0FBQ0MsZUFBRixDQUFrQkcsTUFBbkIsR0FBNEJJLENBQUMsQ0FBQ0osTUFKSjtBQUsxQixLQUFDSixDQUFDLENBQUNDLGVBQUYsQ0FBa0JNLElBQW5CLEdBQTBCLEVBTEE7QUFNMUIsS0FBQ1AsQ0FBQyxDQUFDQyxlQUFGLENBQWtCSyxRQUFuQixHQUE4QlcsU0FOSixFQUE1Qjs7QUFRQSxTQUFPSCxZQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBkZWVwRnJlZXplIH0gZnJvbSAnLi4vLi4vLi4vdXRpbGl0eS9kZWVwT2JqZWN0RnJlZXplLmpzJ1xuaW1wb3J0IHsgY3JlYXRlU3dpdGNoLCBuZXN0ZWRQcm9wZXJ0eURlbGVnYXRlZExvb2t1cEN1cnJpZWQsIG1lcmdlT3duTmVzdGVkUHJvcGVydHlDdXJyaWVkIH0gZnJvbSAnLi4vcHJvdG90eXBlTWV0aG9kLmpzJ1xuaW1wb3J0ICogYXMgc3ltYm9sIGZyb20gJy4uLy4uL3NoYXJlZFN5bWJvbC5qcydcblxuLy8gcmVmZXJlbmNlIHRvIHN5bWJvbCBrZXlzLlxuZXhwb3J0IGNvbnN0ICQgPSB7XG4gIGNsaWVudEludGVyZmFjZToge1xuICAgIHN3aXRjaDogU3ltYm9sKCdjbGllbnRJbnRlcmZhY2Uuc3dpdGNoJyksXG4gICAgc2V0dGVyOiBTeW1ib2woJ2NsaWVudEludGVyZmFjZS5zZXR0ZXInKSxcbiAgICBnZXR0ZXI6IFN5bWJvbCgnY2xpZW50SW50ZXJmYWNlLmdldHRlcicpLFxuICAgIGZhbGxiYWNrOiBTeW1ib2woJ2NsaWVudEludGVyZmFjZS5mYWxsYmFjaycpLFxuICAgIGxpc3Q6IFN5bWJvbCgnY2xpZW50SW50ZXJmYWNlLmxpc3QnKSxcbiAgfSxcbn1cbi8vIGRlZXBGcmVlemUoeyBvYmplY3Q6ICQsIGdldFByb3BlcnR5SW1wbGVtZW50YXRpb246IE9iamVjdC5nZXRPd25Qcm9wZXJ0eU5hbWVzIH0pXG5cbi8vIGZ1bmN0aW9uYWxpdHlcbmNvbnN0IGYgPSB7XG4gIC8vIHN3aXRjaCBmdW5jdGlvblxuICBzd2l0Y2g6IGNyZWF0ZVN3aXRjaCh7IGZhbGxiYWNrUHJvcGVydHlQYXRoOiBbJC5jbGllbnRJbnRlcmZhY2UuZmFsbGJhY2tdLCBpbXBsZW1lbnRhdGlvbkdldHRlclByb3BlcnR5UGF0aDogWyQuY2xpZW50SW50ZXJmYWNlLmdldHRlcl0gfSksXG4gIHNldHRlcjogbWVyZ2VPd25OZXN0ZWRQcm9wZXJ0eUN1cnJpZWQoeyBwcm9wZXJ0eTogWyQuY2xpZW50SW50ZXJmYWNlLmxpc3RdIH0pLFxuICBnZXR0ZXI6IG5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwQ3VycmllZCh7IGJhc2VQcm9wZXJ0eTogWyQuY2xpZW50SW50ZXJmYWNlLmxpc3RdIH0pLFxufVxuXG4vLyBhcHBseSBmdW5jdGlvbmFsaXR5XG5leHBvcnQgZnVuY3Rpb24gYXBwbHkodGFyZ2V0T2JqZWN0KSB7XG4gIE9iamVjdC5hc3NpZ24odGFyZ2V0T2JqZWN0LCB7XG4gICAgLy8gW3N5bWJvbC5tZXRhZGF0YV06IHsgdHlwZTogU3ltYm9sKCdDbGllbnQgaW50ZXJmYWNlIGZ1bmN0aW9uYWxpdHknKSB9LFxuICAgIFskLmNsaWVudEludGVyZmFjZS5zd2l0Y2hdOiBmLnN3aXRjaCxcbiAgICBbJC5jbGllbnRJbnRlcmZhY2UuZ2V0dGVyXTogZi5nZXR0ZXIsXG4gICAgWyQuY2xpZW50SW50ZXJmYWNlLnNldHRlcl06IGYuc2V0dGVyLFxuICAgIFskLmNsaWVudEludGVyZmFjZS5saXN0XToge30sXG4gICAgWyQuY2xpZW50SW50ZXJmYWNlLmZhbGxiYWNrXTogdW5kZWZpbmVkLFxuICB9KVxuICByZXR1cm4gdGFyZ2V0T2JqZWN0XG59XG4iXX0=
