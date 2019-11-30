@@ -3,7 +3,7 @@ import { $ } from '../Constructable.class.js'
 
 module.exports = {
   // set the properties necessary for Constructable pattern usage.   Initialize Constructable pattern properties.
-  [$.key.constructableInstance]: function({ instance, label } = {}, previousInitializationResult) {
+  [$.key.constructableInstance]: function({ instance } = {}, { label } = {}) {
     // Constructor prototypes delegate to each other
     let constructableInstanceDelegationSetting = this::this[$.prototypeDelegation.getter]($.key.constructableInstance)
     Object.setPrototypeOf(instance, constructableInstanceDelegationSetting.instancePrototype) // inherit own and delegated functionalities.

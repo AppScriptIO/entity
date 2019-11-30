@@ -54,7 +54,7 @@ export const createSwitch = ({ fallbackPropertyPath, implementationGetterPropert
     implementationKey: string,
     {
       /* Like the native JS behavior for `constructor` function that calls the super constructor as well in the chain.
-      Functions using recursive option must follow the function definition -  function(argumentList<Object>, previousResult<any>)
+      No longer applied: //// Functions using recursive option must follow the function definition -  function(argumentList<Object>, previousResult<any>)
     */
       recursiveDelegationChainExecution = false, // Execute all functions in the delegation chain that match the `implementationKey` value. e.g. use initialization function from each class in the prototype chain.
       executionAlgorithm, // decides the interface used in executing the implemenations

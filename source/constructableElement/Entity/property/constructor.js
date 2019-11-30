@@ -3,7 +3,8 @@ import * as Constructable from '../../Constructable/Constructable.class.js'
 import { createObjectWithDelegation } from '../../Constructable/property/instantiate.js'
 import { MultipleDelegation } from '@dependency/multiplePrototypeDelegation'
 
-function createStateInstanceWithMultipleDelegation({ delegationList = [], callerClass = this } = {}) {
+function createStateInstanceWithMultipleDelegation({ delegationList = [] } = {}) {
+  const callerClass = this
   let stateDelegationSetting = callerClass::callerClass[Constructable.$.prototypeDelegation.getter]($.key.stateInstance)
 
   let instance = createObjectWithDelegation({ instanceType: 'object' })
@@ -22,16 +23,16 @@ module.exports = {
   // [$.key.constructableInstance] - when called it is inherited from parent functionality.
 
   // Example state instance constructor, used in unit tests.
-  [$.key.stateInstance]({ delegationList, callerClass = this } = {}) {
+  [$.key.stateInstance]({ callerClass = this } = {}, { delegationList } = {}) {
     let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList })
     return instance
   },
 
   // state instance: subclasses will provide an initialization implementation with key 'handleDataInstance'
-  [$.key.handleDataInstance]({ data, delegationList, callerClass = this } = {}) {
-    let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList })
+  [$.key.handleDataInstance]({ callerClass = this } = {}, ...args) {
+    let instance = callerClass::createStateInstanceWithMultipleDelegation()
     // allows the subclasses to add additional initialization steps to deal with the data parameter provided.
-    callerClass::callerClass[Constructable.$.initialize.switch]($.key.handleDataInstance, { recursiveDelegationChainExecution: true })({ targetInstance: instance, data })
+    callerClass::callerClass[Constructable.$.initialize.switch]($.key.handleDataInstance, { recursiveDelegationChainExecution: true })({ targetInstance: instance }, ...args)
     return instance
   },
 
@@ -39,11 +40,11 @@ module.exports = {
     The name `concreteBehavior` comes from the pattern used for multiple behaviors/delegation on objects.
     concreteBehavior = state instance that has `Entity.$.key.concereteBehavior` in it's chain, to be executed during the initialization phase of another instance that uses it.
   */
-  [$.key.concereteBehavior]({ concreteBehaviorList = [], callerClass = this }) {
+  [$.key.concereteBehavior]({ callerClass = this } = {}, { concreteBehaviorList = [] }) {
     // merge data into instance properties with multiple delegation.
     let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList: concreteBehaviorList })
     // related to class implementation (different than the state instance attached implmenetation below)
-    callerClass::callerClass[Constructable.$.initialize.switch]($.key.concereteBehavior, { recursiveDelegationChainExecution: true })({ targetInstance: instance, concreteBehaviorList }) // allow classes to hook over the initializaiion process.
+    callerClass::callerClass[Constructable.$.initialize.switch]($.key.concereteBehavior, { recursiveDelegationChainExecution: true })({ targetInstance: instance }, { concreteBehaviorList }) // allow classes to hook over the initializaiion process.
 
     /**  initialize instance using concrete behaviors instance themselves - i.e. prototypes to add must have a concereteBehavior implementation registered on them.
      * Each concerete behavior must implement an initialization function registered in it's protype chain: 
@@ -53,7 +54,7 @@ module.exports = {
             return targetInstance
           }
        */
-    for (let concereteBehavior of concreteBehaviorList) if (concereteBehavior[$.key.concereteBehavior]) concereteBehavior[$.key.concereteBehavior]({ targetInstance: instance, concereteBehavior })
+    for (let concereteBehavior of concreteBehaviorList) if (concereteBehavior[$.key.concereteBehavior]) concereteBehavior[$.key.concereteBehavior]({ targetInstance: instance }, { concereteBehavior })
 
     return instance
   },

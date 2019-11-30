@@ -4,9 +4,8 @@ import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.
 import { $, Class as Constructable } from '../Constructable.class.js'
 import { createObjectWithDelegation } from './instantiate.js'
 
-function constructableInstance({ constructorImplementation } = {}, previousConstructorResult) {
-  const callerClass = this,
-    _arguments = arguments
+function constructableInstance({ constructorImplementation } = {}, { callerClass = this } = {}) {
+  const _arguments = arguments
   assert(constructorImplementation, `• "constructorImplementation" parameter must be passed`)
 
   return new Proxy(function() {}, {
@@ -18,7 +17,7 @@ function constructableInstance({ constructorImplementation } = {}, previousConst
       let parameterList = nestedPropertyDelegatedLookup({ target: callerClass, recursive: true, propertyPath: $.parameter })
       for (let parameter of parameterList) mergeArrayWithObjectItem({ listDefault: parameter, listTarget: argumentList }) // in case configured constructable which holds default parameter values.
 
-      let instance = callerClass::callerClass[$.constructor.switch](constructorImplementation)(...argumentList)
+      let instance = callerClass::callerClass[$.constructor.switch](constructorImplementation)({}, ...argumentList)
 
       return { class: instance, reference: instance[$.reference] }
     },

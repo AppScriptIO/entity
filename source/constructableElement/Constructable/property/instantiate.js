@@ -21,16 +21,17 @@ const createConstructableWithoutContructor = () => {
  * Create an instance (either a function or an object) with a delegation to another prototype.
  * general implementation which creates an object delegating to passed param.
  */
-export function createObjectWithDelegation({ prototype = null, targetInstance, instanceType }: { instanceType: 'object' | 'function' } = {}) {
+export function createObjectWithDelegation({ prototype = null, instanceType }: { instanceType: 'object' | 'function' } = {}) {
+  let instance
   switch (instanceType) {
     case 'function':
-      targetInstance ||= createConstructableWithoutContructor()
+      instance = createConstructableWithoutContructor()
       Object.setPrototypeOf(targetInstance, prototype)
       break
     case 'object':
     default:
-      targetInstance ||= Object.create(prototype)
+      instance = Object.create(prototype)
       break
   }
-  return targetInstance
+  return instance
 }
