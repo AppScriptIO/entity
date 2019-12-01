@@ -1017,9 +1017,16 @@
     uuid "^3.3.2"
     write-json-file "*"
 
-"@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
+"@dependency/entity@https://github.com/AppScriptIO/entity#semver:1.0.8":
   version "1.0.8"
   resolved "https://github.com/AppScriptIO/entity#a0286c78200087befa3787fdb926440b0b654cf6"
+  dependencies:
+    "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
+    lodash "^4.17.11"
+
+"@dependency/entity@https://github.com/AppScriptIO/entity#semver:^1.x.x":
+  version "1.0.9"
+  resolved "https://github.com/AppScriptIO/entity#6519ad210093b1b46b7fe5175d2259aa2da6fd20"
   dependencies:
     "@dependency/multiplePrototypeDelegation" "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x"
     lodash "^4.17.11"
@@ -1149,8 +1156,8 @@
     del "^3.0.0"
 
 "@dependency/multiplePrototypeDelegation@https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x":
-  version "1.0.11"
-  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#e8a9da66a8d50c778e814a2ba95802a7913f034e"
+  version "1.0.12"
+  resolved "https://github.com/AppScriptIO/multiplePrototypeDelegation#eb2f6d72f9c9dab6957dc7c8fdf6a3bac6afbb06"
 
 "@dependency/nodejsLiveReload@git+https://github.com/AppScriptIO/nodejsLiveReload.git#semver:^1.x.x":
   version "1.0.3"
@@ -3647,9 +3654,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.317:
-  version "1.3.317"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.317.tgz#cb7aaf677e92eb34059a1fd61e1144671363c11b"
-  integrity sha512-C7sfpr1I1zqDurrfyVFhL450NFLeZrDYy5DeUuJBkEhBZbhyJ7JEZn741J+jcXCBaQ8S6j75XomLDHOLmLOdFQ==
+  version "1.3.319"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.319.tgz#b7d59a93b6959fcf50a526f50ef637d045ebcb19"
+  integrity sha512-t/lYNZPwS9jLJ9SBLGd6ERYtCtsYPAXzsE1VYLshrUWpQCTAswO1pERZV4iOZipW2uVsGQrJtm2iWiYVp1zTZw==
 
 emitter-component@^1.1.1:
   version "1.1.1"
@@ -4141,9 +4148,9 @@ fast-diff@^1.1.2:
   integrity sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==
 
 fast-glob@^3.0.3:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.1.0.tgz#77375a7e3e6f6fc9b18f061cddd28b8d1eec75ae"
-  integrity sha512-TrUz3THiq2Vy3bjfQUB2wNyPdGBeGmdjbzzBLhfHN4YFurYptCKwGq/TfiRavbGywFRzY6U2CdmQ1zmsY5yYaw==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.1.1.tgz#87ee30e9e9f3eb40d6f254a7997655da753d7c82"
+  integrity sha512-nTCREpBY8w8r+boyFYAx21iL6faSsQynliPHM4Uf56SbkyohCNxpVPEH9xrF5TXKy+IsjkPUHDKiUkzBVRXn9g==
   dependencies:
     "@nodelib/fs.stat" "^2.0.2"
     "@nodelib/fs.walk" "^1.2.3"
@@ -8220,9 +8227,9 @@ rimraf@^2.2.8, rimraf@^2.6.1:
     glob "^7.1.3"
 
 rollup@^1.3.0:
-  version "1.27.5"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-1.27.5.tgz#d100fb0ffd8353575cb2057152547b9abfddfe59"
-  integrity sha512-8rfVdzuTg2kt8ObD9LNJpEwUN7B6lsl3sHc5fddtgICpLjpYeSf4m2+RftBzcCaBTMi1iYX3Ez8zFT4Gj2nJjg==
+  version "1.27.6"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-1.27.6.tgz#287f255af0c76c30a60df67900e5dd8379f3147e"
+  integrity sha512-/NA1sjU92K9KZHiPdrHMzykFABcjeDaxS8xh19hYj8FKbtGNEahbXkdYatlk75dZF0oRXwzA9KIjHedcxcnYng==
   dependencies:
     "@types/estree" "*"
     "@types/node" "*"

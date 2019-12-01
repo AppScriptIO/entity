@@ -148,7 +148,7 @@ suite('Entity element', () => {
       |> (prototype =>
         Object.assign(prototype, {
           //  concerete behavior initialization on the target instance.
-          [Entity.$.key.concereteBehavior]({ targetInstance, concereteBehavior /** state instance */ }) {
+          [Entity.$.key.concereteBehavior]({ targetInstance }, { concereteBehavior /** state instance */ }) {
             const { MultipleDelegation } = require('@dependency/multiplePrototypeDelegation')
             MultipleDelegation.addDelegation({ targetObject: targetInstance, delegationList: [concereteBehavior] })
             return targetInstance
@@ -159,11 +159,13 @@ suite('Entity element', () => {
       // add delegation for testing weather the below instance have access to it's parent
       delegationList: [{ [fixture.key1]: fixture.key1 }, { [fixture.key3]: fixture.key3, [fixture.key2]: fixture.key2 }],
     })
+    Object.assign(instanceParent, { label: 'instanceParent' })
 
     let clientInterface = {
       stateInstanceConcreteBehavior: Entity.class::Entity.class[Constructable.$.clientInterface.switch](Entity.$.key.stateInstance)({ constructorImplementation: Entity.$.key.concereteBehavior }),
     }
     let instance = new clientInterface.stateInstanceConcreteBehavior({ concreteBehaviorList: [instanceParent] })
+    Object.assign(instance, { label: 'instance' })
 
     test('Should create an instance with multiple delegation', () => {
       assert(
