@@ -1,20 +1,20 @@
-import * as lodash from 'lodash'
-import { executionControl } from '../../../utility/generatorExecutionControl.js'
-import { $ } from '../Constructable.class.js'
-import { createObjectWithDelegation } from './instantiate.js'
+"use strict";
+
+var _ConstructableClass = require("../Constructable.class.js");
+var _instantiate = require("./instantiate.js");
 
 module.exports = {
-  // Constructable pattern instance - follows the Constructable specification (this module).
-  [$.key.constructableInstance]: function({ callerClass = this }, ...args) {
-    let instance = createObjectWithDelegation()
-    /**
-     * behind the switch function interface, a generator is executed:
-     * 1st call - for initializing generator
-     * 2nd call - talks to the implemnetation through the switch interface
-     */
 
-    callerClass::callerClass[$.initialize.switch]($.key.constructableInstance, { recursiveDelegationChainExecution: true })({ instance }, ...args)
+  [_ConstructableClass.$.key.constructableInstance]: function ({ callerClass = this }, ...args) {
+    let instance = (0, _instantiate.createObjectWithDelegation)();
 
-    return instance
-  },
-}
+
+
+
+
+
+    callerClass[_ConstructableClass.$.initialize.switch].call(callerClass, _ConstructableClass.$.key.constructableInstance, { recursiveDelegationChainExecution: true })({ instance }, ...args);
+
+    return instance;
+  } };
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9Db25zdHJ1Y3RhYmxlL3Byb3BlcnR5L2NvbnN0cnVjdG9yLmpzIl0sIm5hbWVzIjpbIm1vZHVsZSIsImV4cG9ydHMiLCIkIiwia2V5IiwiY29uc3RydWN0YWJsZUluc3RhbmNlIiwiY2FsbGVyQ2xhc3MiLCJhcmdzIiwiaW5zdGFuY2UiLCJpbml0aWFsaXplIiwic3dpdGNoIiwicmVjdXJzaXZlRGVsZWdhdGlvbkNoYWluRXhlY3V0aW9uIl0sIm1hcHBpbmdzIjoiOztBQUVBO0FBQ0E7O0FBRUFBLE1BQU0sQ0FBQ0MsT0FBUCxHQUFpQjs7QUFFZixHQUFDQyxzQkFBRUMsR0FBRixDQUFNQyxxQkFBUCxHQUErQixVQUFTLEVBQUVDLFdBQVcsR0FBRyxJQUFoQixFQUFULEVBQWlDLEdBQUdDLElBQXBDLEVBQTBDO0FBQ3ZFLFFBQUlDLFFBQVEsR0FBRyw4Q0FBZjs7Ozs7OztBQU9hRixJQUFBQSxXQUFXLENBQUNILHNCQUFFTSxVQUFGLENBQWFDLE1BQWQsQ0FBeEIsTUFBQUosV0FBVyxFQUFtQ0gsc0JBQUVDLEdBQUYsQ0FBTUMscUJBQXpDLEVBQWdFLEVBQUVNLGlDQUFpQyxFQUFFLElBQXJDLEVBQWhFLENBQVgsQ0FBd0gsRUFBRUgsUUFBRixFQUF4SCxFQUFzSSxHQUFHRCxJQUF6STs7QUFFQSxXQUFPQyxRQUFQO0FBQ0QsR0FiYyxFQUFqQiIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCAqIGFzIGxvZGFzaCBmcm9tICdsb2Rhc2gnXG5pbXBvcnQgeyBleGVjdXRpb25Db250cm9sIH0gZnJvbSAnLi4vLi4vLi4vdXRpbGl0eS9nZW5lcmF0b3JFeGVjdXRpb25Db250cm9sLmpzJ1xuaW1wb3J0IHsgJCB9IGZyb20gJy4uL0NvbnN0cnVjdGFibGUuY2xhc3MuanMnXG5pbXBvcnQgeyBjcmVhdGVPYmplY3RXaXRoRGVsZWdhdGlvbiB9IGZyb20gJy4vaW5zdGFudGlhdGUuanMnXG5cbm1vZHVsZS5leHBvcnRzID0ge1xuICAvLyBDb25zdHJ1Y3RhYmxlIHBhdHRlcm4gaW5zdGFuY2UgLSBmb2xsb3dzIHRoZSBDb25zdHJ1Y3RhYmxlIHNwZWNpZmljYXRpb24gKHRoaXMgbW9kdWxlKS5cbiAgWyQua2V5LmNvbnN0cnVjdGFibGVJbnN0YW5jZV06IGZ1bmN0aW9uKHsgY2FsbGVyQ2xhc3MgPSB0aGlzIH0sIC4uLmFyZ3MpIHtcbiAgICBsZXQgaW5zdGFuY2UgPSBjcmVhdGVPYmplY3RXaXRoRGVsZWdhdGlvbigpXG4gICAgLyoqXG4gICAgICogYmVoaW5kIHRoZSBzd2l0Y2ggZnVuY3Rpb24gaW50ZXJmYWNlLCBhIGdlbmVyYXRvciBpcyBleGVjdXRlZDpcbiAgICAgKiAxc3QgY2FsbCAtIGZvciBpbml0aWFsaXppbmcgZ2VuZXJhdG9yXG4gICAgICogMm5kIGNhbGwgLSB0YWxrcyB0byB0aGUgaW1wbGVtbmV0YXRpb24gdGhyb3VnaCB0aGUgc3dpdGNoIGludGVyZmFjZVxuICAgICAqL1xuXG4gICAgY2FsbGVyQ2xhc3M6OmNhbGxlckNsYXNzWyQuaW5pdGlhbGl6ZS5zd2l0Y2hdKCQua2V5LmNvbnN0cnVjdGFibGVJbnN0YW5jZSwgeyByZWN1cnNpdmVEZWxlZ2F0aW9uQ2hhaW5FeGVjdXRpb246IHRydWUgfSkoeyBpbnN0YW5jZSB9LCAuLi5hcmdzKVxuXG4gICAgcmV0dXJuIGluc3RhbmNlXG4gIH0sXG59XG4iXX0=

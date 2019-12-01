@@ -1,18 +1,19 @@
-import * as symbol from '../sharedSymbol.js'
-import * as instanceManipulation from './elementFunctionality/instanceManipulation.js'
-import * as constructor from './elementFunctionality/constructor.js'
-import * as clientInterface from './elementFunctionality/clientInterface.js'
+"use strict";var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");Object.defineProperty(exports, "__esModule", { value: true });exports.Constructor = Constructor;exports.$ = void 0;var symbol = _interopRequireWildcard(require("../sharedSymbol.js"));
+var instanceManipulation = _interopRequireWildcard(require("./elementFunctionality/instanceManipulation.js"));
+var constructor = _interopRequireWildcard(require("./elementFunctionality/constructor.js"));
+var clientInterface = _interopRequireWildcard(require("./elementFunctionality/clientInterface.js"));
 
-// Combined reference of functionalities
-export const $ = Object.assign(Object.create(Object.prototype), instanceManipulation.$, constructor.$, clientInterface.$, { metadata: symbol.metadata })
 
-/** Contains the functionality for managing implementations without the implementation methods themselves.
- * @return {Object} merges functionality prototypes, creating a new storage reference for implementations
- */
-export function Constructor({ instance, reference } = {}) {
-  instance ||= Object.create(Object.prototype)
-  ;[instanceManipulation.apply, constructor.apply, clientInterface.apply].forEach(apply => apply(instance))
-  instance[$.metadata] = 'Functionality' // this is both a prototype for methods and an instance for specific properties.
-  reference = Object.assign(reference || Object.create(Object.prototype), $)
-  return { instance, reference }
+const $ = Object.assign(Object.create(Object.prototype), instanceManipulation.$, constructor.$, clientInterface.$, { metadata: symbol.metadata });exports.$ = $;
+
+
+
+
+function Constructor({ instance, reference } = {}) {
+  instance || (instance = Object.create(Object.prototype));
+  [instanceManipulation.apply, constructor.apply, clientInterface.apply].forEach(apply => apply(instance));
+  instance[$.metadata] = 'Functionality';
+  reference = Object.assign(reference || Object.create(Object.prototype), $);
+  return { instance, reference };
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9GdW5jdGlvbmFsaXR5L0Z1bmN0aW9uYWxpdHkuY2xhc3MuanMiXSwibmFtZXMiOlsiJCIsIk9iamVjdCIsImFzc2lnbiIsImNyZWF0ZSIsInByb3RvdHlwZSIsImluc3RhbmNlTWFuaXB1bGF0aW9uIiwiY29uc3RydWN0b3IiLCJjbGllbnRJbnRlcmZhY2UiLCJtZXRhZGF0YSIsInN5bWJvbCIsIkNvbnN0cnVjdG9yIiwiaW5zdGFuY2UiLCJyZWZlcmVuY2UiLCJhcHBseSIsImZvckVhY2giXSwibWFwcGluZ3MiOiJ1TkFBQTtBQUNBO0FBQ0E7QUFDQTs7O0FBR08sTUFBTUEsQ0FBQyxHQUFHQyxNQUFNLENBQUNDLE1BQVAsQ0FBY0QsTUFBTSxDQUFDRSxNQUFQLENBQWNGLE1BQU0sQ0FBQ0csU0FBckIsQ0FBZCxFQUErQ0Msb0JBQW9CLENBQUNMLENBQXBFLEVBQXVFTSxXQUFXLENBQUNOLENBQW5GLEVBQXNGTyxlQUFlLENBQUNQLENBQXRHLEVBQXlHLEVBQUVRLFFBQVEsRUFBRUMsTUFBTSxDQUFDRCxRQUFuQixFQUF6RyxDQUFWLEM7Ozs7O0FBS0EsU0FBU0UsV0FBVCxDQUFxQixFQUFFQyxRQUFGLEVBQVlDLFNBQVosS0FBMEIsRUFBL0MsRUFBbUQ7QUFDeERELEVBQUFBLFFBQVEsS0FBUkEsUUFBUSxHQUFLVixNQUFNLENBQUNFLE1BQVAsQ0FBY0YsTUFBTSxDQUFDRyxTQUFyQixDQUFMLENBQVI7QUFDQyxHQUFDQyxvQkFBb0IsQ0FBQ1EsS0FBdEIsRUFBNkJQLFdBQVcsQ0FBQ08sS0FBekMsRUFBZ0ROLGVBQWUsQ0FBQ00sS0FBaEUsRUFBdUVDLE9BQXZFLENBQStFRCxLQUFLLElBQUlBLEtBQUssQ0FBQ0YsUUFBRCxDQUE3RjtBQUNEQSxFQUFBQSxRQUFRLENBQUNYLENBQUMsQ0FBQ1EsUUFBSCxDQUFSLEdBQXVCLGVBQXZCO0FBQ0FJLEVBQUFBLFNBQVMsR0FBR1gsTUFBTSxDQUFDQyxNQUFQLENBQWNVLFNBQVMsSUFBSVgsTUFBTSxDQUFDRSxNQUFQLENBQWNGLE1BQU0sQ0FBQ0csU0FBckIsQ0FBM0IsRUFBNERKLENBQTVELENBQVo7QUFDQSxTQUFPLEVBQUVXLFFBQUYsRUFBWUMsU0FBWixFQUFQO0FBQ0QiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgKiBhcyBzeW1ib2wgZnJvbSAnLi4vc2hhcmVkU3ltYm9sLmpzJ1xuaW1wb3J0ICogYXMgaW5zdGFuY2VNYW5pcHVsYXRpb24gZnJvbSAnLi9lbGVtZW50RnVuY3Rpb25hbGl0eS9pbnN0YW5jZU1hbmlwdWxhdGlvbi5qcydcbmltcG9ydCAqIGFzIGNvbnN0cnVjdG9yIGZyb20gJy4vZWxlbWVudEZ1bmN0aW9uYWxpdHkvY29uc3RydWN0b3IuanMnXG5pbXBvcnQgKiBhcyBjbGllbnRJbnRlcmZhY2UgZnJvbSAnLi9lbGVtZW50RnVuY3Rpb25hbGl0eS9jbGllbnRJbnRlcmZhY2UuanMnXG5cbi8vIENvbWJpbmVkIHJlZmVyZW5jZSBvZiBmdW5jdGlvbmFsaXRpZXNcbmV4cG9ydCBjb25zdCAkID0gT2JqZWN0LmFzc2lnbihPYmplY3QuY3JlYXRlKE9iamVjdC5wcm90b3R5cGUpLCBpbnN0YW5jZU1hbmlwdWxhdGlvbi4kLCBjb25zdHJ1Y3Rvci4kLCBjbGllbnRJbnRlcmZhY2UuJCwgeyBtZXRhZGF0YTogc3ltYm9sLm1ldGFkYXRhIH0pXG5cbi8qKiBDb250YWlucyB0aGUgZnVuY3Rpb25hbGl0eSBmb3IgbWFuYWdpbmcgaW1wbGVtZW50YXRpb25zIHdpdGhvdXQgdGhlIGltcGxlbWVudGF0aW9uIG1ldGhvZHMgdGhlbXNlbHZlcy5cbiAqIEByZXR1cm4ge09iamVjdH0gbWVyZ2VzIGZ1bmN0aW9uYWxpdHkgcHJvdG90eXBlcywgY3JlYXRpbmcgYSBuZXcgc3RvcmFnZSByZWZlcmVuY2UgZm9yIGltcGxlbWVudGF0aW9uc1xuICovXG5leHBvcnQgZnVuY3Rpb24gQ29uc3RydWN0b3IoeyBpbnN0YW5jZSwgcmVmZXJlbmNlIH0gPSB7fSkge1xuICBpbnN0YW5jZSB8fD0gT2JqZWN0LmNyZWF0ZShPYmplY3QucHJvdG90eXBlKVxuICA7W2luc3RhbmNlTWFuaXB1bGF0aW9uLmFwcGx5LCBjb25zdHJ1Y3Rvci5hcHBseSwgY2xpZW50SW50ZXJmYWNlLmFwcGx5XS5mb3JFYWNoKGFwcGx5ID0+IGFwcGx5KGluc3RhbmNlKSlcbiAgaW5zdGFuY2VbJC5tZXRhZGF0YV0gPSAnRnVuY3Rpb25hbGl0eScgLy8gdGhpcyBpcyBib3RoIGEgcHJvdG90eXBlIGZvciBtZXRob2RzIGFuZCBhbiBpbnN0YW5jZSBmb3Igc3BlY2lmaWMgcHJvcGVydGllcy5cbiAgcmVmZXJlbmNlID0gT2JqZWN0LmFzc2lnbihyZWZlcmVuY2UgfHwgT2JqZWN0LmNyZWF0ZShPYmplY3QucHJvdG90eXBlKSwgJClcbiAgcmV0dXJuIHsgaW5zdGFuY2UsIHJlZmVyZW5jZSB9XG59XG4iXX0=
