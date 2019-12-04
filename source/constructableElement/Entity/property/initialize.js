@@ -9,13 +9,14 @@ module.exports = {
     let { superCallback } = function.sent
     if (superCallback) instance = callerClass::superCallback(...arguments) // call implementation higher in the hierarchy.
 
-    let constructableDelegationSetting = callerClass::callerClass[Constructable.$.prototypeDelegation.getter](Constructable.$.key.constructableInstance),
-      stateDelegationSetting = callerClass::callerClass[Constructable.$.prototypeDelegation.getter]($.key.stateInstance)
+    let stateDelegationSetting = callerClass::callerClass[Constructable.$.prototypeDelegation.getter]($.key.stateInstance)
 
     // set the delegation setting for stateInstance that will be created using the new class instance (contructable)
-    constructableDelegationSetting.instancePrototype::callerClass[Constructable.$.prototypeDelegation.setter]({
+    instance::callerClass[Constructable.$.prototypeDelegation.setter]({
       [$.key.stateInstance]: {
-        instancePrototype: Object.create(stateDelegationSetting.instancePrototype),
+        instancePrototype: Object.assign(Object.create(stateDelegationSetting.instancePrototype), {
+          constructor: instance, // constructor for subsequent state instances created using the newly created constructable instance - preserve native JS constructor property functionality
+        }),
       },
     })
 

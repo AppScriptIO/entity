@@ -34,7 +34,7 @@ functionality::functionality[$.clientInterface.setter](require('./property/clien
   Running `constructableInstance` constructor will create an instance using the `constructableInstance` delegationPrototype settings set on the caller (functionality).
   And will also set a new delegationPrototype setting for the created instance. i.e. the new delegation setting will point to objects delegating to the previous one.
 */
-const Class = functionality::functionality[$.constructor.switch]($.key.constructableInstance)({ label: 'Constructable' })
+const Class = functionality::functionality[$.constructor.switch]($.key.constructableInstance)({}, { label: 'Constructable' })
 
 const clientInterface = Class::Class[$.clientInterface.switch]($.key.constructableInstance)({ constructorImplementation: $.key.constructableInstance })
 

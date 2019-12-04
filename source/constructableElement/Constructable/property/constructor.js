@@ -5,7 +5,7 @@ import { createObjectWithDelegation } from './instantiate.js'
 
 module.exports = {
   // Constructable pattern instance - follows the Constructable specification (this module).
-  [$.key.constructableInstance]: function({ callerClass = this }, ...args) {
+  [$.key.constructableInstance]: function({ callerClass = this } = {}, ...args) {
     let instance = createObjectWithDelegation()
     /**
      * behind the switch function interface, a generator is executed:

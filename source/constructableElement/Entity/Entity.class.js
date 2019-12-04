@@ -25,11 +25,12 @@ Class::Class[$.prototypeDelegation.getter](Constructable.$.key.constructableInst
     prototype::Class[Constructable.$.prototypeDelegation.setter]({
       [$.key.stateInstance]: {
         instancePrototype: {
+          constructor: Class,
           // type Object, usually contains `prototype` protperty
           [$.metadata]: { type: 'Prototype of Entity pattern - on toplevel Entity constructable.' },
-          [$.getInstanceOf](Class /*The class that constructed the concerete instance*/, callerInstance = this) {
+          [$.getInstanceOf](Class /*The class that constructed the concerete instance*/) {
             // lookup in this for constructor class in prototype chain
-            return conditionDelegatedLookup({ target: callerInstance, conditionCheck: prototypeTarget => prototypeTarget.constructor === Class })
+            return conditionDelegatedLookup({ target: this /**instance*/, conditionCheck: prototypeTarget => prototypeTarget.constructor === Class })
           },
         },
       },

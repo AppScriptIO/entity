@@ -40,9 +40,10 @@ module.exports = {
     The name `concreteBehavior` comes from the pattern used for multiple behaviors/delegation on objects.
     concreteBehavior = state instance that has `Entity.$.key.concereteBehavior` in it's chain, to be executed during the initialization phase of another instance that uses it.
   */
-  [$.key.concereteBehavior]({ callerClass = this } = {}, { concreteBehaviorList = [] }) {
+  [$.key.concereteBehavior]({ callerClass = this } = {}, { delegationList, concreteBehaviorList = [] }) {
     // merge data into instance properties with multiple delegation.
-    let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList: concreteBehaviorList })
+    let instance = callerClass::createStateInstanceWithMultipleDelegation({ delegationList })
+
     // related to class implementation (different than the state instance attached implmenetation below)
     callerClass::callerClass[Constructable.$.initialize.switch]($.key.concereteBehavior, { recursiveDelegationChainExecution: true })({ targetInstance: instance }, { concreteBehaviorList }) // allow classes to hook over the initializaiion process.
 
@@ -54,7 +55,9 @@ module.exports = {
             return targetInstance
           }
        */
-    for (let concereteBehavior of concreteBehaviorList) if (concereteBehavior[$.key.concereteBehavior]) concereteBehavior[$.key.concereteBehavior]({ targetInstance: instance }, { concereteBehavior })
+    for (let concereteBehavior of concreteBehaviorList) {
+      if (concereteBehavior[$.key.concereteBehavior]) concereteBehavior[$.key.concereteBehavior]({ targetInstance: instance }, { concereteBehavior })
+    }
 
     return instance
   },

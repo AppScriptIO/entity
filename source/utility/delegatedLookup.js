@@ -34,16 +34,14 @@ export const nestedPropertyDelegatedLookup = ({
 export const conditionDelegatedLookup = ({
   target /*Target object with delegation chain to lookup in.*/,
   recursive = false,
-  conditionCheck = false || (prototypeTarget => prototypeTarget.constructor == Object) /*The condition that should be met on the prototype object*/,
+  conditionCheck = prototypeTarget => prototypeTarget.constructor == Object /*The condition that should be met on the prototype object*/,
 }) => {
   assert(conditionCheck, '• conditionCheck callback should be passed parameter.')
   return delegatedLookup({
     target,
     recursive,
     // multiple nested properties lookup
-    retrieveValueFromPrototype: targetObject => {
-      return conditionCheck(targetObject) ? targetObject : undefined
-    },
+    retrieveValueFromPrototype: targetObject => (conditionCheck(targetObject) ? targetObject : undefined),
   })
 }
 
