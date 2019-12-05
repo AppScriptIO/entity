@@ -116,6 +116,7 @@ suite('Entity element', () => {
     )
     assert(new Entity.clientInterface.constructableInstance(), '• Entity class must return an instance object when new constructor is envoked.')
   })
+
   test('Should create state instances successfully', () => {
     assert(
       Entity.clientInterface
