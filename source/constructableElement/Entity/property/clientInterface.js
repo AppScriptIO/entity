@@ -26,6 +26,7 @@ function stateInstance({ constructorImplementation } = {}, { callerClass = this 
     },
     /**
      * @return { constructable instance: of type Entity class } configured Entity metaclass
+     * Used as a currying mechanism for paramters.
      */
     apply(target, thisArg, [{ label, parameter = [] } = {}]) {
       // create instance of a Entity that is prepopulated with parameters, calling the functions will use these params. This allows usage of params multiple times without repeating them in each requrest.
