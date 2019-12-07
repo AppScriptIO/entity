@@ -55,27 +55,34 @@ export const delegatedLookup = ({
 } = {}) => {
   let valueAggregatorArray = [],
     breakOnFirstMatch = !recursive,
-    prototypeQueue = [target] // assign intial target
-  while (
-    prototypeQueue.length != 0 &&
-    !(breakOnFirstMatch && valueAggregatorArray.length > 0) // break While Loop in case only a single match is required.
-  ) {
-    let targetAggregator = []
-    for (let currentTarget of prototypeQueue) {
-      let retrievedValue = retrieveValueFromPrototype(currentTarget, property) // callback should decide whether to add value to the array if found.
-      if (retrievedValue != undefined) valueAggregatorArray.push(retrievedValue)
+    prototypeQueue = [target],
+    visitedObject = new Set() // track visited objects, and prevent lookup on same object reference. This also adds support for circular delegation
 
-      if (breakOnFirstMatch && valueAggregatorArray.length > 0) break // break for loop in case only a single match is required.
+  let index = 0
+  do {
+    let currentTarget = prototypeQueue[index]
+    if (visitedObject.has(currentTarget)) {
+      index++
+      continue
+    } else visitedObject.add(currentTarget)
 
-      let targetPrototpye = Object.getPrototypeOf(currentTarget)
-      // check for multiple delegation return array.
-      if (Array.isArray(targetPrototpye) && currentTarget instanceof MultipleDelegation) {
-        targetAggregator = [...targetAggregator, ...targetPrototpye]
-      } else if (targetPrototpye /* not null or undefined */) {
-        targetAggregator.push(targetPrototpye)
-      }
+    let retrievedValue = retrieveValueFromPrototype(currentTarget, property) // callback should decide whether to add value to the array if found.
+    if (retrievedValue != undefined) valueAggregatorArray.push(retrievedValue)
+
+    if (breakOnFirstMatch && valueAggregatorArray.length > 0) break // break for loop in case only a single match is required.
+
+    let targetPrototpye = Object.getPrototypeOf(currentTarget)
+    // check for multiple delegation return array.
+    if (Array.isArray(targetPrototpye) && currentTarget instanceof MultipleDelegation) {
+      prototypeQueue = prototypeQueue.concat(targetPrototpye)
+    } else if (targetPrototpye /* not null or undefined */) {
+      prototypeQueue.push(targetPrototpye)
     }
-    prototypeQueue = targetAggregator
-  }
+    index++
+  } while (
+    prototypeQueue.length > index &&
+    !(breakOnFirstMatch && valueAggregatorArray.length > 0) // break While Loop in case only a single match is required.
+  )
+
   return recursive ? valueAggregatorArray : valueAggregatorArray[0]
 }
