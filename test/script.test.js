@@ -175,4 +175,31 @@ suite('Entity element', () => {
       )
     })
   })
+
+  suite('Configuted class approache - used as currying mechanism for merging parameters in different points in program', () => {
+    const { class: Class, reference: $ } = new Entity.clientInterface.constructableInstance({ label: 'Class' })
+
+    Class::Class[$.prototypeDelegation.getter](Constructable.$.key.constructableInstance).instancePrototype
+      |> (prototype => {
+        Class::prototype[Entity.$.initialize.setter]({
+          [Entity.$.key.handleDataInstance]({ targetInstance }, { data }) {
+            Object.assign(targetInstance, data)
+            return targetInstance
+          },
+        })
+      })
+
+    let clientInterface = {
+      stateInstanceHandleData: Class::Class[Constructable.$.clientInterface.switch](Entity.$.key.stateInstance)({ constructorImplementation: Entity.$.key.handleDataInstance }),
+    }
+    // saves parameters from different `apply` calls, and when creating an instance it will merge all parameters together
+    let configuredConstructable1 = clientInterface.stateInstanceHandleData({ parameter: [{ data: { value1: 'value1' } }] })
+    let configuredConstructable2 = configuredConstructable1.clientInterface({ parameter: [{ data: { value2: 'value2' } }] })
+    let configuredConstructable3 = configuredConstructable2.clientInterface({ parameter: [{ data: { value3: 'value3' } }] })
+
+    let instance = new configuredConstructable3.clientInterface({ data: { label: 'instance' } })
+    test('Should create instance using all curried parameters from configured constructables', () => {
+      assert(instance['label'] == 'instance' && instance['value1'] == 'value1' && instance['value2'] == 'value2' && instance['value3'] == 'value3', '• Missing properties from instance.')
+    })
+  })
 })

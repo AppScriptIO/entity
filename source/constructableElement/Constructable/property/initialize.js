@@ -1,4 +1,4 @@
-import { mergeNonexistentProperties, mergeArrayWithObjectItem } from '../../../utility/mergeProperty.js'
+import { mergeNonexistentProperties } from '../../../utility/mergeProperty.js'
 import { $ } from '../Constructable.class.js'
 
 module.exports = {

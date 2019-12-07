@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { mergeNonexistentProperties, mergeArrayWithObjectItem } from '../../../utility/mergeProperty.js'
+import { mergeNonexistentProperties, deepMergeParameter } from '../../../utility/mergeProperty.js'
 import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.js'
 import { $, Class as Constructable } from '../Constructable.class.js'
 import { createObjectWithDelegation } from './instantiate.js'
@@ -15,7 +15,8 @@ function constructableInstance({ constructorImplementation } = {}, { callerClass
     construct(target, argumentList, proxiedTarget) {
       // memoization - recursive lookup for parameter key and merge to the arguments list:
       let parameterList = nestedPropertyDelegatedLookup({ target: callerClass, recursive: true, propertyPath: $.parameter })
-      for (let parameter of parameterList) mergeArrayWithObjectItem({ listDefault: parameter, listTarget: argumentList }) // in case configured constructable which holds default parameter values.
+      // in case configured constructable which holds default parameter values.
+      if (parameterList.length > 0) argumentList = deepMergeParameter(argumentList, ...parameterList) // first parameter list, 2nd list, current argument list => new merged argument list
 
       let instance = callerClass::callerClass[$.constructor.switch](constructorImplementation)({}, ...argumentList)
 
