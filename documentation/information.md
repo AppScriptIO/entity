@@ -32,8 +32,11 @@ Constructable alternative to JS `class` or `function` with feature rich capabili
         - Symbols usage to implement a hidden api on the `entity`/object. Meta-level keys are used to prevent clashes and separate  normal keys from the meta-level ones implemented.
         - inheritance specially used to share `entitiy` pattern methods.
 - 2 types of instances: 
-    - Data instance: regular objects that are meant to be used in the program as storage of state.
+    - Data/State instance: regular objects that are meant to be used in the program as storage of state.
     - Contructable instance: objects that themselves are used to create other objects (metaclasses).
+- Restrictions when dealing with instance concept: Restrictions allow for making assumptios during defining of algorithms (e.g. delegation lookup), which simplifies development.
+    - After creating an instance, the prototypes should not be manipulated, as then a different concept of an instance should be defined. e.g. an object that changes it's delegation chain frequently, wouldn't be defined as an instance of a specific constructable, different terms could be used for it,  but not instance. Example for a different concept - State object that would change it's behavior during the application runtime, or change the groups it is related to and inhirits data from.
+    
 
 Reference = programmatic api reference keys.
 
