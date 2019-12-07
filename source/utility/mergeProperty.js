@@ -1,4 +1,5 @@
 import assert from 'assert'
+import merge from 'deepmerge'
 const hasOwnProperty = Object.prototype.hasOwnProperty // allows supporting objects delefating null.
 
 // supports multiple nested properties (property path array)
@@ -28,11 +29,45 @@ export const mergeNonexistentProperties = (targetObject, defaultValue: Object) =
   })
 }
 
-// merge arguments array that may have object items
-export const mergeArrayWithObjectItem = ({ listTarget, listDefault }) => {
+// plugin to `deepmerge` package for array merging
+const concatinateArrayMerge = (defaultList, overridingList, options) => {
+  const destination = defaultList.slice() // create a shallow copy if manipulation of target is not required
+  destination.concat(overridingList)
+  return destination
+}
+// plugin to `deepmerge` package for array merging
+const combineArrayMerge = (defaultList, overridingList, options) => {
+  const destination = defaultList.slice() // create a shallow copy if manipulation of target is not required
+  overridingList.forEach((item, index) => {
+    if (typeof destination[index] === 'undefined') {
+      destination[index] = options.cloneUnlessOtherwiseSpecified(item, options)
+    } else if (options.isMergeableObject(item)) {
+      destination[index] = merge(defaultList[index], item, { arrayMerge: concatinateArrayMerge })
+    } else if (defaultList.indexOf(item) === -1) {
+      destination.push(item)
+    }
+  })
+  return destination
+}
+/** Merge arguments array with merging the items recursively:
+ * The arguments array will combined/merged by index.
+ * Items of the arguments array will be merged recursively:
+      - Objects will be merged (similar to Object.assign). 
+      - Arrays will be concatenated (added to each other, not combined by index).
+
+  See examples From https://www.npmjs.com/package/deepmerge
+ */
+const deepMergeArgumentArray = ({ overridingArray, defaultArray /** arguments used as default */ }) => {
   // merge arguments with default parameters
-  for (let index in listDefault /** listDefault not listTarget because if the target is empty the default should always apply */) {
-    if (typeof listTarget[index] == 'object' && typeof listDefault[index] == 'object') listTarget[index] = Object.assign(listDefault[index], listTarget[index])
-    listTarget[index] ||= listDefault[index]
-  }
+  return merge(defaultArray /** default objects must not be manipulated */, overridingArray, { arrayMerge: combineArrayMerge }) // => [{ a: true, b: true }, 'ah yup']
+}
+
+/**
+ * Merge argument lists
+ * @param targetArgArray the list to be manipulated
+ * @param defaultArgumentListArray array of argumnet lists
+ */
+export function deepMergeParameter(targetArgArray, ...defaultArgumentListArray) {
+  for (let defaultArray of defaultArgumentListArray) targetArgArray = deepMergeArgumentArray({ overridingArray: targetArgArray, defaultArray })
+  return targetArgArray
 }
