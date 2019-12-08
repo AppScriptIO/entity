@@ -1,5 +1,6 @@
 import assert from 'assert'
-import merge from 'deepmerge'
+import merge from 'deepmerge' // used for merging first level argument array by index.
+import { merge as merge2, concatArrays } from 'merge-anything' // used to merge nested objects, and it preserves special instance prototypes (i.e. non Object prototypes) during merging.
 const hasOwnProperty = Object.prototype.hasOwnProperty // allows supporting objects delefating null.
 
 // supports multiple nested properties (property path array)
@@ -42,7 +43,15 @@ const combineArrayMerge = (defaultList, overridingList, options) => {
     if (typeof destination[index] === 'undefined') {
       destination[index] = options.cloneUnlessOtherwiseSpecified(item, options)
     } else if (options.isMergeableObject(item)) {
-      destination[index] = merge(defaultList[index], item, { arrayMerge: concatinateArrayMerge })
+      // Note: Using `deepmerge` module for nested objects merging will not preserve the prototypes of special objects (instances of classes).
+      // destination[index] = merge(defaultList[index], item, { arrayMerge: concatinateArrayMerge })
+
+      // using `merge-anything` module will preserve special instance prototypes, and merge only regular objects.
+      destination[index] = merge2(
+        { extensions: [concatArrays] }, // pass your extensions like so
+        defaultList[index],
+        item,
+      )
     } else if (defaultList.indexOf(item) === -1) {
       destination.push(item)
     }
