@@ -27,16 +27,23 @@ suite('Deep merge arguments lists', () => {
     })
   }
   {
+    class Class {
+      constructor(object) {
+        Object.assign(this, object)
+      }
+    }
     const prototype = { label: 'prototype' }
-    let argumentWithPrototype = Object.assign(Object.create(prototype), { v2: 'v2' })
+    let argumentWithPrototype1 = Object.assign(Object.create(prototype), { v2: 'v2' })
+    let argumentWithPrototype2 = new Class({ v3: 'v3' })
     const argumentList1 = [
         {
-          other: argumentWithPrototype,
+          other1: argumentWithPrototype1,
+          other2: { nested: argumentWithPrototype2 },
         },
       ],
       argumentList2 = [
         {
-          data: { v1: 'x' },
+          data: { v2: 'v2' },
         },
       ]
     let merged = deepMergeParameter(
@@ -47,11 +54,11 @@ suite('Deep merge arguments lists', () => {
       argumentList2,
     )
 
-    // console.log(merged[0].other |> Object.getPrototypeOf)
-    // console.log(argumentWithPrototype |> Object.getPrototypeOf)
-
+    // console.log(merged[0].other1 |> Object.getPrototypeOf)
+    // console.log(argumentWithPrototype1 |> Object.getPrototypeOf)
     test('Should preserve prototype delegation', () => {
-      assert((merged[0].other |> Object.getPrototypeOf) === (argumentWithPrototype |> Object.getPrototypeOf), `• Prototype doesn't match.`)
+      assert((merged[0].other1 |> Object.getPrototypeOf) === (argumentWithPrototype1 |> Object.getPrototypeOf), `• Prototype doesn't match for object created with Object.create.`)
+      assert((merged[0].other2.nested |> Object.getPrototypeOf) === (argumentWithPrototype2 |> Object.getPrototypeOf), `• Prototype doesn't match for class instance.`)
     })
   }
 })
