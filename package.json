@@ -1,6 +1,6 @@
 {
 	"name": "@dependency/entity",
-	"version": "1.1.1",
+	"version": "2.0.0",
 	"main": "./entrypoint/programmaticAPI",
 	"scripts": {
 		"test": "yarn run scriptManager @dependency/deploymentScript \".test.default({ testPath: ['./test'] })\"",
@@ -18,7 +18,7 @@
 	"devDependencies": {
 		"@dependency/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^2.x.x",
 		"@dependency/javascriptStaticAnalysis": "https://github.com/AppScriptIO/javascriptStaticAnalysis#semver:^1.x.x",
-		"@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^1.x.x",
+		"@dependency/javascriptTranspilation": "https://github.com/AppScriptIO/javascriptTranspilation#semver:^2.x.x",
 		"@dependency/scriptManager": "https://github.com/AppScriptIO/scriptManager#semver:^1.x.x",
 		"typescript": "^3.3.3333"
 	}
