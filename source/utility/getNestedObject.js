@@ -1,5 +1,6 @@
-// get nested property using array path.
-export const getNestedObject = (nestedObject, pathArray) => {
-  if (!Array.isArray(pathArray)) pathArray = [pathArray]
-  return pathArray.reduce((object, key) => (object && object[key] !== 'undefined' ? object[key] : undefined), nestedObject)
-}
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.getNestedObject = void 0;
+const getNestedObject = (nestedObject, pathArray) => {
+  if (!Array.isArray(pathArray)) pathArray = [pathArray];
+  return pathArray.reduce((object, key) => object && object[key] !== 'undefined' ? object[key] : undefined, nestedObject);
+};exports.getNestedObject = getNestedObject;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS91dGlsaXR5L2dldE5lc3RlZE9iamVjdC5qcyJdLCJuYW1lcyI6WyJnZXROZXN0ZWRPYmplY3QiLCJuZXN0ZWRPYmplY3QiLCJwYXRoQXJyYXkiLCJBcnJheSIsImlzQXJyYXkiLCJyZWR1Y2UiLCJvYmplY3QiLCJrZXkiLCJ1bmRlZmluZWQiXSwibWFwcGluZ3MiOiI7QUFDTyxNQUFNQSxlQUFlLEdBQUcsQ0FBQ0MsWUFBRCxFQUFlQyxTQUFmLEtBQTZCO0FBQzFELE1BQUksQ0FBQ0MsS0FBSyxDQUFDQyxPQUFOLENBQWNGLFNBQWQsQ0FBTCxFQUErQkEsU0FBUyxHQUFHLENBQUNBLFNBQUQsQ0FBWjtBQUMvQixTQUFPQSxTQUFTLENBQUNHLE1BQVYsQ0FBaUIsQ0FBQ0MsTUFBRCxFQUFTQyxHQUFULEtBQWtCRCxNQUFNLElBQUlBLE1BQU0sQ0FBQ0MsR0FBRCxDQUFOLEtBQWdCLFdBQTFCLEdBQXdDRCxNQUFNLENBQUNDLEdBQUQsQ0FBOUMsR0FBc0RDLFNBQXpGLEVBQXFHUCxZQUFyRyxDQUFQO0FBQ0QsQ0FITSxDIiwic291cmNlc0NvbnRlbnQiOlsiLy8gZ2V0IG5lc3RlZCBwcm9wZXJ0eSB1c2luZyBhcnJheSBwYXRoLlxuZXhwb3J0IGNvbnN0IGdldE5lc3RlZE9iamVjdCA9IChuZXN0ZWRPYmplY3QsIHBhdGhBcnJheSkgPT4ge1xuICBpZiAoIUFycmF5LmlzQXJyYXkocGF0aEFycmF5KSkgcGF0aEFycmF5ID0gW3BhdGhBcnJheV1cbiAgcmV0dXJuIHBhdGhBcnJheS5yZWR1Y2UoKG9iamVjdCwga2V5KSA9PiAob2JqZWN0ICYmIG9iamVjdFtrZXldICE9PSAndW5kZWZpbmVkJyA/IG9iamVjdFtrZXldIDogdW5kZWZpbmVkKSwgbmVzdGVkT2JqZWN0KVxufVxuIl19
