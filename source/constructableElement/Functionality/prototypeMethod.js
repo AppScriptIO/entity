@@ -1,7 +1,6 @@
 import assert from 'assert'
-import { isGeneratorFunction } from '../../utility/isGeneratorFunction.js'
+import { mergeOwnNestedProperty, isGeneratorFunction } from '@dependency/handleJSNativeDataStructure'
 import { nestedPropertyDelegatedLookup } from '../../utility/delegatedLookup.js'
-import { mergeOwnNestedProperty } from '../../utility/mergeProperty.js'
 import { getNestedObject } from '../../utility/getNestedObject.js'
 
 export const nestedPropertyDelegatedLookupCurried = ({ baseProperty }) => {

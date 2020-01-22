@@ -1,4 +1,4 @@
-import { deepFreeze } from '../../../utility/deepObjectFreeze.js'
+import { deepFreeze } from '@dependency/handleJSNativeDataStructure'
 import { applyFunctionalityContainerFunction, createSwitch, nestedPropertyDelegatedLookupCurried, mergeOwnNestedPropertyCurried } from '../prototypeMethod.js'
 import * as symbol from '../../sharedSymbol.js'
 

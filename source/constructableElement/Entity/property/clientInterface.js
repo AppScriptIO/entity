@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { deepMergeParameter } from '../../../utility/mergeProperty.js'
+import { deepMergeParameter } from '@dependency/handleJSNativeDataStructure'
 import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.js'
 import * as Constructable from '../../Constructable/Constructable.class.js'
 import { createObjectWithDelegation } from '../../Constructable/property/instantiate.js'

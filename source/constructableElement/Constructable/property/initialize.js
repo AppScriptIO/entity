@@ -1,4 +1,4 @@
-import { mergeNonexistentProperties } from '../../../utility/mergeProperty.js'
+import { mergeNonexistentProperties } from '@dependency/handleJSNativeDataStructure'
 import { $ } from '../Constructable.class.js'
 
 module.exports = {

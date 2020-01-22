@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { assert as chaiAssertion } from 'chai'
-import { deepMergeParameter } from '../source/utility/mergeProperty.js'
+import { deepMergeParameter } from '@dependency/handleJSNativeDataStructure'
 
 suite('Deep merge arguments lists', () => {
   {
