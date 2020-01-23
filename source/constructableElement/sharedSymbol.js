@@ -1,2 +1,3 @@
-// shared symbols
-export const metadata = Symbol('metadata') // debug symbol
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.metadata = void 0;
+const metadata = Symbol('metadata');exports.metadata = metadata;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9zaGFyZWRTeW1ib2wuanMiXSwibmFtZXMiOlsibWV0YWRhdGEiLCJTeW1ib2wiXSwibWFwcGluZ3MiOiI7QUFDTyxNQUFNQSxRQUFRLEdBQUdDLE1BQU0sQ0FBQyxVQUFELENBQXZCLEMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBzaGFyZWQgc3ltYm9sc1xuZXhwb3J0IGNvbnN0IG1ldGFkYXRhID0gU3ltYm9sKCdtZXRhZGF0YScpIC8vIGRlYnVnIHN5bWJvbFxuIl19
