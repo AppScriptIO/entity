@@ -11,9 +11,7 @@
 	"dependencies": {
 		"@dependency/multiplePrototypeDelegation": "https://github.com/AppScriptIO/multiplePrototypeDelegation#semver:^1.x.x",
 		"@dependency/handleJSNativeDataStructure": "https://github.com/AppScriptIO/handleJSNativeDataStructure#semver:^2.x.x",
-		"deepmerge": "^4.2.2",
-		"lodash": "^4.17.11",
-		"merge-anything": "^2.4.4"
+		"lodash": "^4.17.11"
 	},
 	"devDependencies": {
 		"@deployment/deploymentScript": "https://github.com/AppScriptIO/deploymentScript#semver:^2.x.x",
