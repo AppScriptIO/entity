@@ -1,7 +1,7 @@
 import { $ } from '../Entity.class.js'
 import * as Constructable from '../../Constructable/Constructable.class.js'
 import { createObjectWithDelegation } from '../../Constructable/property/instantiate.js'
-import { MultipleDelegation } from '@dependency/multiplePrototypeDelegation'
+import { MultipleDelegation } from '@dependency/handlePrototypeDelegation'
 
 function createStateInstanceWithMultipleDelegation({ delegationList = [] } = {}) {
   const callerClass = this

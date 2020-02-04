@@ -150,7 +150,7 @@ suite('Entity element', () => {
         Object.assign(prototype, {
           //  concerete behavior initialization on the target instance.
           [Entity.$.key.concereteBehavior]({ targetInstance }, { concereteBehavior /** state instance */ }) {
-            const { MultipleDelegation } = require('@dependency/multiplePrototypeDelegation')
+            const { MultipleDelegation } = require('@dependency/handlePrototypeDelegation')
             MultipleDelegation.addDelegation({ targetObject: targetInstance, delegationList: [concereteBehavior] })
             return targetInstance
           },

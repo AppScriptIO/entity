@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { MultipleDelegation } from '@dependency/multiplePrototypeDelegation'
+import { MultipleDelegation } from '@dependency/handlePrototypeDelegation'
 import { metadata } from '../constructableElement/Functionality/sharedSymbol.js'
 const hasOwnProperty = Object.prototype.hasOwnProperty // allows supporting objects delefating null.
 
