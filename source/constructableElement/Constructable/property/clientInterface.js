@@ -1,44 +1,44 @@
-import assert from 'assert'
-import { mergeNonexistentProperties, deepMergeParameter } from '@dependency/handleJSNativeDataStructure'
-import { nestedPropertyDelegatedLookup } from '../../../utility/delegatedLookup.js'
-import { $, Class as Constructable } from '../Constructable.class.js'
-import { createObjectWithDelegation } from './instantiate.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");var _assert = _interopRequireDefault(require("assert"));
+var _handleJSNativeDataStructure = require("@dependency/handleJSNativeDataStructure");
+var _delegatedLookup = require("../../../utility/delegatedLookup.js");
+var _ConstructableClass = require("../Constructable.class.js");
+var _instantiate = require("./instantiate.js");
 
 function constructableInstance({ constructorImplementation } = {}, { callerClass = this } = {}) {
-  const _arguments = arguments
-  assert(constructorImplementation, `• "constructorImplementation" parameter must be passed`)
+  const _arguments = arguments;
+  (0, _assert.default)(constructorImplementation, `• "constructorImplementation" parameter must be passed`);
 
-  return new Proxy(function() {}, {
-    /**
-     * @return { constructable: of new type class } subclass (new type class) from metaclass (Constructable class)
-     */
+  return new Proxy(function () {}, {
+
+
+
     construct(target, argumentList, proxiedTarget) {
-      // memoization - recursive lookup for parameter key and merge to the arguments list:
-      let parameterList = nestedPropertyDelegatedLookup({ target: callerClass, recursive: true, propertyPath: $.parameter })
-      // in case configured constructable which holds default parameter values.
-      if (parameterList.length > 0) argumentList = deepMergeParameter(argumentList, ...parameterList) // first parameter list, 2nd list, current argument list => new merged argument list
 
-      let instance = callerClass::callerClass[$.constructor.switch](constructorImplementation)({}, ...argumentList)
+      let parameterList = (0, _delegatedLookup.nestedPropertyDelegatedLookup)({ target: callerClass, recursive: true, propertyPath: _ConstructableClass.$.parameter });
 
-      return { class: instance, reference: instance[$.reference] }
+      if (parameterList.length > 0) argumentList = (0, _handleJSNativeDataStructure.deepMergeParameter)(argumentList, ...parameterList);
+
+      let instance = callerClass[_ConstructableClass.$.constructor.switch].call(callerClass, constructorImplementation)({}, ...argumentList);
+
+      return { class: instance, reference: instance[_ConstructableClass.$.reference] };
     },
-    /**
-     * @return { constructable: of type Constructable class } configured Constructable metaclass
-     */
+
+
+
     apply(target, thisArg, [{ label, parameter = [] } = {}]) {
-      // create instance of a Constructable that is prepopulated with parameters, calling the functions will use these params. This allows usage of params multiple times without repeating them in each requrest.
-      let instance = createObjectWithDelegation({ prototype: callerClass }) // initialize a prototype that is a class.
-      instance[$.label] = `${label || ''} (configured class/constructable) of ${callerClass[$.label]}`
-      instance.constructor = callerClass // to preserve functionality of native JS functions integration.
 
-      instance[$.parameter] = parameter
-      instance.clientInterface = instance::constructableInstance(..._arguments)
+      let instance = (0, _instantiate.createObjectWithDelegation)({ prototype: callerClass });
+      instance[_ConstructableClass.$.label] = `${label || ''} (configured class/constructable) of ${callerClass[_ConstructableClass.$.label]}`;
+      instance.constructor = callerClass;
 
-      return { class: instance, clientInterface: instance.clientInterface }
-    },
-  })
+      instance[_ConstructableClass.$.parameter] = parameter;
+      instance.clientInterface = constructableInstance.call(instance, ..._arguments);
+
+      return { class: instance, clientInterface: instance.clientInterface };
+    } });
+
 }
 
 module.exports = {
-  [$.key.constructableInstance]: constructableInstance,
-}
+  [_ConstructableClass.$.key.constructableInstance]: constructableInstance };
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9Db25zdHJ1Y3RhYmxlL3Byb3BlcnR5L2NsaWVudEludGVyZmFjZS5qcyJdLCJuYW1lcyI6WyJjb25zdHJ1Y3RhYmxlSW5zdGFuY2UiLCJjb25zdHJ1Y3RvckltcGxlbWVudGF0aW9uIiwiY2FsbGVyQ2xhc3MiLCJfYXJndW1lbnRzIiwiYXJndW1lbnRzIiwiUHJveHkiLCJjb25zdHJ1Y3QiLCJ0YXJnZXQiLCJhcmd1bWVudExpc3QiLCJwcm94aWVkVGFyZ2V0IiwicGFyYW1ldGVyTGlzdCIsInJlY3Vyc2l2ZSIsInByb3BlcnR5UGF0aCIsIiQiLCJwYXJhbWV0ZXIiLCJsZW5ndGgiLCJpbnN0YW5jZSIsImNvbnN0cnVjdG9yIiwic3dpdGNoIiwiY2xhc3MiLCJyZWZlcmVuY2UiLCJhcHBseSIsInRoaXNBcmciLCJsYWJlbCIsInByb3RvdHlwZSIsImNsaWVudEludGVyZmFjZSIsIm1vZHVsZSIsImV4cG9ydHMiLCJrZXkiXSwibWFwcGluZ3MiOiJrR0FBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQUVBLFNBQVNBLHFCQUFULENBQStCLEVBQUVDLHlCQUFGLEtBQWdDLEVBQS9ELEVBQW1FLEVBQUVDLFdBQVcsR0FBRyxJQUFoQixLQUF5QixFQUE1RixFQUFnRztBQUM5RixRQUFNQyxVQUFVLEdBQUdDLFNBQW5CO0FBQ0EsdUJBQU9ILHlCQUFQLEVBQW1DLHdEQUFuQzs7QUFFQSxTQUFPLElBQUlJLEtBQUosQ0FBVSxZQUFXLENBQUUsQ0FBdkIsRUFBeUI7Ozs7QUFJOUJDLElBQUFBLFNBQVMsQ0FBQ0MsTUFBRCxFQUFTQyxZQUFULEVBQXVCQyxhQUF2QixFQUFzQzs7QUFFN0MsVUFBSUMsYUFBYSxHQUFHLG9EQUE4QixFQUFFSCxNQUFNLEVBQUVMLFdBQVYsRUFBdUJTLFNBQVMsRUFBRSxJQUFsQyxFQUF3Q0MsWUFBWSxFQUFFQyxzQkFBRUMsU0FBeEQsRUFBOUIsQ0FBcEI7O0FBRUEsVUFBSUosYUFBYSxDQUFDSyxNQUFkLEdBQXVCLENBQTNCLEVBQThCUCxZQUFZLEdBQUcscURBQW1CQSxZQUFuQixFQUFpQyxHQUFHRSxhQUFwQyxDQUFmOztBQUU5QixVQUFJTSxRQUFRLEdBQWdCZCxXQUFXLENBQUNXLHNCQUFFSSxXQUFGLENBQWNDLE1BQWYsQ0FBeEIsTUFBQWhCLFdBQVcsRUFBb0NELHlCQUFwQyxDQUFYLENBQTBFLEVBQTFFLEVBQThFLEdBQUdPLFlBQWpGLENBQWY7O0FBRUEsYUFBTyxFQUFFVyxLQUFLLEVBQUVILFFBQVQsRUFBbUJJLFNBQVMsRUFBRUosUUFBUSxDQUFDSCxzQkFBRU8sU0FBSCxDQUF0QyxFQUFQO0FBQ0QsS0FiNkI7Ozs7QUFpQjlCQyxJQUFBQSxLQUFLLENBQUNkLE1BQUQsRUFBU2UsT0FBVCxFQUFrQixDQUFDLEVBQUVDLEtBQUYsRUFBU1QsU0FBUyxHQUFHLEVBQXJCLEtBQTRCLEVBQTdCLENBQWxCLEVBQW9EOztBQUV2RCxVQUFJRSxRQUFRLEdBQUcsNkNBQTJCLEVBQUVRLFNBQVMsRUFBRXRCLFdBQWIsRUFBM0IsQ0FBZjtBQUNBYyxNQUFBQSxRQUFRLENBQUNILHNCQUFFVSxLQUFILENBQVIsR0FBcUIsR0FBRUEsS0FBSyxJQUFJLEVBQUcsd0NBQXVDckIsV0FBVyxDQUFDVyxzQkFBRVUsS0FBSCxDQUFVLEVBQS9GO0FBQ0FQLE1BQUFBLFFBQVEsQ0FBQ0MsV0FBVCxHQUF1QmYsV0FBdkI7O0FBRUFjLE1BQUFBLFFBQVEsQ0FBQ0gsc0JBQUVDLFNBQUgsQ0FBUixHQUF3QkEsU0FBeEI7QUFDQUUsTUFBQUEsUUFBUSxDQUFDUyxlQUFULEdBQXFDekIscUJBQVYsTUFBQWdCLFFBQVEsRUFBd0IsR0FBR2IsVUFBM0IsQ0FBbkM7O0FBRUEsYUFBTyxFQUFFZ0IsS0FBSyxFQUFFSCxRQUFULEVBQW1CUyxlQUFlLEVBQUVULFFBQVEsQ0FBQ1MsZUFBN0MsRUFBUDtBQUNELEtBM0I2QixFQUF6QixDQUFQOztBQTZCRDs7QUFFREMsTUFBTSxDQUFDQyxPQUFQLEdBQWlCO0FBQ2YsR0FBQ2Qsc0JBQUVlLEdBQUYsQ0FBTTVCLHFCQUFQLEdBQStCQSxxQkFEaEIsRUFBakIiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgYXNzZXJ0IGZyb20gJ2Fzc2VydCdcbmltcG9ydCB7IG1lcmdlTm9uZXhpc3RlbnRQcm9wZXJ0aWVzLCBkZWVwTWVyZ2VQYXJhbWV0ZXIgfSBmcm9tICdAZGVwZW5kZW5jeS9oYW5kbGVKU05hdGl2ZURhdGFTdHJ1Y3R1cmUnXG5pbXBvcnQgeyBuZXN0ZWRQcm9wZXJ0eURlbGVnYXRlZExvb2t1cCB9IGZyb20gJy4uLy4uLy4uL3V0aWxpdHkvZGVsZWdhdGVkTG9va3VwLmpzJ1xuaW1wb3J0IHsgJCwgQ2xhc3MgYXMgQ29uc3RydWN0YWJsZSB9IGZyb20gJy4uL0NvbnN0cnVjdGFibGUuY2xhc3MuanMnXG5pbXBvcnQgeyBjcmVhdGVPYmplY3RXaXRoRGVsZWdhdGlvbiB9IGZyb20gJy4vaW5zdGFudGlhdGUuanMnXG5cbmZ1bmN0aW9uIGNvbnN0cnVjdGFibGVJbnN0YW5jZSh7IGNvbnN0cnVjdG9ySW1wbGVtZW50YXRpb24gfSA9IHt9LCB7IGNhbGxlckNsYXNzID0gdGhpcyB9ID0ge30pIHtcbiAgY29uc3QgX2FyZ3VtZW50cyA9IGFyZ3VtZW50c1xuICBhc3NlcnQoY29uc3RydWN0b3JJbXBsZW1lbnRhdGlvbiwgYOKAoiBcImNvbnN0cnVjdG9ySW1wbGVtZW50YXRpb25cIiBwYXJhbWV0ZXIgbXVzdCBiZSBwYXNzZWRgKVxuXG4gIHJldHVybiBuZXcgUHJveHkoZnVuY3Rpb24oKSB7fSwge1xuICAgIC8qKlxuICAgICAqIEByZXR1cm4geyBjb25zdHJ1Y3RhYmxlOiBvZiBuZXcgdHlwZSBjbGFzcyB9IHN1YmNsYXNzIChuZXcgdHlwZSBjbGFzcykgZnJvbSBtZXRhY2xhc3MgKENvbnN0cnVjdGFibGUgY2xhc3MpXG4gICAgICovXG4gICAgY29uc3RydWN0KHRhcmdldCwgYXJndW1lbnRMaXN0LCBwcm94aWVkVGFyZ2V0KSB7XG4gICAgICAvLyBtZW1vaXphdGlvbiAtIHJlY3Vyc2l2ZSBsb29rdXAgZm9yIHBhcmFtZXRlciBrZXkgYW5kIG1lcmdlIHRvIHRoZSBhcmd1bWVudHMgbGlzdDpcbiAgICAgIGxldCBwYXJhbWV0ZXJMaXN0ID0gbmVzdGVkUHJvcGVydHlEZWxlZ2F0ZWRMb29rdXAoeyB0YXJnZXQ6IGNhbGxlckNsYXNzLCByZWN1cnNpdmU6IHRydWUsIHByb3BlcnR5UGF0aDogJC5wYXJhbWV0ZXIgfSlcbiAgICAgIC8vIGluIGNhc2UgY29uZmlndXJlZCBjb25zdHJ1Y3RhYmxlIHdoaWNoIGhvbGRzIGRlZmF1bHQgcGFyYW1ldGVyIHZhbHVlcy5cbiAgICAgIGlmIChwYXJhbWV0ZXJMaXN0Lmxlbmd0aCA+IDApIGFyZ3VtZW50TGlzdCA9IGRlZXBNZXJnZVBhcmFtZXRlcihhcmd1bWVudExpc3QsIC4uLnBhcmFtZXRlckxpc3QpIC8vIGZpcnN0IHBhcmFtZXRlciBsaXN0LCAybmQgbGlzdCwgY3VycmVudCBhcmd1bWVudCBsaXN0ID0+IG5ldyBtZXJnZWQgYXJndW1lbnQgbGlzdFxuXG4gICAgICBsZXQgaW5zdGFuY2UgPSBjYWxsZXJDbGFzczo6Y2FsbGVyQ2xhc3NbJC5jb25zdHJ1Y3Rvci5zd2l0Y2hdKGNvbnN0cnVjdG9ySW1wbGVtZW50YXRpb24pKHt9LCAuLi5hcmd1bWVudExpc3QpXG5cbiAgICAgIHJldHVybiB7IGNsYXNzOiBpbnN0YW5jZSwgcmVmZXJlbmNlOiBpbnN0YW5jZVskLnJlZmVyZW5jZV0gfVxuICAgIH0sXG4gICAgLyoqXG4gICAgICogQHJldHVybiB7IGNvbnN0cnVjdGFibGU6IG9mIHR5cGUgQ29uc3RydWN0YWJsZSBjbGFzcyB9IGNvbmZpZ3VyZWQgQ29uc3RydWN0YWJsZSBtZXRhY2xhc3NcbiAgICAgKi9cbiAgICBhcHBseSh0YXJnZXQsIHRoaXNBcmcsIFt7IGxhYmVsLCBwYXJhbWV0ZXIgPSBbXSB9ID0ge31dKSB7XG4gICAgICAvLyBjcmVhdGUgaW5zdGFuY2Ugb2YgYSBDb25zdHJ1Y3RhYmxlIHRoYXQgaXMgcHJlcG9wdWxhdGVkIHdpdGggcGFyYW1ldGVycywgY2FsbGluZyB0aGUgZnVuY3Rpb25zIHdpbGwgdXNlIHRoZXNlIHBhcmFtcy4gVGhpcyBhbGxvd3MgdXNhZ2Ugb2YgcGFyYW1zIG11bHRpcGxlIHRpbWVzIHdpdGhvdXQgcmVwZWF0aW5nIHRoZW0gaW4gZWFjaCByZXF1cmVzdC5cbiAgICAgIGxldCBpbnN0YW5jZSA9IGNyZWF0ZU9iamVjdFdpdGhEZWxlZ2F0aW9uKHsgcHJvdG90eXBlOiBjYWxsZXJDbGFzcyB9KSAvLyBpbml0aWFsaXplIGEgcHJvdG90eXBlIHRoYXQgaXMgYSBjbGFzcy5cbiAgICAgIGluc3RhbmNlWyQubGFiZWxdID0gYCR7bGFiZWwgfHwgJyd9IChjb25maWd1cmVkIGNsYXNzL2NvbnN0cnVjdGFibGUpIG9mICR7Y2FsbGVyQ2xhc3NbJC5sYWJlbF19YFxuICAgICAgaW5zdGFuY2UuY29uc3RydWN0b3IgPSBjYWxsZXJDbGFzcyAvLyB0byBwcmVzZXJ2ZSBmdW5jdGlvbmFsaXR5IG9mIG5hdGl2ZSBKUyBmdW5jdGlvbnMgaW50ZWdyYXRpb24uXG5cbiAgICAgIGluc3RhbmNlWyQucGFyYW1ldGVyXSA9IHBhcmFtZXRlclxuICAgICAgaW5zdGFuY2UuY2xpZW50SW50ZXJmYWNlID0gaW5zdGFuY2U6OmNvbnN0cnVjdGFibGVJbnN0YW5jZSguLi5fYXJndW1lbnRzKVxuXG4gICAgICByZXR1cm4geyBjbGFzczogaW5zdGFuY2UsIGNsaWVudEludGVyZmFjZTogaW5zdGFuY2UuY2xpZW50SW50ZXJmYWNlIH1cbiAgICB9LFxuICB9KVxufVxuXG5tb2R1bGUuZXhwb3J0cyA9IHtcbiAgWyQua2V5LmNvbnN0cnVjdGFibGVJbnN0YW5jZV06IGNvbnN0cnVjdGFibGVJbnN0YW5jZSxcbn1cbiJdfQ==

@@ -1,37 +1,38 @@
-import { inherits as extend } from 'util'
-import { $ } from '../Constructable.class.js'
+"use strict";Object.defineProperty(exports, "__esModule", { value: true });exports.createObjectWithDelegation = createObjectWithDelegation;var _util = require("util");
 
-/* Delegate to Superconstructor */
+
+
 function extendFromConstructable(constructableTarget, constructableParent) {
-  extend(constructableTarget, constructableParent)
-  Object.setPrototypeOf(constructableTarget, constructableParent)
-}
-// inherit from null
-function extendFromNull(constructable) {
-  Object.setPrototypeOf(constructable, null)
-  Object.setPrototypeOf(constructable.prototype, null)
-}
-// create a function (constructable) without a constructor (throws when run)  E.g. used to be used with Proxy wrapper, allowing construct & apply handlers.
-const createConstructableWithoutContructor = () => {
-  // returns an anonymous function, that when called produces a named function.
-  return new Function(`return function (){ throw new Error('• Construction should not be reached, rather the proxy wrapping it should deal with the construct handler.') }`)
+  (0, _util.inherits)(constructableTarget, constructableParent);
+  Object.setPrototypeOf(constructableTarget, constructableParent);
 }
 
-/**
- * Create an instance (either a function or an object) with a delegation to another prototype.
- * general implementation which creates an object delegating to passed param.
- */
-export function createObjectWithDelegation({ prototype = null, instanceType }: { instanceType: 'object' | 'function' } = {}) {
-  let instance
+function extendFromNull(constructable) {
+  Object.setPrototypeOf(constructable, null);
+  Object.setPrototypeOf(constructable.prototype, null);
+}
+
+const createConstructableWithoutContructor = () => {
+
+  return new Function(`return function (){ throw new Error('• Construction should not be reached, rather the proxy wrapping it should deal with the construct handler.') }`);
+};
+
+
+
+
+
+function createObjectWithDelegation({ prototype = null, instanceType } = {}) {
+  let instance;
   switch (instanceType) {
     case 'function':
-      instance = createConstructableWithoutContructor()
-      Object.setPrototypeOf(targetInstance, prototype)
-      break
+      instance = createConstructableWithoutContructor();
+      Object.setPrototypeOf(targetInstance, prototype);
+      break;
     case 'object':
     default:
-      instance = Object.create(prototype)
-      break
-  }
-  return instance
+      instance = Object.create(prototype);
+      break;}
+
+  return instance;
 }
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9Db25zdHJ1Y3RhYmxlL3Byb3BlcnR5L2luc3RhbnRpYXRlLmpzIl0sIm5hbWVzIjpbImV4dGVuZEZyb21Db25zdHJ1Y3RhYmxlIiwiY29uc3RydWN0YWJsZVRhcmdldCIsImNvbnN0cnVjdGFibGVQYXJlbnQiLCJPYmplY3QiLCJzZXRQcm90b3R5cGVPZiIsImV4dGVuZEZyb21OdWxsIiwiY29uc3RydWN0YWJsZSIsInByb3RvdHlwZSIsImNyZWF0ZUNvbnN0cnVjdGFibGVXaXRob3V0Q29udHJ1Y3RvciIsIkZ1bmN0aW9uIiwiY3JlYXRlT2JqZWN0V2l0aERlbGVnYXRpb24iLCJpbnN0YW5jZVR5cGUiLCJpbnN0YW5jZSIsInRhcmdldEluc3RhbmNlIiwiY3JlYXRlIl0sIm1hcHBpbmdzIjoiMklBQUE7Ozs7QUFJQSxTQUFTQSx1QkFBVCxDQUFpQ0MsbUJBQWpDLEVBQXNEQyxtQkFBdEQsRUFBMkU7QUFDekUsc0JBQU9ELG1CQUFQLEVBQTRCQyxtQkFBNUI7QUFDQUMsRUFBQUEsTUFBTSxDQUFDQyxjQUFQLENBQXNCSCxtQkFBdEIsRUFBMkNDLG1CQUEzQztBQUNEOztBQUVELFNBQVNHLGNBQVQsQ0FBd0JDLGFBQXhCLEVBQXVDO0FBQ3JDSCxFQUFBQSxNQUFNLENBQUNDLGNBQVAsQ0FBc0JFLGFBQXRCLEVBQXFDLElBQXJDO0FBQ0FILEVBQUFBLE1BQU0sQ0FBQ0MsY0FBUCxDQUFzQkUsYUFBYSxDQUFDQyxTQUFwQyxFQUErQyxJQUEvQztBQUNEOztBQUVELE1BQU1DLG9DQUFvQyxHQUFHLE1BQU07O0FBRWpELFNBQU8sSUFBSUMsUUFBSixDQUFjLHFKQUFkLENBQVA7QUFDRCxDQUhEOzs7Ozs7QUFTTyxTQUFTQywwQkFBVCxDQUFvQyxFQUFFSCxTQUFTLEdBQUcsSUFBZCxFQUFvQkksWUFBcEIsS0FBOEUsRUFBbEgsRUFBc0g7QUFDM0gsTUFBSUMsUUFBSjtBQUNBLFVBQVFELFlBQVI7QUFDRSxTQUFLLFVBQUw7QUFDRUMsTUFBQUEsUUFBUSxHQUFHSixvQ0FBb0MsRUFBL0M7QUFDQUwsTUFBQUEsTUFBTSxDQUFDQyxjQUFQLENBQXNCUyxjQUF0QixFQUFzQ04sU0FBdEM7QUFDQTtBQUNGLFNBQUssUUFBTDtBQUNBO0FBQ0VLLE1BQUFBLFFBQVEsR0FBR1QsTUFBTSxDQUFDVyxNQUFQLENBQWNQLFNBQWQsQ0FBWDtBQUNBLFlBUko7O0FBVUEsU0FBT0ssUUFBUDtBQUNEIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgaW5oZXJpdHMgYXMgZXh0ZW5kIH0gZnJvbSAndXRpbCdcbmltcG9ydCB7ICQgfSBmcm9tICcuLi9Db25zdHJ1Y3RhYmxlLmNsYXNzLmpzJ1xuXG4vKiBEZWxlZ2F0ZSB0byBTdXBlcmNvbnN0cnVjdG9yICovXG5mdW5jdGlvbiBleHRlbmRGcm9tQ29uc3RydWN0YWJsZShjb25zdHJ1Y3RhYmxlVGFyZ2V0LCBjb25zdHJ1Y3RhYmxlUGFyZW50KSB7XG4gIGV4dGVuZChjb25zdHJ1Y3RhYmxlVGFyZ2V0LCBjb25zdHJ1Y3RhYmxlUGFyZW50KVxuICBPYmplY3Quc2V0UHJvdG90eXBlT2YoY29uc3RydWN0YWJsZVRhcmdldCwgY29uc3RydWN0YWJsZVBhcmVudClcbn1cbi8vIGluaGVyaXQgZnJvbSBudWxsXG5mdW5jdGlvbiBleHRlbmRGcm9tTnVsbChjb25zdHJ1Y3RhYmxlKSB7XG4gIE9iamVjdC5zZXRQcm90b3R5cGVPZihjb25zdHJ1Y3RhYmxlLCBudWxsKVxuICBPYmplY3Quc2V0UHJvdG90eXBlT2YoY29uc3RydWN0YWJsZS5wcm90b3R5cGUsIG51bGwpXG59XG4vLyBjcmVhdGUgYSBmdW5jdGlvbiAoY29uc3RydWN0YWJsZSkgd2l0aG91dCBhIGNvbnN0cnVjdG9yICh0aHJvd3Mgd2hlbiBydW4pICBFLmcuIHVzZWQgdG8gYmUgdXNlZCB3aXRoIFByb3h5IHdyYXBwZXIsIGFsbG93aW5nIGNvbnN0cnVjdCAmIGFwcGx5IGhhbmRsZXJzLlxuY29uc3QgY3JlYXRlQ29uc3RydWN0YWJsZVdpdGhvdXRDb250cnVjdG9yID0gKCkgPT4ge1xuICAvLyByZXR1cm5zIGFuIGFub255bW91cyBmdW5jdGlvbiwgdGhhdCB3aGVuIGNhbGxlZCBwcm9kdWNlcyBhIG5hbWVkIGZ1bmN0aW9uLlxuICByZXR1cm4gbmV3IEZ1bmN0aW9uKGByZXR1cm4gZnVuY3Rpb24gKCl7IHRocm93IG5ldyBFcnJvcign4oCiIENvbnN0cnVjdGlvbiBzaG91bGQgbm90IGJlIHJlYWNoZWQsIHJhdGhlciB0aGUgcHJveHkgd3JhcHBpbmcgaXQgc2hvdWxkIGRlYWwgd2l0aCB0aGUgY29uc3RydWN0IGhhbmRsZXIuJykgfWApXG59XG5cbi8qKlxuICogQ3JlYXRlIGFuIGluc3RhbmNlIChlaXRoZXIgYSBmdW5jdGlvbiBvciBhbiBvYmplY3QpIHdpdGggYSBkZWxlZ2F0aW9uIHRvIGFub3RoZXIgcHJvdG90eXBlLlxuICogZ2VuZXJhbCBpbXBsZW1lbnRhdGlvbiB3aGljaCBjcmVhdGVzIGFuIG9iamVjdCBkZWxlZ2F0aW5nIHRvIHBhc3NlZCBwYXJhbS5cbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGNyZWF0ZU9iamVjdFdpdGhEZWxlZ2F0aW9uKHsgcHJvdG90eXBlID0gbnVsbCwgaW5zdGFuY2VUeXBlIH06IHsgaW5zdGFuY2VUeXBlOiAnb2JqZWN0JyB8ICdmdW5jdGlvbicgfSA9IHt9KSB7XG4gIGxldCBpbnN0YW5jZVxuICBzd2l0Y2ggKGluc3RhbmNlVHlwZSkge1xuICAgIGNhc2UgJ2Z1bmN0aW9uJzpcbiAgICAgIGluc3RhbmNlID0gY3JlYXRlQ29uc3RydWN0YWJsZVdpdGhvdXRDb250cnVjdG9yKClcbiAgICAgIE9iamVjdC5zZXRQcm90b3R5cGVPZih0YXJnZXRJbnN0YW5jZSwgcHJvdG90eXBlKVxuICAgICAgYnJlYWtcbiAgICBjYXNlICdvYmplY3QnOlxuICAgIGRlZmF1bHQ6XG4gICAgICBpbnN0YW5jZSA9IE9iamVjdC5jcmVhdGUocHJvdG90eXBlKVxuICAgICAgYnJlYWtcbiAgfVxuICByZXR1cm4gaW5zdGFuY2Vcbn1cbiJdfQ==

@@ -1,109 +1,110 @@
-import assert from 'assert'
-import { mergeOwnNestedProperty, isGeneratorFunction } from '@dependency/handleJSNativeDataStructure'
-import { nestedPropertyDelegatedLookup } from '../../utility/delegatedLookup.js'
-import { getNestedObject } from '../../utility/getNestedObject.js'
+"use strict";var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports, "__esModule", { value: true });exports.createSwitch = exports.mergeOwnNestedPropertyCurried = exports.nestedPropertyDelegatedLookupCurried = void 0;var _assert = _interopRequireDefault(require("assert"));
+var _handleJSNativeDataStructure = require("@dependency/handleJSNativeDataStructure");
+var _delegatedLookup = require("../../utility/delegatedLookup.js");
+var _getNestedObject = require("../../utility/getNestedObject.js");
 
-export const nestedPropertyDelegatedLookupCurried = ({ baseProperty }) => {
-  if (!Array.isArray(baseProperty)) baseProperty = [baseProperty]
-  return function(implementationKey: String, recursive: Boolean = false, callerClass = this) {
-    assert(implementationKey, `• implementationKey must be passed, cannot be undefined.`)
-    return nestedPropertyDelegatedLookup({
+const nestedPropertyDelegatedLookupCurried = ({ baseProperty }) => {
+  if (!Array.isArray(baseProperty)) baseProperty = [baseProperty];
+  return function (implementationKey, recursive = false, callerClass = this) {
+    (0, _assert.default)(implementationKey, `• implementationKey must be passed, cannot be undefined.`);
+    return (0, _delegatedLookup.nestedPropertyDelegatedLookup)({
       target: callerClass,
       propertyPath: [...baseProperty, implementationKey],
-      recursive,
-    })
-  }
-}
+      recursive });
 
-export const mergeOwnNestedPropertyCurried = ({ property }) => {
-  if (!Array.isArray(property)) property = [property]
-  return function(implementation: Object) {
-    return mergeOwnNestedProperty({ target: this, propertyPath: property, value: implementation })
-  }
-}
+  };
+};exports.nestedPropertyDelegatedLookupCurried = nestedPropertyDelegatedLookupCurried;
 
-/**
- * @return {Array<Object>}
- */
+const mergeOwnNestedPropertyCurried = ({ property }) => {
+  if (!Array.isArray(property)) property = [property];
+  return function (implementation) {
+    return (0, _handleJSNativeDataStructure.mergeOwnNestedProperty)({ target: this, propertyPath: property, value: implementation });
+  };
+};exports.mergeOwnNestedPropertyCurried = mergeOwnNestedPropertyCurried;
+
+
+
+
 function lookupImplementation({ implementationKey, fallbackPropertyPath, callerClass = this, implementationGetterPropertyPath, recursiveDelegationChainExecution }) {
-  implementationKey ||= getNestedObject(callerClass, fallbackPropertyPath)
-  let lookupResult // implementation functions to execute
-  let implementationGetter = getNestedObject(callerClass, implementationGetterPropertyPath) // returns as nested property, in this case it is a getter function
+  implementationKey || (implementationKey = (0, _getNestedObject.getNestedObject)(callerClass, fallbackPropertyPath));
+  let lookupResult;
+  let implementationGetter = (0, _getNestedObject.getNestedObject)(callerClass, implementationGetterPropertyPath);
   if (recursiveDelegationChainExecution) {
-    lookupResult = callerClass::implementationGetter(implementationKey, true /*recursive execution of multiple implementations*/)
-    assert(lookupResult && lookupResult.length > 0, `• No implementation constructor found for key ${implementationKey.toString()}`)
+    lookupResult = implementationGetter.call(callerClass, implementationKey, true);
+    (0, _assert.default)(lookupResult && lookupResult.length > 0, `• No implementation constructor found for key ${implementationKey.toString()}`);
   } else {
-    // single implementation
-    lookupResult = callerClass::implementationGetter(implementationKey)
-    assert(lookupResult, `• No implementation constructor found for key ${(implementationKey && implementationKey.toString()) || implementationKey}`)
+
+    lookupResult = implementationGetter.call(callerClass, implementationKey);
+    (0, _assert.default)(lookupResult, `• No implementation constructor found for key ${implementationKey && implementationKey.toString() || implementationKey}`);
   }
-  if (!Array.isArray(lookupResult)) lookupResult = [lookupResult] // for preventing separate code for execution.
-  // preparate functions registered for a specific implementation
-  return lookupResult
+  if (!Array.isArray(lookupResult)) lookupResult = [lookupResult];
+
+  return lookupResult;
 }
 
-/**
- * Change interface behavior for non generator targets - expose generator as regular function for quick non propagating calls.
- * When the generator's iterator is called the construct trap will iterate over it and return the result.
- * @param implementationGetterPropertyPath the getter function for the implementation using its key.
- **/
-export const createSwitch = ({ fallbackPropertyPath, implementationGetterPropertyPath }) => {
-  // expose an interface with two subsequent function calls
+
+
+
+
+
+const createSwitch = ({ fallbackPropertyPath, implementationGetterPropertyPath }) => {
+
   return function switchInterface(
-    implementationKey: string,
+  implementationKey,
+  {
+
+
+
+    recursiveDelegationChainExecution = false,
+    executionAlgorithm,
+    callerClass = this } =
+  {})
+  {
+
+    let implementationArray = lookupImplementation.call(callerClass, { implementationKey, fallbackPropertyPath, implementationGetterPropertyPath, recursiveDelegationChainExecution });
+    if (implementationArray.length == 0) return function () {};
+
     {
-      /* Like the native JS behavior for `constructor` function that calls the super constructor as well in the chain.
-      No longer applied: //// Functions using recursive option must follow the function definition -  function(argumentList<Object>, previousResult<any>)
-    */
-      recursiveDelegationChainExecution = false, // Execute all functions in the delegation chain that match the `implementationKey` value. e.g. use initialization function from each class in the prototype chain.
-      executionAlgorithm, // decides the interface used in executing the implemenations
-      callerClass = this, // the constructable class that initiated the function call.
-    } = {},
-  ) {
-    // lookup implementation functions:
-    let implementationArray = callerClass::lookupImplementation({ implementationKey, fallbackPropertyPath, implementationGetterPropertyPath, recursiveDelegationChainExecution })
-    if (implementationArray.length == 0) return function() {} // return empty dummy function to keep the flow of the client code.
-    // execution algorithm switch
-    {
-      /** Send the parent implementation as callback to the child implementation function using Generators `function.sent` */
+
       function provideAsCallbackInFunctionChain() {
         function createCallbackFunc(targetFunction, superCallback) {
-          let funcCallback
-          /* Deal with different function types - redirect construct to particular implementation using specific execution depending of function type.        
-               Usage: ```function* implementation() {
-                  let { superCallback } = function.sent
-                  if (superCallback) instance = callerClass::superCallback(...arguments)
-                }```
-            */
-          if (isGeneratorFunction(targetFunction))
-            funcCallback = function() {
-              let iterator = this::targetFunction(...arguments)
-              let iteratorObject = iterator.next({ superCallback })
-              assert(iteratorObject.done, `• Generator implementation function must not yield results, only recieve the superCallback and return a value.`)
-              return iteratorObject.value
-            }
-          else funcCallback = targetFunction // in case a regular function, then the superCallback will not be passed and so the execution chain will break.
+          let funcCallback;
 
-          return funcCallback
+
+
+
+
+
+          if ((0, _handleJSNativeDataStructure.isGeneratorFunction)(targetFunction))
+          funcCallback = function () {
+            let iterator = targetFunction.call(this, ...arguments);
+            let iteratorObject = iterator.next({ superCallback });
+            (0, _assert.default)(iteratorObject.done, `• Generator implementation function must not yield results, only recieve the superCallback and return a value.`);
+            return iteratorObject.value;
+          };else
+          funcCallback = targetFunction;
+
+          return funcCallback;
         }
 
-        implementationArray.reverse() // start from parent implementations - will result in the following order: [<parent>, ... , <child>] in hierarchy of implementations
-        let previousLoopCallback = null
+        implementationArray.reverse();
+        let previousLoopCallback = null;
         for (let index = 0; index < implementationArray.length; index++) {
-          let currentFunction = implementationArray[index]
-          let callback = createCallbackFunc(currentFunction, previousLoopCallback)
-          previousLoopCallback = callback
+          let currentFunction = implementationArray[index];
+          let callback = createCallbackFunc(currentFunction, previousLoopCallback);
+          previousLoopCallback = callback;
         }
-        let result = callerClass::previousLoopCallback(...arguments) // the lowest implementation in delegation hierarchy
-        return result
+        let result = previousLoopCallback.call(callerClass, ...arguments);
+        return result;
       }
 
       switch (executionAlgorithm) {
         case 'provideAsCallbackInFunctionChain':
         default:
-          return provideAsCallbackInFunctionChain
-          break
-      }
+          return provideAsCallbackInFunctionChain;
+          break;}
+
     }
-  }
-}
+  };
+};exports.createSwitch = createSwitch;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3NvdXJjZS9jb25zdHJ1Y3RhYmxlRWxlbWVudC9GdW5jdGlvbmFsaXR5L3Byb3RvdHlwZU1ldGhvZC5qcyJdLCJuYW1lcyI6WyJuZXN0ZWRQcm9wZXJ0eURlbGVnYXRlZExvb2t1cEN1cnJpZWQiLCJiYXNlUHJvcGVydHkiLCJBcnJheSIsImlzQXJyYXkiLCJpbXBsZW1lbnRhdGlvbktleSIsInJlY3Vyc2l2ZSIsImNhbGxlckNsYXNzIiwidGFyZ2V0IiwicHJvcGVydHlQYXRoIiwibWVyZ2VPd25OZXN0ZWRQcm9wZXJ0eUN1cnJpZWQiLCJwcm9wZXJ0eSIsImltcGxlbWVudGF0aW9uIiwidmFsdWUiLCJsb29rdXBJbXBsZW1lbnRhdGlvbiIsImZhbGxiYWNrUHJvcGVydHlQYXRoIiwiaW1wbGVtZW50YXRpb25HZXR0ZXJQcm9wZXJ0eVBhdGgiLCJyZWN1cnNpdmVEZWxlZ2F0aW9uQ2hhaW5FeGVjdXRpb24iLCJsb29rdXBSZXN1bHQiLCJpbXBsZW1lbnRhdGlvbkdldHRlciIsImxlbmd0aCIsInRvU3RyaW5nIiwiY3JlYXRlU3dpdGNoIiwic3dpdGNoSW50ZXJmYWNlIiwiZXhlY3V0aW9uQWxnb3JpdGhtIiwiaW1wbGVtZW50YXRpb25BcnJheSIsInByb3ZpZGVBc0NhbGxiYWNrSW5GdW5jdGlvbkNoYWluIiwiY3JlYXRlQ2FsbGJhY2tGdW5jIiwidGFyZ2V0RnVuY3Rpb24iLCJzdXBlckNhbGxiYWNrIiwiZnVuY0NhbGxiYWNrIiwiaXRlcmF0b3IiLCJhcmd1bWVudHMiLCJpdGVyYXRvck9iamVjdCIsIm5leHQiLCJkb25lIiwicmV2ZXJzZSIsInByZXZpb3VzTG9vcENhbGxiYWNrIiwiaW5kZXgiLCJjdXJyZW50RnVuY3Rpb24iLCJjYWxsYmFjayIsInJlc3VsdCJdLCJtYXBwaW5ncyI6InFSQUFBO0FBQ0E7QUFDQTtBQUNBOztBQUVPLE1BQU1BLG9DQUFvQyxHQUFHLENBQUMsRUFBRUMsWUFBRixFQUFELEtBQXNCO0FBQ3hFLE1B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c3NlcnQnXG5pbXBvcnQgeyBtZXJnZU93bk5lc3RlZFByb3BlcnR5LCBpc0dlbmVyYXRvckZ1bmN0aW9uIH0gZnJvbSAnQGRlcGVuZGVuY3kvaGFuZGxlSlNOYXRpdmVEYXRhU3RydWN0dXJlJ1xuaW1wb3J0IHsgbmVzdGVkUHJvcGVydHlEZWxlZ2F0ZWRMb29rdXAgfSBmcm9tICcuLi8uLi91dGlsaXR5L2RlbGVnYXRlZExvb2t1cC5qcydcbmltcG9ydCB7IGdldE5lc3RlZE9iamVjdCB9IGZyb20gJy4uLy4uL3V0aWxpdHkvZ2V0TmVzdGVkT2JqZWN0LmpzJ1xuXG5leHBvcnQgY29uc3QgbmVzdGVkUHJvcGVydHlEZWxlZ2F0ZWRMb29rdXBDdXJyaWVkID0gKHsgYmFzZVByb3BlcnR5IH0pID0+IHtcbiAgaWYgKCFBcnJheS5pc0FycmF5KGJhc2VQcm9wZXJ0eSkpIGJhc2VQcm9wZXJ0eSA9IFtiYXNlUHJvcGVydHldXG4gIHJldHVybiBmdW5jdGlvbihpbXBsZW1lbnRhdGlvbktleTogU3RyaW5nLCByZWN1cnNpdmU6IEJvb2xlYW4gPSBmYWxzZSwgY2FsbGVyQ2xhc3MgPSB0aGlzKSB7XG4gICAgYXNzZXJ0KGltcGxlbWVudGF0aW9uS2V5LCBg4oCiIGltcGxlbWVudGF0aW9uS2V5IG11c3QgYmUgcGFzc2VkLCBjYW5ub3QgYmUgdW5kZWZpbmVkLmApXG4gICAgcmV0dXJuIG5lc3RlZFByb3BlcnR5RGVsZWdhdGVkTG9va3VwKHtcbiAgICAgIHRhcmdldDogY2FsbGVyQ2xhc3MsXG4gICAgICBwcm9wZXJ0eVBhdGg6IFsuLi5iYXNlUHJvcGVydHksIGltcGxlbWVudGF0aW9uS2V5XSxcbiAgICAgIHJlY3Vyc2l2ZSxcbiAgICB9KVxuICB9XG59XG5cbmV4cG9ydCBjb25zdCBtZXJnZU93bk5lc3RlZFByb3BlcnR5Q3VycmllZCA9ICh7IHByb3BlcnR5IH0pID0+IHtcbiAgaWYgKCFBcnJheS5pc0FycmF5KHByb3BlcnR5KSkgcHJvcGVydHkgPSBbcHJvcGVydHldXG4gIHJldHVybiBmdW5jdGlvbihpbXBsZW1lbnRhdGlvbjogT2JqZWN0KSB7XG4gICAgcmV0dXJuIG1lcmdlT3duTmVzdGVkUHJvcGVydHkoeyB0YXJnZXQ6IHRoaXMsIHByb3BlcnR5UGF0aDogcHJvcGVydHksIHZhbHVlOiBpbXBsZW1lbnRhdGlvbiB9KVxuICB9XG59XG5cbi8qKlxuICogQHJldHVybiB7QXJyYXk8T2JqZWN0Pn1cbiAqL1xuZnVuY3Rpb24gbG9va3VwSW1wbGVtZW50YXRpb24oeyBpbXBsZW1lbnRhdGlvbktleSwgZmFsbGJhY2tQcm9wZXJ0eVBhdGgsIGNhbGxlckNsYXNzID0gdGhpcywgaW1wbGVtZW50YXRpb25HZXR0ZXJQcm9wZXJ0eVBhdGgsIHJlY3Vyc2l2ZURlbGVnYXRpb25DaGFpbkV4ZWN1dGlvbiB9KSB7XG4gIGltcGxlbWVudGF0aW9uS2V5IHx8PSBnZXROZXN0ZWRPYmplY3QoY2FsbGVyQ2xhc3MsIGZhbGxiYWNrUHJvcGVydHlQYXRoKVxuICBsZXQgbG9va3VwUmVzdWx0IC8vIGltcGxlbWVudGF0aW9uIGZ1bmN0aW9ucyB0byBleGVjdXRlXG4gIGxldCBpbXBsZW1lbnRhdGlvbkdldHRlciA9IGdldE5lc3RlZE9iamVjdChjYWxsZXJDbGFzcywgaW1wbGVtZW50YXRpb25HZXR0ZXJQcm9wZXJ0eVBhdGgpIC8vIHJldHVybnMgYXMgbmVzdGVkIHByb3BlcnR5LCBpbiB0aGlzIGNhc2UgaXQgaXMgYSBnZXR0ZXIgZnVuY3Rpb25cbiAgaWYgKHJlY3Vyc2l2ZURlbGVnYXRpb25DaGFpbkV4ZWN1dGlvbikge1xuICAgIGxvb2t1cFJlc3VsdCA9IGNhbGxlckNsYXNzOjppbXBsZW1lbnRhdGlvbkdldHRlcihpbXBsZW1lbnRhdGlvbktleSwgdHJ1ZSAvKnJlY3Vyc2l2ZSBleGVjdXRpb24gb2YgbXVsdGlwbGUgaW1wbGVtZW50YXRpb25zKi8pXG4gICAgYXNzZXJ0KGxvb2t1cFJlc3VsdCAmJiBsb29rdXBSZXN1bHQubGVuZ3RoID4gMCwgYOKAoiBObyBpbXBsZW1lbnRhdGlvbiBjb25zdHJ1Y3RvciBmb3VuZCBmb3Iga2V5ICR7aW1wbGVtZW50YXRpb25LZXkudG9TdHJpbmcoKX1gKVxuICB9IGVsc2Uge1xuICAgIC8vIHNpbmdsZSBpbXBsZW1lbnRhdGlvblxuICAgIGxvb2t1cFJlc3VsdCA9IGNhbGxlckNsYXNzOjppbXBsZW1lbnRhdGlvbkdldHRlcihpbXBsZW1lbnRhdGlvbktleSlcbiAgICBhc3NlcnQobG9va3VwUmVzdWx0LCBg4oCiIE5vIGltcGxlbWVudGF0aW9uIGNvbnN0cnVjdG9yIGZvdW5kIGZvciBrZXkgJHsoaW1wbGVtZW50YXRpb25LZXkgJiYgaW1wbGVtZW50YXRpb25LZXkudG9TdHJpbmcoKSkgfHwgaW1wbGVtZW50YXRpb25LZXl9YClcbiAgfVxuICBpZiAoIUFycmF5LmlzQXJyYXkobG9va3VwUmVzdWx0KSkgbG9va3VwUmVzdWx0ID0gW2xvb2t1cFJlc3VsdF0gLy8gZm9yIHByZXZlbnRpbmcgc2VwYXJhdGUgY29kZSBmb3IgZXhlY3V0aW9uLlxuICAvLyBwcmVwYXJhdGUgZnVuY3Rpb25zIHJlZ2lzdGVyZWQgZm9yIGEgc3BlY2lmaWMgaW1wbGVtZW50YXRpb25cbiAgcmV0dXJuIGxvb2t1cFJlc3VsdFxufVxuXG4vKipcbiAqIENoYW5nZSBpbnRlcmZhY2UgYmVoYXZpb3IgZm9yIG5vbiBnZW5lcmF0b3IgdGFyZ2V0cyAtIGV4cG9zZSBnZW5lcmF0b3IgYXMgcmVndWxhciBmdW5jdGlvbiBmb3IgcXVpY2sgbm9uIHByb3BhZ2F0aW5nIGNhbGxzLlxuICogV2hlbiB0aGUgZ2VuZXJhdG9yJ3MgaXRlcmF0b3IgaXMgY2FsbGVkIHRoZSBjb25zdHJ1Y3QgdHJhcCB3aWxsIGl0ZXJhdGUgb3ZlciBpdCBhbmQgcmV0dXJuIHRoZSByZXN1bHQuXG4gKiBAcGFyYW0gaW1wbGVtZW50YXRpb25HZXR0ZXJQcm9wZXJ0eVBhdGggdGhlIGdldHRlciBmdW5jdGlvbiBmb3IgdGhlIGltcGxlbWVudGF0aW9uIHVzaW5nIGl0cyBrZXkuXG4gKiovXG5leHBvcnQgY29uc3QgY3JlYXRlU3dpdGNoID0gKHsgZmFsbGJhY2tQcm9wZXJ0eVBhdGgsIGltcGxlbWVudGF0aW9uR2V0dGVyUHJvcGVydHlQYXRoIH0pID0+IHtcbiAgLy8gZXhwb3NlIGFuIGludGVyZmFjZSB3aXRoIHR3byBzdWJzZXF1ZW50IGZ1bmN0aW9uIGNhbGxzXG4gIHJldHVybiBmdW5jdGlvbiBzd2l0Y2hJbnRlcmZhY2UoXG4gICAgaW1wbGVtZW50YXRpb25LZXk6IHN0cmluZyxcbiAgICB7XG4gICAgICAvKiBMaWtlIHRoZSBuYXRpdmUgSlMgYmVoYXZpb3IgZm9yIGBjb25zdHJ1Y3RvcmAgZnVuY3Rpb24gdGhhdCBjYWxscyB0aGUgc3VwZXIgY29uc3RydWN0b3IgYXMgd2VsbCBpbiB0aGUgY2hhaW4uXG4gICAgICBObyBsb25nZXIgYXBwbGllZDogLy8vLyBGdW5jdGlvbnMgdXNpbmcgcmVjdXJzaXZlIG9wdGlvbiBtdXN0IGZvbGxvdyB0aGUgZnVuY3Rpb24gZGVmaW5pdGlvbiAtICBmdW5jdGlvbihhcmd1bWVudExpc3Q8T2JqZWN0PiwgcHJldmlvdXNSZXN1bHQ8YW55PilcbiAgICAqL1xuICAgICAgcmVjdXJzaXZlRGVsZWdhdGlvbkNoYWluRXhlY3V0aW9uID0gZmFsc2UsIC8vIEV4ZWN1dGUgYWxsIGZ1bmN0aW9ucyBpbiB0aGUgZGVsZWdhdGlvbiBjaGFpbiB0aGF0IG1hdGNoIHRoZSBgaW1wbGVtZW50YXRpb25LZXlgIHZhbHVlLiBlLmcuIHVzZSBpbml0aWFsaXphdGlvbiBmdW5jdGlvbiBmcm9tIGVhY2ggY2xhc3MgaW4gdGhlIHByb3RvdHlwZSBjaGFpbi5cbiAgICAgIGV4ZWN1dGlvbkFsZ29yaXRobSwgLy8gZGVjaWRlcyB0aGUgaW50ZXJmYWNlIHVzZWQgaW4gZXhlY3V0aW5nIHRoZSBpbXBsZW1lbmF0aW9uc1xuICAgICAgY2FsbGVyQ2xhc3MgPSB0aGlzLCAvLyB0aGUgY29uc3RydWN0YWJsZSBjbGFzcyB0aGF0IGluaXRpYXRlZCB0aGUgZnVuY3Rpb24gY2FsbC5cbiAgICB9ID0ge30sXG4gICkge1xuICAgIC8vIGxvb2t1cCBpbXBsZW1lbnRhdGlvbiBmdW5jdGlvbnM6XG4gICAgbGV0IGltcGxlbWVudGF0aW9uQXJyYXkgPSBjYWxsZXJDbGFzczo6bG9va3VwSW1wbGVtZW50YXRpb24oeyBpbXBsZW1lbnRhdGlvbktleSwgZmFsbGJhY2tQcm9wZXJ0eVBhdGgsIGltcGxlbWVudGF0aW9uR2V0dGVyUHJvcGVydHlQYXRoLCByZWN1cnNpdmVEZWxlZ2F0aW9uQ2hhaW5FeGVjdXRpb24gfSlcbiAgICBpZiAoaW1wbGVtZW50YXRpb25BcnJheS5sZW5ndGggPT0gMCkgcmV0dXJuIGZ1bmN0aW9uKCkge30gLy8gcmV0dXJuIGVtcHR5IGR1bW15IGZ1bmN0aW9uIHRvIGtlZXAgdGhlIGZsb3cgb2YgdGhlIGNsaWVudCBjb2RlLlxuICAgIC8vIGV4ZWN1dGlvbiBhbGdvcml0aG0gc3dpdGNoXG4gICAge1xuICAgICAgLyoqIFNlbmQgdGhlIHBhcmVudCBpbXBsZW1lbnRhdGlvbiBhcyBjYWxsYmFjayB0byB0aGUgY2hpbGQgaW1wbGVtZW50YXRpb24gZnVuY3Rpb24gdXNpbmcgR2VuZXJhdG9ycyBgZnVuY3Rpb24uc2VudGAgKi9cbiAgICAgIGZ1bmN0aW9uIHByb3ZpZGVBc0NhbGxiYWNrSW5GdW5jdGlvbkNoYWluKCkge1xuICAgICAgICBmdW5jdGlvbiBjcmVhdGVDYWxsYmFja0Z1bmModGFyZ2V0RnVuY3Rpb24sIHN1cGVyQ2FsbGJhY2spIHtcbiAgICAgICAgICBsZXQgZnVuY0NhbGxiYWNrXG4gICAgICAgICAgLyogRGVhbCB3aXRoIGRpZmZlcmVudCBmdW5jdGlvbiB0eXBlcyAtIHJlZGlyZWN0IGNvbnN0cnVjdCB0byBwYXJ0aWN1bGFyIGltcGxlbWVudGF0aW9uIHVzaW5nIHNwZWNpZmljIGV4ZWN1dGlvbiBkZXBlbmRpbmcgb2YgZnVuY3Rpb24gdHlwZS4gICAgICAgIFxuICAgICAgICAgICAgICAgVXNhZ2U6IGBgYGZ1bmN0aW9uKiBpbXBsZW1lbnRhdGlvbigpIHtcbiAgICAgICAgICAgICAgICAgIGxldCB7IHN1cGVyQ2FsbGJhY2sgfSA9IGZ1bmN0aW9uLnNlbnRcbiAgICAgICAgICAgICAgICAgIGlmIChzdXBlckNhbGxiYWNrKSBpbnN0YW5jZSA9IGNhbGxlckNsYXNzOjpzdXBlckNhbGxiYWNrKC4uLmFyZ3VtZW50cylcbiAgICAgICAgICAgICAgICB9YGBgXG4gICAgICAgICAgICAqL1xuICAgICAgICAgIGlmIChpc0dlbmVyYXRvckZ1bmN0aW9uKHRhcmdldEZ1bmN0aW9uKSlcbiAgICAgICAgICAgIGZ1bmNDYWxsYmFjayA9IGZ1bmN0aW9uKCkge1xuICAgICAgICAgICAgICBsZXQgaXRlcmF0b3IgPSB0aGlzOjp0YXJnZXRGdW5jdGlvbiguLi5hcmd1bWVudHMpXG4gICAgICAgICAgICAgIGxldCBpdGVyYXRvck9iamVjdCA9IGl0ZXJhdG9yLm5leHQoeyBzdXBlckNhbGxiYWNrIH0pXG4gICAgICAgICAgICAgIGFzc2VydChpdGVyYXRvck9iamVjdC5kb25lLCBg4oCiIEdlbmVyYXRvciBpbXBsZW1lbnRhdGlvbiBmdW5jdGlvbiBtdXN0IG5vdCB5aWVsZCByZXN1bHRzLCBvbmx5IHJlY2lldmUgdGhlIHN1cGVyQ2FsbGJhY2sgYW5kIHJldHVybiBhIHZhbHVlLmApXG4gICAgICAgICAgICAgIHJldHVybiBpdGVyYXRvck9iamVjdC52YWx1ZVxuICAgICAgICAgICAgfVxuICAgICAgICAgIGVsc2UgZnVuY0NhbGxiYWNrID0gdGFyZ2V0RnVuY3Rpb24gLy8gaW4gY2FzZSBhIHJlZ3VsYXIgZnVuY3Rpb24sIHRoZW4gdGhlIHN1cGVyQ2FsbGJhY2sgd2lsbCBub3QgYmUgcGFzc2VkIGFuZCBzbyB0aGUgZXhlY3V0aW9uIGNoYWluIHdpbGwgYnJlYWsuXG5cbiAgICAgICAgICByZXR1cm4gZnVuY0NhbGxiYWNrXG4gICAgICAgIH1cblxuICAgICAgICBpbXBsZW1lbnRhdGlvbkFycmF5LnJldmVyc2UoKSAvLyBzdGFydCBmcm9tIHBhcmVudCBpbXBsZW1lbnRhdGlvbnMgLSB3aWxsIHJlc3VsdCBpbiB0aGUgZm9sbG93aW5nIG9yZGVyOiBbPHBhcmVudD4sIC4uLiAsIDxjaGlsZD5dIGluIGhpZXJhcmNoeSBvZiBpbXBsZW1lbnRhdGlvbnNcbiAgICAgICAgbGV0IHByZXZpb3VzTG9vcENhbGxiYWNrID0gbnVsbFxuICAgICAgICBmb3IgKGxldCBpbmRleCA9IDA7IGluZGV4IDwgaW1wbGVtZW50YXRpb25BcnJheS5sZW5ndGg7IGluZGV4KyspIHtcbiAgICAgICAgICBsZXQgY3VycmVudEZ1bmN0aW9uID0gaW1wbGVtZW50YXRpb25BcnJheVtpbmRleF1cbiAgICAgICAgICBsZXQgY2FsbGJhY2sgPSBjcmVhdGVDYWxsYmFja0Z1bmMoY3VycmVudEZ1bmN0aW9uLCBwcmV2aW91c0xvb3BDYWxsYmFjaylcbiAgICAgICAgICBwcmV2aW91c0xvb3BDYWxsYmFjayA9IGNhbGxiYWNrXG4gICAgICAgIH1cbiAgICAgICAgbGV0IHJlc3VsdCA9IGNhbGxlckNsYXNzOjpwcmV2aW91c0xvb3BDYWxsYmFjayguLi5hcmd1bWVudHMpIC8vIHRoZSBsb3dlc3QgaW1wbGVtZW50YXRpb24gaW4gZGVsZWdhdGlvbiBoaWVyYXJjaHlcbiAgICAgICAgcmV0dXJuIHJlc3VsdFxuICAgICAgfVxuXG4gICAgICBzd2l0Y2ggKGV4ZWN1dGlvbkFsZ29yaXRobSkge1xuICAgICAgICBjYXNlICdwcm92aWRlQXNDYWxsYmFja0luRnVuY3Rpb25DaGFpbic6XG4gICAgICAgIGRlZmF1bHQ6XG4gICAgICAgICAgcmV0dXJuIHByb3ZpZGVBc0NhbGxiYWNrSW5GdW5jdGlvbkNoYWluXG4gICAgICAgICAgYnJlYWtcbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ==
