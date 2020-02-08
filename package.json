@@ -1,6 +1,6 @@
 {
 	"name": "@dependency/entity",
-	"version": "2.0.3",
+	"version": "2.0.4",
 	"main": "./entrypoint/programmaticAPI",
 	"scripts": {
 		"test": "yarn run scriptManager @deployment/deploymentScript \".test.default({ testPath: ['./test'] })\"",
